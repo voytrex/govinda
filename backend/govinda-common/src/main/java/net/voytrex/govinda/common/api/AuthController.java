@@ -118,7 +118,8 @@ public class AuthController {
             new LoginResponse(
                 token,
                 "Bearer",
-                "Use this token in the Authorization header: 'Bearer " + token + "'"
+                "Use this token in the Authorization header: 'Bearer "
+                    + token + "'"
             )
         );
     }

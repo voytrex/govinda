@@ -19,7 +19,7 @@ public record LoginRequest(
     @NotBlank(message = "Password is required")
     String password,
     
-    @Schema(description = "Optional tenant ID (UUID). If not provided, uses user's default tenant", 
+    @Schema(description = "Optional tenant ID (UUID). If not provided, uses user's default tenant",
             example = "550e8400-e29b-41d4-a716-446655440000")
     String tenantId
-) {}
+) { }

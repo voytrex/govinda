@@ -18,7 +18,7 @@ public record LoginResponse(
     @Schema(description = "Token type, always 'Bearer'", example = "Bearer", required = true)
     String tokenType,
     
-    @Schema(description = "Helpful message with usage instructions", 
+    @Schema(description = "Helpful message with usage instructions",
             example = "Use this token in the Authorization header: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'")
     String message
-) {}
+) { }

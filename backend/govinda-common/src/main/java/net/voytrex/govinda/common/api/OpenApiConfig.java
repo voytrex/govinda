@@ -36,6 +36,7 @@ import org.springframework.context.annotation.Configuration;
  * - External documentation links
  */
 @Configuration
+@SuppressWarnings("unchecked") // OpenAPI library uses raw types in its API
 public class OpenApiConfig {
 
     @Bean
@@ -139,8 +140,8 @@ public class OpenApiConfig {
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")
                 .bearerFormat("JWT")
-                .description("JWT token obtained from /api/v1/auth/login endpoint. " +
-                    "Include in Authorization header as: `Bearer <token>`")
+                .description("JWT token obtained from /api/v1/auth/login endpoint. "
+                    + "Include in Authorization header as: `Bearer <token>`")
         );
         
         // Global Headers
@@ -150,9 +151,9 @@ public class OpenApiConfig {
                 .in("header")
                 .name("X-Tenant-Id")
                 .required(true)
-                .description("Tenant UUID for multi-tenant isolation. " +
-                    "Required for all authenticated requests. " +
-                    "The tenant ID must match the tenant in the JWT token.")
+                .description("Tenant UUID for multi-tenant isolation. "
+                    + "Required for all authenticated requests. "
+                    + "The tenant ID must match the tenant in the JWT token.")
                 .schema(new Schema<>().type("string").format("uuid"))
                 .example("550e8400-e29b-41d4-a716-446655440000")
         );
@@ -175,9 +176,9 @@ public class OpenApiConfig {
                 .in("header")
                 .name("Accept-Language")
                 .required(false)
-                .description("Preferred language for responses. " +
-                    "Supported: DE (German), FR (French), IT (Italian), EN (English). " +
-                    "Default: DE")
+                .description("Preferred language for responses. "
+                    + "Supported: DE (German), FR (French), IT (Italian), EN (English). "
+                    + "Default: DE")
                 .schema(new Schema<String>().type("string")._default("DE")) // NOSONAR - OpenAPI uses raw types
                 .example("DE")
         );
@@ -222,7 +223,8 @@ public class OpenApiConfig {
             .addProperty("details", new Schema<>()
                 .type("array")
                 .description("Optional field-level validation errors")
-                .items(new Schema<Object>().$ref("#/components/schemas/ErrorDetail"))); // NOSONAR - OpenAPI uses raw types
+                .items(new Schema<>()
+                    .$ref("#/components/schemas/ErrorDetail"))); // NOSONAR - OpenAPI uses raw types
     }
 
     private Schema<?> createErrorDetailSchema() {
@@ -347,6 +349,7 @@ public class OpenApiConfig {
                 "application/json",
                 new MediaType()
                     .schema(new Schema<>().$ref("#/components/schemas/ErrorResponse"))
+                    // CHECKSTYLE:OFF: LineLength - Example JSON path in text block
                     .example(new Example().value("""
                         {
                           "errorCode": "BUSINESS_RULE_VIOLATION",
@@ -355,6 +358,7 @@ public class OpenApiConfig {
                           "path": "/api/v1/masterdata/persons/550e8400-e29b-41d4-a716-446655440000/marital-status-change"
                         }
                         """))
+                    // CHECKSTYLE:ON: LineLength
             ));
     }
 

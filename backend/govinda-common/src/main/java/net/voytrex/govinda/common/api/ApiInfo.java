@@ -16,4 +16,4 @@ public record ApiInfo(
     String documentation,
     String apiDocs,
     String health
-) {}
+) { }

@@ -13,12 +13,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(description = "Field-level validation error detail")
 public record ErrorDetail(
-    @Schema(description = "Field name that failed validation", example = "ahvNr", required = true)
+    @Schema(description = "Field name that failed validation", example = "ahvNr", requiredMode = Schema.RequiredMode.REQUIRED)
     String field,
     
-    @Schema(description = "Validation error message", example = "Invalid AHV number format", required = true)
+    @Schema(description = "Validation error message", example = "Invalid AHV number format", requiredMode = Schema.RequiredMode.REQUIRED)
     String message,
     
     @Schema(description = "The value that was rejected", example = "123456789")
     Object rejectedValue
-) {}
+) { }

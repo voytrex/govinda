@@ -19,4 +19,4 @@ public record PageResponse<T>(
     int totalPages,
     boolean first,
     boolean last
-) {}
+) { }

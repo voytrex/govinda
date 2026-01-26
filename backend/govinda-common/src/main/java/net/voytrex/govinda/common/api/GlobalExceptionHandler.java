@@ -45,7 +45,7 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private final MessageSource messageSource;
     private final LocaleResolver localeResolver;
 
@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({EntityNotFoundException.class, EntityNotFoundByFieldException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(DomainException ex, HttpServletRequest request) {
-        logger.debug("Entity not found: {}", ex.getMessage());
+        LOGGER.debug("Entity not found: {}", ex.getMessage());
         String message = ex.getMessage() != null
             ? ex.getMessage()
             : translateError("ENTITY_NOT_FOUND", request);
@@ -81,7 +81,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateEntityException.class)
     public ResponseEntity<ErrorResponse> handleDuplicate(DuplicateEntityException ex, HttpServletRequest request) {
-        logger.debug("Duplicate entity: {}", ex.getMessage());
+        LOGGER.debug("Duplicate entity: {}", ex.getMessage());
         String message = ex.getMessage() != null
             ? ex.getMessage()
             : translateError("ENTITY_DUPLICATE", request);
@@ -102,7 +102,7 @@ public class GlobalExceptionHandler {
         BusinessRuleViolationException.class
     })
     public ResponseEntity<ErrorResponse> handleValidation(DomainException ex, HttpServletRequest request) {
-        logger.debug("Validation error: {}", ex.getMessage());
+        LOGGER.debug("Validation error: {}", ex.getMessage());
         String message = ex.getMessage() != null
             ? ex.getMessage()
             : translateError("VALIDATION", request);
@@ -117,7 +117,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({TariffNotFoundException.class, PremiumCalculationException.class})
     public ResponseEntity<ErrorResponse> handlePremiumError(DomainException ex, HttpServletRequest request) {
-        logger.warn("Premium calculation error: {}", ex.getMessage());
+        LOGGER.warn("Premium calculation error: {}", ex.getMessage());
         String message = ex.getMessage() != null
             ? ex.getMessage()
             : translateError("PREMIUM_CALCULATION", request);
@@ -132,7 +132,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException ex, HttpServletRequest request) {
-        logger.warn("Authentication error: {}", ex.getMessage());
+        LOGGER.warn("Authentication error: {}", ex.getMessage());
         String message = ex.getMessage() != null
             ? ex.getMessage()
             : translateError("AUTHENTICATION_FAILED", request);
@@ -150,7 +150,7 @@ public class GlobalExceptionHandler {
         AuthenticationCredentialsNotFoundException ex,
         HttpServletRequest request
     ) {
-        logger.warn("Authentication credentials not found: {}", ex.getMessage());
+        LOGGER.warn("Authentication credentials not found: {}", ex.getMessage());
         String message = ex.getMessage() != null
             ? ex.getMessage()
             : translateError("AUTHENTICATION_REQUIRED", request);
@@ -165,7 +165,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
-        logger.warn("Access denied: {}", ex.getMessage());
+        LOGGER.warn("Access denied: {}", ex.getMessage());
         String message = ex.getMessage() != null
             ? ex.getMessage()
             : translateError("ACCESS_DENIED", request);
@@ -180,7 +180,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({TenantNotFoundException.class, UnauthorizedTenantAccessException.class})
     public ResponseEntity<ErrorResponse> handleTenantError(DomainException ex, HttpServletRequest request) {
-        logger.warn("Tenant error: {}", ex.getMessage());
+        LOGGER.warn("Tenant error: {}", ex.getMessage());
         HttpStatus status;
         if (ex instanceof TenantNotFoundException) {
             status = HttpStatus.NOT_FOUND;
@@ -202,8 +202,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ConcurrentModificationException.class)
-    public ResponseEntity<ErrorResponse> handleConcurrentModification(ConcurrentModificationException ex, HttpServletRequest request) {
-        logger.warn("Concurrent modification: {}", ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleConcurrentModification(
+        ConcurrentModificationException ex,
+        HttpServletRequest request
+    ) {
+        LOGGER.warn("Concurrent modification: {}", ex.getMessage());
         String message = ex.getMessage() != null
             ? ex.getMessage()
             : translateError("CONCURRENT_MODIFICATION", request);
@@ -256,8 +259,11 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NoResourceFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
-        logger.debug("Resource not found: {}", request.getRequestURI());
+    public ResponseEntity<ErrorResponse> handleNoResourceFound(
+        NoResourceFoundException ex,
+        HttpServletRequest request
+    ) {
+        LOGGER.debug("Resource not found: {}", request.getRequestURI());
         Locale locale = getLocale(request);
         String message = messageSource.getMessage(
             "error.resource.not.found",
@@ -275,7 +281,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
-        logger.error("Unhandled exception: {}", ex.getMessage(), ex);
+        LOGGER.error("Unhandled exception: {}", ex.getMessage(), ex);
         // In development, include the exception message for debugging
         String message = translateError("INTERNAL", request);
         if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
