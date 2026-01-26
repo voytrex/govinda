@@ -8,13 +8,13 @@ A feature, story, or task is considered **DONE** when all the following criteria
 - [ ] All new code has unit tests (minimum 80% coverage)
 - [ ] Integration tests exist for API endpoints
 - [ ] No SonarQube critical or blocker issues (when configured)
-- [ ] ktlint passes with no formatting issues
+- [ ] Code formatting checks pass
 - [ ] Code reviewed by at least 1 team member
 - [ ] No TODO comments left in production code
 
 ## Documentation
 
-- [ ] Public APIs have KDoc comments
+- [ ] Public APIs have Javadoc comments
 - [ ] OpenAPI annotations are complete and accurate
 - [ ] ADR written for significant architectural decisions
 - [ ] README updated if applicable

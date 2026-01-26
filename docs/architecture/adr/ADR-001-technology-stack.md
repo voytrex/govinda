@@ -19,28 +19,26 @@ We are building an open-source ERP system (Govinda) for Swiss health insurance c
 
 ## Decision
 
-### Backend Language: Kotlin
+### Backend Language: Java 21 (LTS)
 
-**Chosen over Java because:**
-- Null safety built into the type system (critical for healthcare data)
-- More concise syntax, less boilerplate
-- Data classes for domain models
-- Sealed classes for representing business states
-- Full interoperability with Java ecosystem
-- First-class support in Spring Boot
-- Coroutines for async operations (future)
+**Chosen because:**
+- Long-term support and stability (2026-ready)
+- Broad ecosystem and tooling support
+- Strong interoperability with Spring Boot 3.2+
+- Predictable upgrade path with LTS cadence
+- Native support for records and sealed classes
 
 ### Framework: Spring Boot 3.2+
 
 **Rationale:**
 - Mature, battle-tested framework
-- Excellent Kotlin support
+- Excellent Java support
 - Comprehensive ecosystem (Security, Data JPA, Actuator)
 - Strong community and documentation
 - Native OpenAPI/Swagger integration
-- Easy testing with MockK and Testcontainers
+- Easy testing with Mockito and Testcontainers
 
-### Database: PostgreSQL 16+
+### Database: PostgreSQL 18+
 
 **Chosen over alternatives because:**
 - Robust ACID compliance
@@ -50,14 +48,13 @@ We are building an open-source ERP system (Govinda) for Swiss health insurance c
 - Good support for temporal/bitemporal data patterns
 - Excellent Spring Data JPA support
 
-### Build System: Gradle with Kotlin DSL
+### Build System: Maven
 
 **Rationale:**
-- More flexible than Maven
-- Kotlin DSL provides type-safe build scripts
-- Better performance with build caching
-- Multi-module support
-- Incremental compilation
+- Widely adopted in enterprise Java ecosystems
+- Stable, predictable build lifecycle
+- Strong multi-module support
+- Excellent CI/CD integration
 
 ### API Documentation: SpringDoc OpenAPI 3.1
 
@@ -65,31 +62,27 @@ We are building an open-source ERP system (Govinda) for Swiss health insurance c
 - Standard OpenAPI specification
 - Automatic Swagger UI generation
 - Code-first approach with annotations
-- Support for Kotlin types
+- Support for Java records and annotations
 
 ## Consequences
 
 ### Positive
-- Modern, productive development experience
-- Strong type safety reduces runtime errors
+- Stable, widely adopted Java toolchain
 - Excellent tooling support (IntelliJ IDEA)
 - Large talent pool familiar with Spring ecosystem
-- Easy onboarding for Java developers
+- Easier onboarding with standard Java
 
 ### Negative
-- Team needs Kotlin training (if coming from Java)
-- Some libraries may have Java-only documentation
-- Kotlin compilation slightly slower than Java
+- More boilerplate than some alternatives in certain areas
 
 ### Risks
-- Kotlin version compatibility with Spring Boot upgrades
+- Java LTS upgrade cadence requires periodic migration
 - Mitigation: Pin versions, test upgrades in CI
 
 ## Alternatives Considered
 
 | Alternative | Reason for Rejection |
 |-------------|---------------------|
-| Java 21 | More verbose, no null safety |
 | Quarkus | Smaller ecosystem, less mature |
 | Micronaut | Less Spring ecosystem integration |
 | Node.js | Less suitable for complex business logic |

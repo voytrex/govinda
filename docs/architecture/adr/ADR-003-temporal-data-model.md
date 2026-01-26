@@ -106,16 +106,16 @@ WHERE person_id = ?
 
 ### Domain Model Support
 
-```kotlin
-interface Historized<H : HistoryEntry> {
-    fun createHistoryEntry(
-        mutationType: MutationType,
-        reason: String?,
-        changedBy: UUID
-    ): H
+```java
+public interface Historized<H extends HistoryEntry> {
+    H createHistoryEntry(
+        MutationType mutationType,
+        String reason,
+        UUID changedBy
+    );
 }
 
-enum class MutationType {
+public enum MutationType {
     CREATE,      // Initial creation
     UPDATE,      // Normal business change
     CORRECTION,  // Error correction (may affect past)
