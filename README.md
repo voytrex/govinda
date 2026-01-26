@@ -3,7 +3,7 @@
 **Open Source Enterprise Resource Planning for Swiss Health Insurance**
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Kotlin](https://img.shields.io/badge/Kotlin-1.9+-purple.svg)](https://kotlinlang.org)
+[![Java](https://img.shields.io/badge/Java-21-blue.svg)](https://www.oracle.com/java/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2+-green.svg)](https://spring.io/projects/spring-boot)
 
 ## Overview
@@ -23,12 +23,12 @@ Govinda is a modern, modular ERP system designed specifically for Swiss health i
 
 | Layer | Technology |
 |-------|------------|
-| Language | Kotlin 1.9+ |
+| Language | Java 21 (LTS) |
 | Framework | Spring Boot 3.2+ |
-| Database | PostgreSQL 16+ |
-| Build | Gradle (Kotlin DSL) |
+| Database | PostgreSQL 18+ |
+| Build | Maven |
 | API Docs | SpringDoc OpenAPI |
-| Testing | JUnit 5, MockK, Testcontainers |
+| Testing | JUnit 5, Mockito, Testcontainers |
 
 ## Project Structure
 
@@ -38,10 +38,11 @@ govinda/
 │   ├── govinda-app/          # Main application & configuration
 │   ├── govinda-common/       # Shared kernel (security, i18n, audit)
 │   ├── govinda-masterdata/   # Person, household, address management
-│   ├── govinda-product/      # Products and tariffs
-│   ├── govinda-contract/     # Policies and coverages
-│   ├── govinda-premium/      # Premium calculation engine
-│   └── govinda-billing/      # Invoicing and payments
+│   │   # Future modules (to be implemented):
+│   │   # ├── govinda-product/      # Products and tariffs
+│   │   # ├── govinda-contract/     # Policies and coverages
+│   │   # ├── govinda-premium/      # Premium calculation engine
+│   │   # └── govinda-billing/      # Invoicing and payments
 ├── frontend/                 # React frontend (Phase 2)
 ├── infrastructure/           # Docker, Kubernetes configs
 ├── data/reference/           # Swiss reference data (regions, PLZ)
@@ -76,7 +77,7 @@ govinda/
 
 - JDK 21+
 - Docker & Docker Compose
-- PostgreSQL 16+ (or use Docker)
+- PostgreSQL 18+ (or use Docker)
 
 ### Quick Start
 
@@ -86,13 +87,18 @@ git clone https://github.com/voytrex/govinda.git
 cd govinda
 
 # Start PostgreSQL with Docker
-docker-compose up -d postgres
+docker-compose -f infrastructure/docker/docker-compose.yml up -d postgres
 
-# Build the project
-./gradlew build
+# Build the project (from root)
+mvn clean install -DskipTests
 
-# Run the application
-./gradlew :backend:govinda-app:bootRun
+# Run the application - Recommended: run directly from app module
+cd backend/govinda-app
+mvn spring-boot:run
+
+# Alternative: run from backend directory (builds dependencies first)
+cd backend
+mvn -rf govinda-app spring-boot:run
 
 # Access Swagger UI
 open http://localhost:8080/swagger-ui.html
@@ -102,10 +108,7 @@ open http://localhost:8080/swagger-ui.html
 
 ```bash
 # Run all tests
-./gradlew test
-
-# Run with coverage
-./gradlew test jacocoTestReport
+mvn test
 ```
 
 ## API Overview
@@ -151,13 +154,13 @@ See [API Documentation](docs/api/) for detailed specifications.
 
 ## Contributing
 
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
+We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) and the [Developer Guide](docs/development/developer-guide.md) for setup and workflow details.
 
 ### Development Guidelines
 
-- Follow [Kotlin coding conventions](https://kotlinlang.org/docs/coding-conventions.html)
+- Follow standard Java coding conventions
 - Write tests first (TDD)
-- Document public APIs with KDoc
+- Document public APIs with Javadoc
 - See [Definition of Done](docs/development/definition-of-done.md)
 
 ## License
