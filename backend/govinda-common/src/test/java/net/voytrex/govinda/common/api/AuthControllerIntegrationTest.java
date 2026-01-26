@@ -48,6 +48,9 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ActiveProfiles("test")
 @Transactional
+@org.junit.jupiter.api.Tag("integration")
+@org.junit.jupiter.api.Tag("api")
+@org.junit.jupiter.api.Tag("database")
 class AuthControllerIntegrationTest {
 
     @Container

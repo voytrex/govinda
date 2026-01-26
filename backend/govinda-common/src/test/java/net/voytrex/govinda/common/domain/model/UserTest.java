@@ -12,8 +12,11 @@ import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("unit")
+@Tag("fast")
 class UserTest {
 
     private final UUID userId = UUID.randomUUID();

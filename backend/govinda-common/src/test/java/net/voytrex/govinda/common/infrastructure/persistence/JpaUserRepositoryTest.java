@@ -36,6 +36,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(classes = TestApplication.class)
 @ActiveProfiles("test")
+@org.junit.jupiter.api.Tag("integration")
+@org.junit.jupiter.api.Tag("database")
 class JpaUserRepositoryTest {
 
     @Autowired
