@@ -1,8 +1,6 @@
 # Govinda ERP - Docker Compose Configuration
 # Development environment setup
 
-version: '3.8'
-
 services:
   # PostgreSQL Database
   postgres:
