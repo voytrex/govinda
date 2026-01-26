@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.servlet.resource.NoResourceFoundException
 
 private val logger = KotlinLogging.logger {}
 
@@ -145,6 +146,21 @@ class GlobalExceptionHandler {
                 message = "Request validation failed",
                 path = request.requestURI,
                 details = details
+            ))
+    }
+
+    @ExceptionHandler(NoResourceFoundException::class)
+    fun handleNoResourceFound(
+        ex: NoResourceFoundException,
+        request: HttpServletRequest
+    ): ResponseEntity<ErrorResponse> {
+        logger.debug { "Resource not found: ${request.requestURI}" }
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(ErrorResponse(
+                errorCode = "NOT_FOUND",
+                message = "Resource not found: ${request.requestURI}",
+                path = request.requestURI
             ))
     }
 
