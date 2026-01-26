@@ -8,55 +8,46 @@ package net.voytrex.govinda.common.domain.model;
 
 /**
  * Swiss cantons.
+ *
+ * Use {@link net.voytrex.govinda.common.i18n.I18nService#translateCanton(String, Language)}
+ * to get localized canton names.
  */
 public enum Canton {
-    ZH("ZH", "Zürich", "Zurich"),
-    BE("BE", "Bern", "Berne"),
-    LU("LU", "Luzern", "Lucerne"),
-    UR("UR", "Uri", "Uri"),
-    SZ("SZ", "Schwyz", "Schwytz"),
-    OW("OW", "Obwalden", "Obwald"),
-    NW("NW", "Nidwalden", "Nidwald"),
-    GL("GL", "Glarus", "Glaris"),
-    ZG("ZG", "Zug", "Zoug"),
-    FR("FR", "Freiburg", "Fribourg"),
-    SO("SO", "Solothurn", "Soleure"),
-    BS("BS", "Basel-Stadt", "Bâle-Ville"),
-    BL("BL", "Basel-Landschaft", "Bâle-Campagne"),
-    SH("SH", "Schaffhausen", "Schaffhouse"),
-    AR("AR", "Appenzell Ausserrhoden", "Appenzell Rhodes-Extérieures"),
-    AI("AI", "Appenzell Innerrhoden", "Appenzell Rhodes-Intérieures"),
-    SG("SG", "St. Gallen", "Saint-Gall"),
-    GR("GR", "Graubünden", "Grisons"),
-    AG("AG", "Aargau", "Argovie"),
-    TG("TG", "Thurgau", "Thurgovie"),
-    TI("TI", "Tessin", "Tessin"),
-    VD("VD", "Waadt", "Vaud"),
-    VS("VS", "Wallis", "Valais"),
-    NE("NE", "Neuenburg", "Neuchâtel"),
-    GE("GE", "Genf", "Genève"),
-    JU("JU", "Jura", "Jura");
+    ZH("ZH"),
+    BE("BE"),
+    LU("LU"),
+    UR("UR"),
+    SZ("SZ"),
+    OW("OW"),
+    NW("NW"),
+    GL("GL"),
+    ZG("ZG"),
+    FR("FR"),
+    SO("SO"),
+    BS("BS"),
+    BL("BL"),
+    SH("SH"),
+    AR("AR"),
+    AI("AI"),
+    SG("SG"),
+    GR("GR"),
+    AG("AG"),
+    TG("TG"),
+    TI("TI"),
+    VD("VD"),
+    VS("VS"),
+    NE("NE"),
+    GE("GE"),
+    JU("JU");
 
     private final String code;
-    private final String nameDe;
-    private final String nameFr;
 
-    Canton(String code, String nameDe, String nameFr) {
+    Canton(String code) {
         this.code = code;
-        this.nameDe = nameDe;
-        this.nameFr = nameFr;
     }
 
     public String getCode() {
         return code;
-    }
-
-    public String getNameDe() {
-        return nameDe;
-    }
-
-    public String getNameFr() {
-        return nameFr;
     }
 
     public static Canton fromCode(String code) {

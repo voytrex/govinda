@@ -8,26 +8,23 @@ package net.voytrex.govinda.common.domain.model;
 
 /**
  * Product types in Swiss health insurance.
+ *
+ * Use {@link net.voytrex.govinda.common.i18n.I18nService#translateProductType(String, Language)}
+ * to get localized product type names.
  */
 public enum ProductType {
     /** KVG - Mandatory basic health insurance */
-    KVG("KVG", "Obligatorische Krankenpflegeversicherung"),
+    KVG("KVG"),
     /** VVG - Voluntary supplementary insurance */
-    VVG("VVG", "Zusatzversicherung");
+    VVG("VVG");
 
     private final String code;
-    private final String nameDe;
 
-    ProductType(String code, String nameDe) {
+    ProductType(String code) {
         this.code = code;
-        this.nameDe = nameDe;
     }
 
     public String getCode() {
         return code;
-    }
-
-    public String getNameDe() {
-        return nameDe;
     }
 }

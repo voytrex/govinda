@@ -8,27 +8,24 @@ package net.voytrex.govinda.common.domain.model;
 
 /**
  * Swiss national languages plus English.
+ *
+ * Use {@link net.voytrex.govinda.common.i18n.I18nService#translateLanguage(String, Language)}
+ * to get localized language display names.
  */
 public enum Language {
-    DE("de", "Deutsch"),
-    FR("fr", "Français"),
-    IT("it", "Italiano"),
-    EN("en", "English");
+    DE("de"),
+    FR("fr"),
+    IT("it"),
+    EN("en");
 
     private final String code;
-    private final String displayName;
 
-    Language(String code, String displayName) {
+    Language(String code) {
         this.code = code;
-        this.displayName = displayName;
     }
 
     public String getCode() {
         return code;
-    }
-
-    public String getDisplayName() {
-        return displayName;
     }
 
     public static Language fromCode(String code) {

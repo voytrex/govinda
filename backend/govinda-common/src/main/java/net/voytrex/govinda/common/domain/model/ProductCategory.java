@@ -8,34 +8,31 @@ package net.voytrex.govinda.common.domain.model;
 
 /**
  * Product categories for VVG products.
+ *
+ * Use {@link net.voytrex.govinda.common.i18n.I18nService#translateProductCategory(String, Language)}
+ * to get localized product category names.
  */
 public enum ProductCategory {
     /** Basic mandatory insurance */
-    BASIC("BASIC", "Grundversicherung"),
+    BASIC("BASIC"),
     /** Hospital supplementary insurance */
-    HOSPITAL("HOSP", "Spitalzusatzversicherung"),
+    HOSPITAL("HOSP"),
     /** Dental insurance */
-    DENTAL("DENT", "Zahnversicherung"),
+    DENTAL("DENT"),
     /** Alternative/complementary medicine */
-    ALTERNATIVE("ALT", "Alternativmedizin"),
+    ALTERNATIVE("ALT"),
     /** Travel/abroad insurance */
-    TRAVEL("TRAV", "Auslandsversicherung"),
+    TRAVEL("TRAV"),
     /** Daily sickness allowance */
-    DAILY_ALLOWANCE("TAGG", "Taggeldversicherung");
+    DAILY_ALLOWANCE("TAGG");
 
     private final String code;
-    private final String nameDe;
 
-    ProductCategory(String code, String nameDe) {
+    ProductCategory(String code) {
         this.code = code;
-        this.nameDe = nameDe;
     }
 
     public String getCode() {
         return code;
-    }
-
-    public String getNameDe() {
-        return nameDe;
     }
 }
