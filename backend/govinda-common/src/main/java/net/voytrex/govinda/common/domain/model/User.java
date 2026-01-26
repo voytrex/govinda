@@ -29,7 +29,9 @@ import java.util.UUID;
  */
 @Entity
 @Table(
-    name = "user",
+    // Use backticks for JPA - Hibernate will convert to double quotes for PostgreSQL
+    // This ensures proper quoting in both DDL and DML statements
+    name = "`user`",
     indexes = {
         @Index(name = "idx_user_username", columnList = "username"),
         @Index(name = "idx_user_email", columnList = "email"),

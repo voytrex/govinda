@@ -28,7 +28,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-        globally_quoted_identifiers: true
+        # Note: We quote reserved words explicitly in @Table/@Column annotations
+        # instead of globally quoting all identifiers for better portability
         jdbc:
           time_zone: UTC
 
