@@ -15,4 +15,4 @@ public record ChangeMaritalStatusRequest(
     @NotBlank(message = "Reason is required")
     String reason,
     LocalDate effectiveDate
-) {}
+) { }

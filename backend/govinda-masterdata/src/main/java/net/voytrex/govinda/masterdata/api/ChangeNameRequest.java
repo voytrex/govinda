@@ -16,4 +16,4 @@ public record ChangeNameRequest(
     @NotBlank(message = "Reason is required")
     String reason,
     LocalDate effectiveDate
-) {}
+) { }

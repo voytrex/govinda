@@ -11,4 +11,4 @@ import net.voytrex.govinda.common.domain.model.Language;
 public record UpdatePersonRequest(
     String nationality,
     Language preferredLanguage
-) {}
+) { }

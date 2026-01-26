@@ -27,4 +27,4 @@ public record PersonResponse(
     String nationality,
     Language preferredLanguage,
     String status
-) {}
+) { }

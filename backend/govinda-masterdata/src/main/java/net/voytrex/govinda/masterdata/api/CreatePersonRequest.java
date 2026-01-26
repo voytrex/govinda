@@ -26,4 +26,4 @@ public record CreatePersonRequest(
     MaritalStatus maritalStatus,
     String nationality,
     Language preferredLanguage
-) {}
+) { }

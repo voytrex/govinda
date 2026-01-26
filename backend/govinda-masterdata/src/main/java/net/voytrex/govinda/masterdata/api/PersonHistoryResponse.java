@@ -21,4 +21,4 @@ public record PersonHistoryResponse(
     String mutationReason,
     UUID changedBy,
     String recordedAt
-) {}
+) { }

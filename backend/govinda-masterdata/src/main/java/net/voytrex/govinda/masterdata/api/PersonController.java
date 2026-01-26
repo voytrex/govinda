@@ -86,6 +86,7 @@ public class PersonController {
         security = @SecurityRequirement(name = "bearerAuth")
     )
     @PreAuthorize("hasAuthority('person:read')")
+    // CHECKSTYLE:OFF: ParameterNumber - Search method requires multiple optional parameters
     public PageResponse<PersonResponse> searchPersons(
         @RequestHeader("X-Tenant-Id") UUID tenantId,
         @RequestParam(required = false) String lastName,
@@ -96,6 +97,7 @@ public class PersonController {
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "20") int size
     ) {
+        // CHECKSTYLE:ON: ParameterNumber
         var query = new PersonSearchQuery(
             tenantId,
             lastName,
