@@ -122,8 +122,22 @@ govinda-common/
 5. ⏳ Update CI to use Testcontainers (optional)
 6. ⏳ Add test fixtures/factories
 
+## Test Tags and Categorization
+
+Tests are categorized using JUnit 5 tags for selective execution:
+
+- **`@Tag("unit")`**: Pure unit tests (domain models, services with mocks)
+- **`@Tag("integration")`**: Integration tests (repositories, API endpoints)
+- **`@Tag("fast")`**: Tests running in < 100ms
+- **`@Tag("slow")`**: Tests taking > 1 second
+- **`@Tag("database")`**: Tests requiring database
+- **`@Tag("api")`**: REST API endpoint tests
+
+See [Test Tags Documentation](test-tags.md) for detailed usage.
+
 ## Resources
 
 - [Testcontainers Documentation](https://www.testcontainers.org/)
 - [Spring Boot Testing](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing)
 - [JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/)
+- [Test Tags Guide](test-tags.md)
