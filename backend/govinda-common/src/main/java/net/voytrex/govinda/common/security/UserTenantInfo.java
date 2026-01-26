@@ -18,4 +18,4 @@ public record UserTenantInfo(
     String roleCode,
     String roleName,
     boolean isDefault
-) {}
+) { }

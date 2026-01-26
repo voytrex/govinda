@@ -60,8 +60,8 @@ public class SecurityConfig implements WebMvcConfigurer {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json");
             response.getWriter().write(
-                "{\"errorCode\":\"AUTHENTICATION_REQUIRED\",\"message\":\"Authentication required\",\"path\":\"" +
-                request.getRequestURI() + "\"}"
+                "{\"errorCode\":\"AUTHENTICATION_REQUIRED\",\"message\":\"Authentication required\",\"path\":\""
+                    + request.getRequestURI() + "\"}"
             );
         };
     }
