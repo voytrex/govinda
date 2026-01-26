@@ -1,0 +1,77 @@
+# Govinda ERP - Docker Compose Configuration
+# Development environment setup
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: govinda-postgres
+    environment:
+      POSTGRES_DB: govinda
+      POSTGRES_USER: govinda
+      POSTGRES_PASSWORD: govinda
+    ports:
+      - "5432:5432"
+    volumes:
+      - govinda-postgres-data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U govinda -d govinda"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - govinda-network
+
+  # PgAdmin (Optional - Database Management UI)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: govinda-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@govinda.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - govinda-pgadmin-data:/var/lib/pgadmin
+    networks:
+      - govinda-network
+    profiles:
+      - tools
+
+  # Redis (for caching and sessions)
+  redis:
+    image: redis:7-alpine
+    container_name: govinda-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - govinda-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - govinda-network
+    profiles:
+      - full
+
+volumes:
+  govinda-postgres-data:
+    name: govinda-postgres-data
+  govinda-pgadmin-data:
+    name: govinda-pgadmin-data
+  govinda-redis-data:
+    name: govinda-redis-data
+
+networks:
+  govinda-network:
+    name: govinda-network
+    driver: bridge
