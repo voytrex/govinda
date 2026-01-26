@@ -54,7 +54,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class AuthControllerIntegrationTest {
 
     @Container
-    public static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:18-alpine")
+    public static final PostgreSQLContainer<?> POSTGRES_CONTAINER = new PostgreSQLContainer<>("postgres:18-alpine")
         .withDatabaseName("govinda")
         .withUsername("govinda")
         .withPassword("govinda")
@@ -77,9 +77,9 @@ class AuthControllerIntegrationTest {
             registry.add("spring.flyway.baseline-on-migrate", () -> "true");
         } else {
             // Use Testcontainers
-            registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
-            registry.add("spring.datasource.username", postgresContainer::getUsername);
-            registry.add("spring.datasource.password", postgresContainer::getPassword);
+            registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
+            registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
+            registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
             // Ensure Flyway runs for @SpringBootTest
             registry.add("spring.flyway.enabled", () -> "true");
             registry.add("spring.flyway.locations", () -> "classpath:db/migration");

@@ -54,25 +54,25 @@ class MoneyTest {
     class SwissRappenRounding {
 
         @Test
-        void shouldRound10_12To10_10() {
+        void shouldRound10_12To10_10() { // CHECKSTYLE:OFF: MethodName - Descriptive test name with numbers
             Money money = Money.chf("10.12");
             assertThat(money.roundToRappen().getAmount()).isEqualByComparingTo(new BigDecimal("10.10"));
         }
 
         @Test
-        void shouldRound10_13To10_15() {
+        void shouldRound10_13To10_15() { // CHECKSTYLE:OFF: MethodName - Descriptive test name with numbers
             Money money = Money.chf("10.13");
             assertThat(money.roundToRappen().getAmount()).isEqualByComparingTo(new BigDecimal("10.15"));
         }
 
         @Test
-        void shouldRound10_17To10_15() {
+        void shouldRound10_17To10_15() { // CHECKSTYLE:OFF: MethodName - Descriptive test name with numbers
             Money money = Money.chf("10.17");
             assertThat(money.roundToRappen().getAmount()).isEqualByComparingTo(new BigDecimal("10.15"));
         }
 
         @Test
-        void shouldRound10_18To10_20() {
+        void shouldRound10_18To10_20() { // CHECKSTYLE:OFF: MethodName - Descriptive test name with numbers
             Money money = Money.chf("10.18");
             assertThat(money.roundToRappen().getAmount()).isEqualByComparingTo(new BigDecimal("10.20"));
         }
@@ -121,7 +121,8 @@ class MoneyTest {
         void shouldMultiplyByDecimal() {
             Money money = Money.chf(100);
 
-            assertThat(money.multiply(new BigDecimal("0.10")).getAmount()).isEqualByComparingTo(new BigDecimal("10.00"));
+            assertThat(money.multiply(new BigDecimal("0.10")).getAmount())
+                .isEqualByComparingTo(new BigDecimal("10.00"));
         }
 
         @Test

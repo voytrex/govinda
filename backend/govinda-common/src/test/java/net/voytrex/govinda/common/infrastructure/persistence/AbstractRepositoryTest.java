@@ -31,7 +31,7 @@ public abstract class AbstractRepositoryTest {
 
     @SuppressWarnings("resource")
     @Container
-    public static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:18-alpine")
+    public static final PostgreSQLContainer<?> POSTGRES_CONTAINER = new PostgreSQLContainer<>("postgres:18-alpine")
         .withDatabaseName("govinda")
         .withUsername("govinda")
         .withPassword("govinda")
@@ -54,9 +54,9 @@ public abstract class AbstractRepositoryTest {
             registry.add("spring.jpa.properties.hibernate.globally_quoted_identifiers", () -> "true");
         } else {
             // Use Testcontainers
-            registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
-            registry.add("spring.datasource.username", postgresContainer::getUsername);
-            registry.add("spring.datasource.password", postgresContainer::getPassword);
+            registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
+            registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
+            registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
             // For @DataJpaTest, enable Hibernate DDL since Flyway doesn't run
             registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
             // Enable global quoting for DDL to handle reserved words like "user"
