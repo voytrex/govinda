@@ -76,9 +76,26 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     enabled: true
+    # UI Customization
     tags-sorter: alpha
     operations-sorter: alpha
+    doc-expansion: list  # none, list, full
+    default-models-expand-depth: 1
+    default-model-expand-depth: 3
+    display-request-duration: true
+    filter: true
+    show-common-extensions: true
+    show-extensions: true
+    try-it-out-enabled: true
+    # Additional settings
+    persist-authorization: true  # Persist auth token in browser
+    display-operation-id: false
+    supported-submit-methods: [get, post, put, delete, patch, head, options]
   show-actuator: false
+  # Grouping (if needed in future)
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/api/**'
 
 # Govinda Configuration
 govinda:

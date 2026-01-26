@@ -8,6 +8,7 @@ package net.voytrex.govinda.common.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -39,14 +40,75 @@ public class AuthController {
     @PostMapping("/login")
     @Operation(
         summary = "Login",
-        description = "Authenticates a user and returns a JWT token. Use this token in the Authorization header as 'Bearer <token>'",
+        description = """
+            Authenticates a user and returns a JWT token.
+            
+            **Usage:**
+            1. Send credentials in the request body
+            2. Receive JWT token in response
+            3. Use the token in Authorization header: `Bearer <token>`
+            4. Include `X-Tenant-Id` header in subsequent requests
+            
+            **Note:** The tenant ID in the token must match the `X-Tenant-Id` header.
+            """,
         responses = {
             @ApiResponse(
                 responseCode = "200",
                 description = "Authentication successful",
-                content = @Content(schema = @Schema(implementation = LoginResponse.class))
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = LoginResponse.class),
+                    examples = {
+                        @ExampleObject(
+                            name = "Success",
+                            value = """
+                                {
+                                  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                                  "tokenType": "Bearer",
+                                  "message": "Use this token in the Authorization header: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'"
+                                }
+                                """
+                        )
+                    }
+                )
             ),
-            @ApiResponse(responseCode = "401", description = "Invalid credentials")
+            @ApiResponse(
+                responseCode = "400",
+                description = "Bad Request - Invalid request format",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized - Invalid credentials",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class),
+                    examples = {
+                        @ExampleObject(
+                            name = "Invalid Credentials",
+                            value = """
+                                {
+                                  "errorCode": "AUTHENTICATION_FAILED",
+                                  "message": "Invalid username or password",
+                                  "timestamp": "2024-01-15T10:30:00Z",
+                                  "path": "/api/v1/auth/login"
+                                }
+                                """
+                        )
+                    }
+                )
+            ),
+            @ApiResponse(
+                responseCode = "500",
+                description = "Internal Server Error",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            )
         }
     )
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
@@ -65,7 +127,30 @@ public class AuthController {
     @Operation(
         summary = "Get user tenants",
         description = "Returns all tenants the authenticated user can access",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = "bearerAuth"),
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "List of accessible tenants",
+                content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized - Authentication required",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "500",
+                description = "Internal Server Error",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            )
+        }
     )
     public List<UserTenantInfo> getUserTenants(Authentication authentication) {
         UUID userId = (UUID) authentication.getPrincipal();
@@ -75,8 +160,44 @@ public class AuthController {
     @GetMapping("/me")
     @Operation(
         summary = "Get current user",
-        description = "Returns information about the currently authenticated user",
-        security = @SecurityRequirement(name = "bearerAuth")
+        description = "Returns information about the currently authenticated user including user ID and authorities",
+        security = @SecurityRequirement(name = "bearerAuth"),
+        responses = {
+            @ApiResponse(
+                responseCode = "200",
+                description = "Current user information",
+                content = @Content(
+                    mediaType = "application/json",
+                    examples = {
+                        @ExampleObject(
+                            name = "User Info",
+                            value = """
+                                {
+                                  "userId": "123e4567-e89b-12d3-a456-426614174000",
+                                  "authorities": ["person:read", "person:write"]
+                                }
+                                """
+                        )
+                    }
+                )
+            ),
+            @ApiResponse(
+                responseCode = "401",
+                description = "Unauthorized - Authentication required",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            ),
+            @ApiResponse(
+                responseCode = "500",
+                description = "Internal Server Error",
+                content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)
+                )
+            )
+        }
     )
     public Map<String, Object> getCurrentUser(Authentication authentication) {
         UUID userId = (UUID) authentication.getPrincipal();
