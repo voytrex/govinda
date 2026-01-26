@@ -1,228 +1,390 @@
-# Govinda ERP - Cursor AI Coding Rules
+# Govinda ERP - AI Coding Rules
+
+## Project Context
+
+Govinda is a modular monolith ERP for Swiss health insurance (KVG/VVG).
+
+**Stack:** Java 21, Spring Boot 3.2+, PostgreSQL 18+, Maven, Testcontainers
+**Architecture:** Domain-Driven Design with layered architecture
+**Languages:** DE (primary), FR, IT, EN
+
+---
+
+## TDD Workflow - MANDATORY
+
+**Every code change MUST follow Red-Green-Refactor. NO EXCEPTIONS.**
+
+### The Cycle
+
+```
+1. RED     → Write failing test FIRST
+2. GREEN   → Write MINIMAL code to pass
+3. REFACTOR → Clean up, keep tests green
+4. REPEAT
+```
+
+### Rules
+
+1. **NEVER write production code without a failing test**
+2. **Verify the test fails before implementing** (proves test validity)
+3. **Write ONLY the code needed to pass the current test**
+4. **Run tests after each phase to confirm state**
+
+### Workflow Example
+
+```java
+// STEP 1: Write failing test (RED)
+@Test
+void should_calculateAge_when_birthDateProvided() {
+    var person = new Person("Hans", LocalDate.of(1990, 6, 15));
+    assertThat(person.ageAt(LocalDate.of(2025, 6, 15))).isEqualTo(35);
+}
+// Run test → FAILS (method doesn't exist)
+
+// STEP 2: Minimal implementation (GREEN)
+public int ageAt(LocalDate date) {
+    return Period.between(birthDate, date).getYears();
+}
+// Run test → PASSES
+
+// STEP 3: Refactor if needed, run tests → still PASSES
+```
+
+### Test Commands
+
+```bash
+# Single test
+./mvnw test -pl backend/govinda-{module} -Dtest={TestClass}#{method}
+
+# Module tests
+./mvnw test -pl backend/govinda-{module}
+
+# All tests
+./mvnw test
+```
+
+---
 
 ## Internationalization (i18n) - CRITICAL
 
 **ALL user-facing text MUST be internationalized. NO EXCEPTIONS.**
 
-### Supported Languages
-- DE (German) - Primary/fallback language
-- FR (French)
-- IT (Italian)
-- EN (English)
-
 ### Rules
 
-1. **Use `LocalizedText` for user-facing content**
-   - Product names, descriptions, labels, UI text
-   - Always provide all 4 language variants
-   - Use `LocalizedText` from `net.voytrex.govinda.common.domain.model`
+| Do | Don't |
+|----|-------|
+| Use `LocalizedText` for content | Hardcode translations in enums |
+| Use `MessageSource` for errors | Put `nameDe`, `nameFr` in enums |
+| Use error codes in exceptions | Hardcode error messages |
+| Respect `Accept-Language` header | Assume German only |
 
-2. **NEVER hardcode translations in enums**
-   - ❌ DO NOT add `nameDe`, `nameFr`, `nameIt`, `nameEn` fields to enums
-   - ❌ DO NOT hardcode German/French/Italian text in enum constructors
-   - ✅ Use enum codes and translate in API layer via MessageSource
-   - ✅ Store translations in database or message properties files
+### Correct Patterns
 
-3. **Error messages must be internationalized**
-   - Use Spring `MessageSource` for error translation
-   - Error codes should be language-agnostic (e.g., `ENTITY_NOT_FOUND`)
-   - Translate based on `Accept-Language` header
-   - No hardcoded English fallback messages
-
-4. **API responses**
-   - All user-facing strings must be localized
-   - Respect `Accept-Language` header
-   - Default to German (DE) if no language specified
-
-5. **When creating or modifying code:**
-   - If adding a new enum with display names → use MessageSource, not enum fields
-   - If adding error messages → use MessageSource with error codes
-   - If adding domain model fields → use `LocalizedText` for multilingual content
-   - If adding API response fields → ensure they support i18n
-
-### Examples
-
-**✅ CORRECT:**
 ```java
 // Domain model with LocalizedText
 public class Product {
-    private LocalizedText name;  // ✅
-    private LocalizedText description;  // ✅
+    private LocalizedText name;        // All 4 languages
+    private LocalizedText description;
 }
 
-// Enum with code only
-public enum Status {
-    ACTIVE("ACTIVE"),  // ✅ Code only
-    INACTIVE("INACTIVE");
-    // Translate in API layer using MessageSource
-}
-```
-
-**❌ WRONG:**
-```java
-// ❌ Hardcoded translations in enum
+// Enum with code only (translate in API layer)
 public enum Canton {
-    ZH("ZH", "Zürich", "Zurich"),  // ❌
-    BE("BE", "Bern", "Berne");     // ❌
-    private final String nameDe;
-    private final String nameFr;
+    ZH, BE, AG, ZG;  // NO translations here
 }
 
-// ❌ Hardcoded error message
-throw new Exception("Entity not found");  // ❌
+// Translation in API via MessageSource
+String name = messageSource.getMessage("canton." + canton.name(), null, locale);
+
+// Exception with error code
+throw new EntityNotFoundException("error.person.not.found", personId);
 ```
+
+### Wrong Patterns
+
+```java
+// BAD: Hardcoded translations in enum
+public enum Canton {
+    ZH("ZH", "Zürich", "Zurich");  // WRONG!
+    private String nameDe, nameFr;
+}
+
+// BAD: Hardcoded error message
+throw new RuntimeException("Person not found");  // WRONG!
+```
+
+### Message Files Location
+
+```
+backend/govinda-common/src/main/resources/
+├── messages.properties      # English fallback
+├── messages_de.properties   # German (primary)
+├── messages_fr.properties   # French
+└── messages_it.properties   # Italian
+```
+
+---
 
 ## Architecture
 
-- Follow Domain-Driven Design (DDD)
-- Layer dependencies: API → Application → Domain ← Infrastructure
-- Domain layer has NO dependencies on other layers
-- Use ports and adapters pattern
+### Layer Dependencies
+
+```
+API → Application → Domain ← Infrastructure
+```
+
+- **Domain has ZERO external dependencies** (no Spring, no JPA annotations)
+- Infrastructure implements domain ports
+
+### Package Structure
+
+```
+net.voytrex.govinda.{module}/
+├── domain/
+│   ├── model/          # Entities, Value Objects
+│   ├── repository/     # Port interfaces
+│   └── exception/      # Domain exceptions
+├── application/        # Use cases, Commands, Services
+├── infrastructure/
+│   └── persistence/    # JPA adapters
+└── api/                # Controllers, DTOs, Mappers
+```
+
+---
+
+## Naming Conventions
+
+### Classes
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Entity | `{Name}` | `Person`, `Contract` |
+| Value Object | `{Concept}` | `AhvNumber`, `Money` |
+| Repository (Domain) | `{Entity}Repository` | `PersonRepository` |
+| Repository (JPA) | `Jpa{Entity}RepositoryAdapter` | `JpaPersonRepositoryAdapter` |
+| Service | `{Domain}Service` | `PersonService` |
+| Controller | `{Domain}Controller` | `PersonController` |
+| Request DTO | `{Action}{Entity}Request` | `CreatePersonRequest` |
+| Response DTO | `{Entity}Response` | `PersonResponse` |
+| Exception | `{Situation}Exception` | `EntityNotFoundException` |
+| Test Class | `{ClassName}Test` | `PersonTest` |
+
+### Methods
+
+```java
+// Business methods: verbs
+calculatePremium(), findById(), create(), delete()
+
+// Boolean: is, has, can, should
+isActive(), hasPermission(), canDelete(), shouldNotify()
+
+// Test: should_{behavior}_when_{condition}
+should_calculateAge_when_birthDateProvided()
+should_throwException_when_inputIsNull()
+```
+
+---
 
 ## Code Style
 
-- Java 21+
-- Maximum line length: 120 characters
-- Use records for DTOs when appropriate
-- Prefer immutability
-- Meaningful names (no abbreviations)
+### Formatting
 
-## Test-Driven Development (TDD) - MANDATORY
+- **Line length:** 120 characters max
+- **Indentation:** 4 spaces
+- **Imports:** No wildcards, sorted
 
-**TDD is MANDATORY for ALL code changes. NO EXCEPTIONS.**
+### Java 21+ Features to Use
 
-### The Red-Green-Refactor Cycle
-
-**You MUST follow this cycle for EVERY feature, bug fix, or code change:**
-
-1. **🔴 RED**: Write a failing test first
-   - Test must fail for the right reason (not compilation errors)
-   - Test should describe the desired behavior
-   - Run the test to confirm it fails
-
-2. **🟢 GREEN**: Write minimal code to make the test pass
-   - Write ONLY the code necessary to pass the test
-   - No premature optimization or extra features
-   - Run the test to confirm it passes
-
-3. **🔵 REFACTOR**: Improve code quality while keeping tests green
-   - Clean up code, remove duplication
-   - Improve naming, structure, and design
-   - All tests must remain passing
-
-### Strict Rules
-
-1. **NEVER write production code without a failing test first**
-   - ❌ DO NOT write implementation before tests
-   - ❌ DO NOT write tests after implementation
-   - ✅ ALWAYS write the test first, see it fail, then implement
-
-2. **Test location and naming**
-   - Unit tests: `src/test/java` mirroring `src/main/java` structure
-   - Test class: `{ClassName}Test.java`
-   - Test methods: `should_{expectedBehavior}_when_{condition}()` or `test_{featureName}()`
-
-3. **Test requirements**
-   - Write unit tests for ALL domain logic
-   - Write integration tests for repositories and APIs
-   - Use Testcontainers for database tests
-   - Minimum 80% code coverage (enforced by CI)
-
-4. **When modifying existing code:**
-   - If adding new functionality → write failing test first
-   - If fixing a bug → write failing test that reproduces the bug first
-   - If refactoring → ensure all existing tests pass before refactoring
-
-5. **Test quality**
-   - Tests must be independent (no test dependencies)
-   - Tests must be repeatable and deterministic
-   - Use descriptive test names that explain the behavior
-   - Follow AAA pattern: Arrange, Act, Assert
-
-### Workflow Enforcement
-
-**When implementing ANY feature or change:**
-
-1. **Start with a failing test**
-   ```java
-   @Test
-   void should_calculateTotal_when_itemsProvided() {
-       // Arrange
-       ShoppingCart cart = new ShoppingCart();
-       cart.addItem(new Item("Product", 10.0));
-       
-       // Act
-       double total = cart.calculateTotal();
-       
-       // Assert
-       assertEquals(10.0, total);
-   }
-   ```
-
-2. **Run the test** - it MUST fail (red)
-
-3. **Write minimal implementation** to make it pass
-   ```java
-   public double calculateTotal() {
-       return 10.0; // Minimal implementation
-   }
-   ```
-
-4. **Run the test** - it MUST pass (green)
-
-5. **Refactor** if needed, keeping tests green
-
-### Examples
-
-**✅ CORRECT TDD Workflow:**
 ```java
-// Step 1: Write failing test first
-@Test
-void should_throwException_when_negativeAmount() {
-    assertThrows(IllegalArgumentException.class, 
-        () -> account.withdraw(-100));
-}
+// Records for DTOs
+public record CreatePersonRequest(String firstName, String lastName) {}
 
-// Step 2: Run test - it fails (RED)
-// Step 3: Write minimal implementation
-public void withdraw(double amount) {
-    if (amount < 0) {
-        throw new IllegalArgumentException("Amount cannot be negative");
-    }
-}
+// Sealed classes for exception hierarchies
+public sealed class DomainException permits EntityNotFoundException {}
 
-// Step 4: Run test - it passes (GREEN)
-// Step 5: Refactor if needed
+// Pattern matching
+if (entity instanceof Person person) { ... }
+
+// Switch expressions
+String label = switch (status) {
+    case ACTIVE -> "Active";
+    case INACTIVE -> "Inactive";
+};
 ```
 
-**❌ WRONG - Writing code before tests:**
-```java
-// ❌ BAD: Implementation written first
-public void withdraw(double amount) {
-    if (amount < 0) {
-        throw new IllegalArgumentException("Amount cannot be negative");
-    }
-    // ... more code
-}
+### Immutability
 
-// ❌ BAD: Test written after implementation
-@Test
-void testWithdraw() {
-    // Test written after code already exists
+- Value objects: Always immutable (use records)
+- Entities: Expose behavior, not setters
+- DTOs: Use records
+
+---
+
+## Testing Standards
+
+### Test Structure
+
+```java
+class PersonTest {
+
+    @Nested
+    @DisplayName("Age Calculation")
+    class AgeCalculation {
+
+        @Test
+        @DisplayName("should calculate age correctly")
+        void should_calculateAge_when_birthDateProvided() {
+            // Arrange
+            var person = PersonFixture.createDefault();
+
+            // Act
+            int age = person.ageAt(LocalDate.of(2025, 1, 1));
+
+            // Assert
+            assertThat(age).isEqualTo(35);
+        }
+    }
 }
 ```
 
-### Testing Tools
+### Coverage Requirements
 
-- **JUnit 5** for unit and integration tests
-- **Mockito** for mocking dependencies
-- **Testcontainers** for database and external service tests
-- **AssertJ** for fluent assertions (preferred over JUnit assertions)
-- **Spring Boot Test** for integration testing
+| Layer | Coverage |
+|-------|----------|
+| Domain (entities, value objects) | 100% |
+| Application (services) | 80%+ |
+| Infrastructure | Integration tests |
+| API | Contract tests |
 
-### Code Coverage
+### Tools
 
-- Minimum 80% code coverage required
-- Coverage is enforced in CI/CD pipeline
-- Focus on meaningful tests, not just coverage numbers
-- Domain logic must have 100% test coverage
+- **JUnit 5** - Test framework
+- **Mockito** - Mocking (@Mock, @InjectMocks)
+- **AssertJ** - Fluent assertions (assertThat)
+- **Testcontainers** - PostgreSQL for integration tests
+
+---
+
+## Exception Handling
+
+### Pattern
+
+```java
+// Domain exception with error code
+public final class EntityNotFoundException extends DomainException {
+    public EntityNotFoundException(String errorCode, Object id) {
+        super(errorCode, id);
+    }
+}
+
+// Throwing
+throw new EntityNotFoundException("error.person.not.found", personId);
+
+// Testing
+assertThatThrownBy(() -> service.findById(invalidId))
+    .isInstanceOf(EntityNotFoundException.class)
+    .hasFieldOrPropertyWithValue("errorCode", "error.person.not.found");
+```
+
+### Error Code Format
+
+```properties
+error.{domain}.{situation}
+error.entity.not.found=Entity with ID {0} not found
+error.person.ahv.duplicate=Person with AHV {0} already exists
+error.validation.required={0} is required
+```
+
+---
+
+## API Standards
+
+### HTTP Methods & Status Codes
+
+| Method | Purpose | Success Code |
+|--------|---------|--------------|
+| GET | Read | 200 |
+| POST | Create | 201 |
+| PUT | Replace | 200 |
+| PATCH | Partial update | 200 |
+| DELETE | Remove | 204 |
+
+### Error Codes
+
+| Code | When |
+|------|------|
+| 400 | Invalid request format |
+| 401 | Not authenticated |
+| 403 | Not authorized |
+| 404 | Not found |
+| 409 | Conflict/duplicate |
+| 422 | Business rule violation |
+| 500 | Server error |
+
+---
+
+## Definition of Done
+
+Before considering ANY task complete:
+
+```
+[ ] Test written FIRST (TDD Red phase)
+[ ] Test verified to fail before implementation
+[ ] All tests pass: ./mvnw test
+[ ] i18n: All user text in 4 languages
+[ ] i18n: No hardcoded translations in enums
+[ ] i18n: Error codes in MessageSource
+[ ] Code follows naming conventions
+[ ] No compiler warnings
+[ ] Domain layer has no Spring/JPA imports
+```
+
+---
+
+## Quick Reference
+
+### Value Objects
+
+```java
+// Money
+Money amount = Money.of(BigDecimal.valueOf(100), Currency.CHF);
+Money rounded = amount.roundToRappen();
+
+// AhvNumber
+AhvNumber ahv = AhvNumber.of("756.1234.5678.97");
+
+// LocalizedText
+LocalizedText text = LocalizedText.builder()
+    .de("German").fr("French").it("Italian").en("English")
+    .build();
+```
+
+### Test Assertions (AssertJ)
+
+```java
+// Basic
+assertThat(result).isNotNull();
+assertThat(result).isEqualTo(expected);
+
+// Collections
+assertThat(list).hasSize(3);
+assertThat(list).contains(item);
+assertThat(list).isEmpty();
+
+// Exceptions
+assertThatThrownBy(() -> doSomething())
+    .isInstanceOf(IllegalArgumentException.class)
+    .hasMessageContaining("error");
+
+// Optional
+assertThat(optional).isPresent();
+assertThat(optional).isEmpty();
+```
+
+---
+
+## Files to Reference
+
+- [Definition of Done](docs/development/definition-of-done.md)
+- [Coding Guidelines](docs/development/coding-guidelines.md)
+- [Testing Strategy](docs/development/testing-strategy.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
