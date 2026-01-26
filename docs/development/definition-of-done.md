@@ -35,6 +35,16 @@ A feature, story, or task is considered **DONE** when all the following criteria
 - [ ] Audit trail entries created for relevant changes
 - [ ] Error handling provides meaningful messages
 
+## Internationalization (i18n)
+
+- [ ] All user-facing text uses `LocalizedText` or message source
+- [ ] No hardcoded translations in enums (e.g., `nameDe`, `nameFr` fields)
+- [ ] Error messages are internationalized using `MessageSource`
+- [ ] API responses support `Accept-Language` header
+- [ ] All four languages (DE, FR, IT, EN) are supported for new features
+- [ ] German (DE) is used as fallback when translation is missing
+- [ ] Translation keys follow consistent naming convention
+
 ## Security
 
 - [ ] No sensitive data logged (passwords, AHV numbers in full, etc.)
