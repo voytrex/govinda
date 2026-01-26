@@ -95,6 +95,7 @@ public class Address {
     protected Address() {
     }
 
+    // CHECKSTYLE:OFF: ParameterNumber - Domain model constructor requires all address fields
     public Address(
         UUID personId,
         AddressType addressType,
@@ -110,6 +111,7 @@ public class Address {
         LocalDate validTo,
         UUID createdBy
     ) {
+        // CHECKSTYLE:ON: ParameterNumber
         if (street == null || street.isBlank()) {
             throw new IllegalArgumentException("Street must not be blank");
         }

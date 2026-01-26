@@ -98,6 +98,7 @@ public class Person implements Historized<PersonHistoryEntry> {
     protected Person() {
     }
 
+    // CHECKSTYLE:OFF: ParameterNumber - Domain model constructor requires all person fields
     public Person(
         UUID tenantId,
         AhvNumber ahvNr,
@@ -109,6 +110,7 @@ public class Person implements Historized<PersonHistoryEntry> {
         String nationality,
         Language preferredLanguage
     ) {
+        // CHECKSTYLE:ON: ParameterNumber
         if (lastName == null || lastName.isBlank()) {
             throw new IllegalArgumentException("Last name must not be blank");
         }

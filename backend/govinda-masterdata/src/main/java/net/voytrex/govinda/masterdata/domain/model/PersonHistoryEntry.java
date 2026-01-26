@@ -40,6 +40,7 @@ public class PersonHistoryEntry extends HistoryEntry {
     protected PersonHistoryEntry() {
     }
 
+    // CHECKSTYLE:OFF: ParameterNumber - Domain model constructor requires all history fields
     public PersonHistoryEntry(
         UUID personId,
         String lastName,
@@ -51,6 +52,7 @@ public class PersonHistoryEntry extends HistoryEntry {
         String mutationReason,
         UUID changedBy
     ) {
+        // CHECKSTYLE:ON: ParameterNumber
         setHistoryId(UUID.randomUUID());
         setValidFrom(validFrom);
         setValidTo(validTo);
