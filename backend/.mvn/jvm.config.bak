@@ -1,0 +1,3 @@
+# JVM configuration for Maven
+# This file is automatically read by Maven and sets JVM arguments
+# Java version is configured via .mvn/toolchains.xml

@@ -102,7 +102,7 @@ if [ "$SKIP_UNIT" = false ]; then
     echo "3. Running Unit Tests"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
-    (cd backend && mvn -B surefire:test) || {
+    (cd backend && mvn -B test -DskipITs=true) || {
         echo "❌ Unit tests failed"
         exit 1
     }

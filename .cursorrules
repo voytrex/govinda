@@ -382,9 +382,81 @@ assertThat(optional).isEmpty();
 
 ---
 
+---
+
+## Docker & Colima Setup (macOS)
+
+**For local testing with Testcontainers and docker-compose on macOS, use Colima.**
+
+### Quick Setup
+
+```bash
+# Install (if not already installed)
+brew install colima docker docker-compose
+
+# Start Colima
+colima start
+
+# Verify
+colima status
+docker ps
+```
+
+### Environment Configuration
+
+**Set DOCKER_HOST for Testcontainers:**
+
+```bash
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+```
+
+**Add to `~/.zshrc` or `~/.bash_profile` for persistence:**
+
+```bash
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+```
+
+### Running Tests
+
+**The `test-local.sh` script automatically configures Docker for Colima:**
+
+```bash
+./test-local.sh                    # All tests
+./test-local.sh --unit-only         # Unit tests only
+./test-local.sh --integration-only  # Integration tests only
+```
+
+**Manual execution:**
+
+```bash
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+./mvnw test -pl backend/govinda-{module}
+```
+
+### Docker Compose
+
+```bash
+cd infrastructure/docker
+docker-compose up -d                # Start PostgreSQL
+docker-compose --profile full up -d # Start PostgreSQL + Redis
+docker-compose down                 # Stop services
+```
+
+**Connection:**
+- PostgreSQL: `localhost:5432` (user: `govinda`, password: `govinda`)
+
+### Troubleshooting
+
+- **Colima not running:** `colima start` or `colima restart`
+- **Docker connection fails:** Verify `DOCKER_HOST` is set correctly
+- **Testcontainers can't connect:** Ensure Colima is running and `DOCKER_HOST` is set
+
+---
+
 ## Files to Reference
 
 - [Definition of Done](docs/development/definition-of-done.md)
 - [Coding Guidelines](docs/development/coding-guidelines.md)
 - [Testing Strategy](docs/development/testing-strategy.md)
+- [Testcontainers Setup](docs/development/testcontainers-setup.md)
 - [CONTRIBUTING.md](CONTRIBUTING.md)
