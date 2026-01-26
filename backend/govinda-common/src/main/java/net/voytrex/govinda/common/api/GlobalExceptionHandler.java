@@ -8,6 +8,7 @@ package net.voytrex.govinda.common.api;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Locale;
 import net.voytrex.govinda.common.domain.exception.AuthenticationException;
 import net.voytrex.govinda.common.domain.exception.BusinessRuleViolationException;
 import net.voytrex.govinda.common.domain.exception.ConcurrentModificationException;
@@ -25,6 +26,7 @@ import net.voytrex.govinda.common.domain.exception.TenantNotFoundException;
 import net.voytrex.govinda.common.domain.exception.UnauthorizedTenantAccessException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -32,25 +34,47 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 /**
  * Global exception handler for REST API.
  *
  * Translates domain exceptions to appropriate HTTP responses.
+ * All error messages are internationalized using MessageSource.
  */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private final MessageSource messageSource;
+    private final LocaleResolver localeResolver;
+
+    public GlobalExceptionHandler(MessageSource messageSource, LocaleResolver localeResolver) {
+        this.messageSource = messageSource;
+        this.localeResolver = localeResolver;
+    }
+
+    private Locale getLocale(HttpServletRequest request) {
+        return localeResolver.resolveLocale(request);
+    }
+
+    private String translateError(String errorCode, HttpServletRequest request, Object... args) {
+        String key = "error." + errorCode.toLowerCase().replace("_", ".");
+        Locale locale = getLocale(request);
+        return messageSource.getMessage(key, args, locale);
+    }
 
     @ExceptionHandler({EntityNotFoundException.class, EntityNotFoundByFieldException.class})
     public ResponseEntity<ErrorResponse> handleNotFound(DomainException ex, HttpServletRequest request) {
         logger.debug("Entity not found: {}", ex.getMessage());
+        String message = ex.getMessage() != null
+            ? ex.getMessage()
+            : translateError("ENTITY_NOT_FOUND", request);
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(new ErrorResponse(
                 ex.getErrorCode(),
-                ex.getMessage() != null ? ex.getMessage() : "Entity not found",
+                message,
                 request.getRequestURI()
             ));
     }
@@ -58,11 +82,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DuplicateEntityException.class)
     public ResponseEntity<ErrorResponse> handleDuplicate(DuplicateEntityException ex, HttpServletRequest request) {
         logger.debug("Duplicate entity: {}", ex.getMessage());
+        String message = ex.getMessage() != null
+            ? ex.getMessage()
+            : translateError("ENTITY_DUPLICATE", request);
         return ResponseEntity
             .status(HttpStatus.CONFLICT)
             .body(new ErrorResponse(
                 ex.getErrorCode(),
-                ex.getMessage() != null ? ex.getMessage() : "Duplicate entity",
+                message,
                 request.getRequestURI()
             ));
     }
@@ -76,11 +103,14 @@ public class GlobalExceptionHandler {
     })
     public ResponseEntity<ErrorResponse> handleValidation(DomainException ex, HttpServletRequest request) {
         logger.debug("Validation error: {}", ex.getMessage());
+        String message = ex.getMessage() != null
+            ? ex.getMessage()
+            : translateError("VALIDATION", request);
         return ResponseEntity
             .status(HttpStatus.UNPROCESSABLE_ENTITY)
             .body(new ErrorResponse(
                 ex.getErrorCode(),
-                ex.getMessage() != null ? ex.getMessage() : "Validation error",
+                message,
                 request.getRequestURI()
             ));
     }
@@ -88,11 +118,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({TariffNotFoundException.class, PremiumCalculationException.class})
     public ResponseEntity<ErrorResponse> handlePremiumError(DomainException ex, HttpServletRequest request) {
         logger.warn("Premium calculation error: {}", ex.getMessage());
+        String message = ex.getMessage() != null
+            ? ex.getMessage()
+            : translateError("PREMIUM_CALCULATION", request);
         return ResponseEntity
             .status(HttpStatus.UNPROCESSABLE_ENTITY)
             .body(new ErrorResponse(
                 ex.getErrorCode(),
-                ex.getMessage() != null ? ex.getMessage() : "Premium calculation error",
+                message,
                 request.getRequestURI()
             ));
     }
@@ -100,11 +133,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthentication(AuthenticationException ex, HttpServletRequest request) {
         logger.warn("Authentication error: {}", ex.getMessage());
+        String message = ex.getMessage() != null
+            ? ex.getMessage()
+            : translateError("AUTHENTICATION_FAILED", request);
         return ResponseEntity
             .status(HttpStatus.UNAUTHORIZED)
             .body(new ErrorResponse(
                 ex.getErrorCode(),
-                ex.getMessage() != null ? ex.getMessage() : "Authentication failed",
+                message,
                 request.getRequestURI()
             ));
     }
@@ -115,11 +151,14 @@ public class GlobalExceptionHandler {
         HttpServletRequest request
     ) {
         logger.warn("Authentication credentials not found: {}", ex.getMessage());
+        String message = ex.getMessage() != null
+            ? ex.getMessage()
+            : translateError("AUTHENTICATION_REQUIRED", request);
         return ResponseEntity
             .status(HttpStatus.UNAUTHORIZED)
             .body(new ErrorResponse(
                 "AUTHENTICATION_REQUIRED",
-                ex.getMessage() != null ? ex.getMessage() : "Authentication required",
+                message,
                 request.getRequestURI()
             ));
     }
@@ -127,11 +166,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
         logger.warn("Access denied: {}", ex.getMessage());
+        String message = ex.getMessage() != null
+            ? ex.getMessage()
+            : translateError("ACCESS_DENIED", request);
         return ResponseEntity
             .status(HttpStatus.FORBIDDEN)
             .body(new ErrorResponse(
                 "ACCESS_DENIED",
-                ex.getMessage() != null ? ex.getMessage() : "Access denied",
+                message,
                 request.getRequestURI()
             ));
     }
@@ -147,11 +189,14 @@ public class GlobalExceptionHandler {
         } else {
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
+        String message = ex.getMessage() != null
+            ? ex.getMessage()
+            : translateError("TENANT", request);
         return ResponseEntity
             .status(status)
             .body(new ErrorResponse(
                 ex.getErrorCode(),
-                ex.getMessage() != null ? ex.getMessage() : "Tenant error",
+                message,
                 request.getRequestURI()
             ));
     }
@@ -159,11 +204,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ConcurrentModificationException.class)
     public ResponseEntity<ErrorResponse> handleConcurrentModification(ConcurrentModificationException ex, HttpServletRequest request) {
         logger.warn("Concurrent modification: {}", ex.getMessage());
+        String message = ex.getMessage() != null
+            ? ex.getMessage()
+            : translateError("CONCURRENT_MODIFICATION", request);
         return ResponseEntity
             .status(HttpStatus.CONFLICT)
             .body(new ErrorResponse(
                 ex.getErrorCode(),
-                ex.getMessage() != null ? ex.getMessage() : "Concurrent modification",
+                message,
                 request.getRequestURI()
             ));
     }
@@ -173,18 +221,34 @@ public class GlobalExceptionHandler {
         MethodArgumentNotValidException ex,
         HttpServletRequest request
     ) {
+        Locale locale = getLocale(request);
         List<ErrorDetail> details = ex.getBindingResult().getFieldErrors().stream()
-            .map(error -> new ErrorDetail(
-                error.getField(),
-                error.getDefaultMessage() != null ? error.getDefaultMessage() : "Invalid value",
-                error.getRejectedValue()
-            ))
+            .map(error -> {
+                String message = error.getDefaultMessage();
+                if (message == null) {
+                    message = messageSource.getMessage(
+                        "error.validation.invalid.value",
+                        null,
+                        locale
+                    );
+                }
+                return new ErrorDetail(
+                    error.getField(),
+                    message,
+                    error.getRejectedValue()
+                );
+            })
             .toList();
+        String summaryMessage = messageSource.getMessage(
+            "error.validation.request.failed",
+            null,
+            locale
+        );
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(new ErrorResponse(
                 "VALIDATION_ERROR",
-                "Request validation failed",
+                summaryMessage,
                 null,
                 request.getRequestURI(),
                 details
@@ -194,11 +258,17 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<ErrorResponse> handleNoResourceFound(NoResourceFoundException ex, HttpServletRequest request) {
         logger.debug("Resource not found: {}", request.getRequestURI());
+        Locale locale = getLocale(request);
+        String message = messageSource.getMessage(
+            "error.resource.not.found",
+            new Object[]{request.getRequestURI()},
+            locale
+        );
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(new ErrorResponse(
                 "NOT_FOUND",
-                "Resource not found: " + request.getRequestURI(),
+                message,
                 request.getRequestURI()
             ));
     }
@@ -207,7 +277,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex, HttpServletRequest request) {
         logger.error("Unhandled exception: {}", ex.getMessage(), ex);
         // In development, include the exception message for debugging
-        String message = "An internal error occurred";
+        String message = translateError("INTERNAL", request);
         if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
             message = ex.getMessage();
         }
