@@ -17,4 +17,4 @@ public record ChangeMaritalStatusCommand(
     String reason,
     LocalDate effectiveDate,
     UUID changedBy
-) {}
+) { }

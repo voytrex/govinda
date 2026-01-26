@@ -22,4 +22,4 @@ public record CreatePersonCommand(
     MaritalStatus maritalStatus,
     String nationality,
     Language preferredLanguage
-) {}
+) { }

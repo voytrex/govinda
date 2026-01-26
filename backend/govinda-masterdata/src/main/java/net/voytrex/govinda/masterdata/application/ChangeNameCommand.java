@@ -17,4 +17,4 @@ public record ChangeNameCommand(
     String reason,
     LocalDate effectiveDate,
     UUID changedBy
-) {}
+) { }

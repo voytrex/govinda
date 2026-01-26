@@ -16,4 +16,4 @@ public record PersonSearchQuery(
     String ahvNr,
     LocalDate dateOfBirth,
     String postalCode
-) {}
+) { }

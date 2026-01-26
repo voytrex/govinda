@@ -14,4 +14,4 @@ public record UpdatePersonCommand(
     UUID personId,
     String nationality,
     Language preferredLanguage
-) {}
+) { }
