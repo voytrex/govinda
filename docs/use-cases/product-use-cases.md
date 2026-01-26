@@ -46,10 +46,19 @@ This document defines the use cases for product management in the Govinda ERP sy
 4. Tariffs have validity periods (validFrom, validTo)
 5. Only one tariff per product can be active at any time
 6. Premium tables are linked to tariffs, not products directly
-7. KVG premiums vary by: region, age group, franchise, accident inclusion
-8. VVG premiums vary by: region, age group (no franchise)
+7. **KVG premiums vary by: region, age group, franchise, accident inclusion (unisex by law)**
+8. **VVG premiums vary by: region, age group, gender (risk-based pricing allowed)**
 9. Age groups: Children (0-18), Young Adults (19-25), Adults (26+)
 10. Premium regions are defined by BAG per canton
+
+### Gender in Premium Calculation
+
+| Product Type | Gender-Based Premiums | Legal Basis |
+|--------------|----------------------|-------------|
+| **KVG** | ❌ Not allowed | Art. 61 KVG - unisex tariffs mandatory since 2013 |
+| **VVG** | ✅ Allowed | Private law - risk-based pricing permitted |
+
+> **Note**: For VVG products, insurers may differentiate premiums by gender based on actuarial risk assessment. This is common for hospital supplementary insurance where statistical differences in healthcare utilization exist.
 
 ---
 
@@ -205,7 +214,7 @@ This document defines the use cases for product management in the Govinda ERP sy
 **Main Flow**:
 1. User specifies tariff ID and premium parameters
 2. For KVG: region, age group, franchise, accident inclusion, amount
-3. For VVG: region, age group, amount
+3. For VVG: region, age group, gender (optional), amount
 4. System validates parameters
 5. System creates premium entry
 6. System returns created entry
@@ -230,9 +239,10 @@ This document defines the use cases for product management in the Govinda ERP sy
 **Business Rules**:
 - Premium amounts are in CHF
 - Premium amounts must be positive
-- KVG requires: region, ageGroup, franchise, withAccident
-- VVG requires: region, ageGroup (no franchise)
+- KVG requires: region, ageGroup, franchise, withAccident (no gender - unisex by law)
+- VVG requires: region, ageGroup, gender (optional, for risk-based pricing)
 - Premium regions must be valid BAG regions
+- If VVG product uses gender-based pricing, entries for both MALE and FEMALE must exist
 
 ### Request/Response (KVG)
 
@@ -254,9 +264,12 @@ This document defines the use cases for product management in the Govinda ERP sy
 {
   "premiumRegionId": "uuid",
   "ageGroup": "ADULT",
+  "gender": "FEMALE",
   "monthlyAmount": 85.00
 }
 ```
+
+> **Note**: For VVG products with unisex pricing, omit the `gender` field. For gender-differentiated products, create separate entries for MALE and FEMALE.
 
 ---
 
@@ -292,8 +305,9 @@ This document defines the use cases for product management in the Govinda ERP sy
 **Business Rules**:
 - Import is transactional (all-or-nothing)
 - All required combinations must be provided
-- KVG: all regions x age groups x franchises x accident
-- VVG: all regions x age groups
+- KVG: all regions × age groups × franchises × accident (unisex)
+- VVG (unisex): all regions × age groups
+- VVG (gender-based): all regions × age groups × genders
 
 ### Request/Response
 
@@ -453,7 +467,9 @@ This document defines the use cases for product management in the Govinda ERP sy
 
 ### Request/Response
 
-**Request**: `GET /api/v1/products/{productId}/premium?postalCode=8001&birthDate=1985-03-15&franchise=F_300&withAccident=true`
+**Request (KVG)**: `GET /api/v1/products/{productId}/premium?postalCode=8001&birthDate=1985-03-15&franchise=F_300&withAccident=true`
+
+**Request (VVG with gender)**: `GET /api/v1/products/{productId}/premium?postalCode=8001&birthDate=1985-03-15&gender=FEMALE`
 
 **Response**: `200 OK`
 ```json
@@ -547,6 +563,7 @@ This document defines the use cases for product management in the Govinda ERP sy
 │ ageGroup: AgeGroup (CHILD, YOUNG_ADULT, ADULT)              │
 │ franchise: Franchise? (KVG only: F_300..F_2500)             │
 │ withAccident: Boolean? (KVG only)                           │
+│ gender: Gender? (VVG only, for risk-based pricing)          │
 │ monthlyAmount: Money                                         │
 └─────────────────────────────────────────────────────────────┘
 
