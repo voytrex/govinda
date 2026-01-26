@@ -15,8 +15,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -53,6 +55,18 @@ public class SecurityConfig implements WebMvcConfigurer {
     }
 
     @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write(
+                "{\"errorCode\":\"AUTHENTICATION_REQUIRED\",\"message\":\"Authentication required\",\"path\":\"" +
+                request.getRequestURI() + "\"}"
+            );
+        };
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
@@ -69,12 +83,15 @@ public class SecurityConfig implements WebMvcConfigurer {
                     ).permitAll();
                 }
                 authz
-                    .requestMatchers("/api/v1/auth/login", "/api/v1/auth/tenants").permitAll()
+                    .requestMatchers("/api/v1/auth/login").permitAll()
                     .requestMatchers("/actuator/health").permitAll()
                     .requestMatchers("/api/**").authenticated()
                     .requestMatchers("/").permitAll()
                     .anyRequest().authenticated();
             })
+            .exceptionHandling(exceptions -> exceptions
+                .authenticationEntryPoint(authenticationEntryPoint())
+            )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable());

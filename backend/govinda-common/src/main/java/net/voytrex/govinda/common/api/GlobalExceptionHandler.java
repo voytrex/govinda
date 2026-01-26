@@ -109,8 +109,23 @@ public class GlobalExceptionHandler {
             ));
     }
 
-    @ExceptionHandler({AccessDeniedException.class, AuthenticationCredentialsNotFoundException.class})
-    public ResponseEntity<ErrorResponse> handleAccessDenied(Exception ex, HttpServletRequest request) {
+    @ExceptionHandler(AuthenticationCredentialsNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationCredentialsNotFound(
+        AuthenticationCredentialsNotFoundException ex,
+        HttpServletRequest request
+    ) {
+        logger.warn("Authentication credentials not found: {}", ex.getMessage());
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(new ErrorResponse(
+                "AUTHENTICATION_REQUIRED",
+                ex.getMessage() != null ? ex.getMessage() : "Authentication required",
+                request.getRequestURI()
+            ));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex, HttpServletRequest request) {
         logger.warn("Access denied: {}", ex.getMessage());
         return ResponseEntity
             .status(HttpStatus.FORBIDDEN)

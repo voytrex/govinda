@@ -52,7 +52,8 @@ public class AuthenticationService {
     public String authenticate(String username, String password, UUID tenantId) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new EntityNotFoundByFieldException("User", "username", username);
+            // Return 401 (Unauthorized) for authentication failures, not 404
+            throw new AuthenticationException("Invalid credentials");
         }
 
         if (user.getStatus() != UserStatus.ACTIVE) {

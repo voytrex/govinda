@@ -153,9 +153,8 @@ class AuthenticationServiceTest {
             when(userRepository.findByUsername(username)).thenReturn(null);
 
             assertThatThrownBy(() -> authenticationService.authenticate(username, password, null))
-                .isInstanceOf(EntityNotFoundByFieldException.class)
-                .hasMessageContaining("User")
-                .hasMessageContaining("username");
+                .isInstanceOf(AuthenticationException.class)
+                .hasMessageContaining("Invalid credentials");
         }
 
         @Test
