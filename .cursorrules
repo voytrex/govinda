@@ -87,9 +87,142 @@ throw new Exception("Entity not found");  // ❌
 - Prefer immutability
 - Meaningful names (no abbreviations)
 
-## Testing
+## Test-Driven Development (TDD) - MANDATORY
 
-- Write unit tests for domain logic
-- Write integration tests for repositories and APIs
-- Use Testcontainers for database tests
-- Minimum 80% code coverage
+**TDD is MANDATORY for ALL code changes. NO EXCEPTIONS.**
+
+### The Red-Green-Refactor Cycle
+
+**You MUST follow this cycle for EVERY feature, bug fix, or code change:**
+
+1. **🔴 RED**: Write a failing test first
+   - Test must fail for the right reason (not compilation errors)
+   - Test should describe the desired behavior
+   - Run the test to confirm it fails
+
+2. **🟢 GREEN**: Write minimal code to make the test pass
+   - Write ONLY the code necessary to pass the test
+   - No premature optimization or extra features
+   - Run the test to confirm it passes
+
+3. **🔵 REFACTOR**: Improve code quality while keeping tests green
+   - Clean up code, remove duplication
+   - Improve naming, structure, and design
+   - All tests must remain passing
+
+### Strict Rules
+
+1. **NEVER write production code without a failing test first**
+   - ❌ DO NOT write implementation before tests
+   - ❌ DO NOT write tests after implementation
+   - ✅ ALWAYS write the test first, see it fail, then implement
+
+2. **Test location and naming**
+   - Unit tests: `src/test/java` mirroring `src/main/java` structure
+   - Test class: `{ClassName}Test.java`
+   - Test methods: `should_{expectedBehavior}_when_{condition}()` or `test_{featureName}()`
+
+3. **Test requirements**
+   - Write unit tests for ALL domain logic
+   - Write integration tests for repositories and APIs
+   - Use Testcontainers for database tests
+   - Minimum 80% code coverage (enforced by CI)
+
+4. **When modifying existing code:**
+   - If adding new functionality → write failing test first
+   - If fixing a bug → write failing test that reproduces the bug first
+   - If refactoring → ensure all existing tests pass before refactoring
+
+5. **Test quality**
+   - Tests must be independent (no test dependencies)
+   - Tests must be repeatable and deterministic
+   - Use descriptive test names that explain the behavior
+   - Follow AAA pattern: Arrange, Act, Assert
+
+### Workflow Enforcement
+
+**When implementing ANY feature or change:**
+
+1. **Start with a failing test**
+   ```java
+   @Test
+   void should_calculateTotal_when_itemsProvided() {
+       // Arrange
+       ShoppingCart cart = new ShoppingCart();
+       cart.addItem(new Item("Product", 10.0));
+       
+       // Act
+       double total = cart.calculateTotal();
+       
+       // Assert
+       assertEquals(10.0, total);
+   }
+   ```
+
+2. **Run the test** - it MUST fail (red)
+
+3. **Write minimal implementation** to make it pass
+   ```java
+   public double calculateTotal() {
+       return 10.0; // Minimal implementation
+   }
+   ```
+
+4. **Run the test** - it MUST pass (green)
+
+5. **Refactor** if needed, keeping tests green
+
+### Examples
+
+**✅ CORRECT TDD Workflow:**
+```java
+// Step 1: Write failing test first
+@Test
+void should_throwException_when_negativeAmount() {
+    assertThrows(IllegalArgumentException.class, 
+        () -> account.withdraw(-100));
+}
+
+// Step 2: Run test - it fails (RED)
+// Step 3: Write minimal implementation
+public void withdraw(double amount) {
+    if (amount < 0) {
+        throw new IllegalArgumentException("Amount cannot be negative");
+    }
+}
+
+// Step 4: Run test - it passes (GREEN)
+// Step 5: Refactor if needed
+```
+
+**❌ WRONG - Writing code before tests:**
+```java
+// ❌ BAD: Implementation written first
+public void withdraw(double amount) {
+    if (amount < 0) {
+        throw new IllegalArgumentException("Amount cannot be negative");
+    }
+    // ... more code
+}
+
+// ❌ BAD: Test written after implementation
+@Test
+void testWithdraw() {
+    // Test written after code already exists
+}
+```
+
+### Testing Tools
+
+- **JUnit 5** for unit and integration tests
+- **Mockito** for mocking dependencies
+- **Testcontainers** for database and external service tests
+- **AssertJ** for fluent assertions (preferred over JUnit assertions)
+- **Spring Boot Test** for integration testing
+
+### Code Coverage
+
+- Minimum 80% code coverage required
+- Coverage is enforced in CI/CD pipeline
+- Focus on meaningful tests, not just coverage numbers
+- Domain logic must have 100% test coverage
