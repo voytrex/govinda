@@ -47,6 +47,8 @@
         <jacoco.version>0.8.11</jacoco.version>
         <maven.surefire.version>3.2.5</maven.surefire.version>
         <maven.failsafe.version>3.2.5</maven.failsafe.version>
+        <!-- Default empty argLine, will be overridden by JaCoCo when running -->
+        <argLine></argLine>
     </properties>
 
     <dependencyManagement>
