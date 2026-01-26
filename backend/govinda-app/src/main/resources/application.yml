@@ -28,6 +28,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+        globally_quoted_identifiers: true
         jdbc:
           time_zone: UTC
 
@@ -85,6 +86,11 @@ govinda:
     header-name: X-Tenant-Id
     default-tenant: default
 
+  # JWT Authentication
+  jwt:
+    secret: ${JWT_SECRET:default-secret-key-change-in-production-min-256-bits}
+    expiration-seconds: 3600  # 1 hour
+
   # Supported languages
   i18n:
     default-language: DE
@@ -98,6 +104,7 @@ logging:
     org.springframework.web: INFO
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.flywaydb: INFO
 
 ---
 # Development Profile
@@ -123,9 +130,17 @@ spring:
       on-profile: test
 
   datasource:
-    url: jdbc:tc:postgresql:16:///govinda
+    url: jdbc:tc:postgresql:18:///govinda
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+
+  # Flyway Migration (runs automatically with @SpringBootTest)
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      # Use 'none' when Flyway manages schema, 'create-drop' for @DataJpaTest without Flyway
+      ddl-auto: none
