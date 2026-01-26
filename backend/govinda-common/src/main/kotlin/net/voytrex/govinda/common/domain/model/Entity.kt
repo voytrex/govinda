@@ -7,6 +7,8 @@
 package net.voytrex.govinda.common.domain.model
 
 import jakarta.persistence.Column
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.Id
 import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.Version
@@ -99,7 +101,8 @@ abstract class HistoryEntry(
     @Column(name = "superseded_at")
     open val supersededAt: Instant? = null,
 
-    @Column(name = "mutation_type", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mutation_type", nullable = false, length = 20)
     open val mutationType: MutationType,
 
     @Column(name = "mutation_reason")
