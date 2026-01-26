@@ -361,6 +361,154 @@ insurance.model.HMO=HMO Model
 
 ---
 
+## Docker & Colima Setup (macOS)
+
+**For local testing with Testcontainers and docker-compose on macOS, use Colima.**
+
+### Installation
+
+```bash
+# Install Colima via Homebrew
+brew install colima docker docker-compose
+
+# Start Colima (creates default VM)
+colima start
+
+# Verify Colima is running
+colima status
+```
+
+### Configuration
+
+**For Testcontainers to work with Colima, set the Docker host:**
+
+```bash
+# Set DOCKER_HOST environment variable
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+
+# Verify Docker connectivity
+docker ps
+```
+
+**Add to your shell profile** (`~/.zshrc` or `~/.bash_profile`):
+
+```bash
+# Colima Docker socket
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+```
+
+### Common Colima Commands
+
+```bash
+# Start Colima
+colima start
+
+# Stop Colima
+colima stop
+
+# Check status
+colima status
+
+# View logs
+colima logs
+
+# Restart Colima
+colima restart
+```
+
+### Running Tests with Testcontainers
+
+**The `test-local.sh` script automatically configures Docker for Colima:**
+
+```bash
+# Run all tests (automatically uses Colima)
+./test-local.sh
+
+# Run only unit tests
+./test-local.sh --unit-only
+
+# Run only integration tests
+./test-local.sh --integration-only
+```
+
+**Manual test execution with Colima:**
+
+```bash
+# Set Docker host and run tests
+export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
+./mvnw test -pl backend/govinda-{module}
+```
+
+### Docker Compose for Local Development
+
+**Start PostgreSQL and other services:**
+
+```bash
+# Navigate to docker directory
+cd infrastructure/docker
+
+# Start services (PostgreSQL by default)
+docker-compose up -d
+
+# Start with all services (PostgreSQL + Redis)
+docker-compose --profile full up -d
+
+# Start with tools (PostgreSQL + PgAdmin)
+docker-compose --profile tools up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Stop and remove volumes
+docker-compose down -v
+```
+
+**Connection details:**
+- PostgreSQL: `localhost:5432` (user: `govinda`, password: `govinda`, database: `govinda`)
+- PgAdmin: `http://localhost:5050` (email: `admin@govinda.local`, password: `admin`)
+- Redis: `localhost:6379`
+
+### Troubleshooting
+
+**Colima not starting:**
+```bash
+# Check Colima status
+colima status
+
+# View Colima logs
+colima logs
+
+# Restart Colima
+colima restart
+```
+
+**Docker connection issues:**
+```bash
+# Verify DOCKER_HOST is set correctly
+echo $DOCKER_HOST
+# Should output: unix:///Users/{username}/.colima/default/docker.sock
+
+# Test Docker connectivity
+docker ps
+
+# If fails, restart Colima
+colima restart
+```
+
+**Testcontainers can't connect:**
+- Ensure `DOCKER_HOST` is set before running tests
+- Verify Colima is running: `colima status`
+- Check Docker is accessible: `docker ps`
+- Restart Colima if needed: `colima restart`
+
+**Port conflicts:**
+- If port 5432 is already in use, stop the conflicting service or change the port in `docker-compose.yml`
+
+---
+
 ## Common Commands
 
 ### Tests
@@ -380,6 +528,9 @@ insurance.model.HMO=HMO Model
 
 # With coverage
 ./mvnw test jacoco:report
+
+# Local test runner (uses Colima automatically)
+./test-local.sh
 ```
 
 ### Build

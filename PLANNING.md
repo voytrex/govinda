@@ -92,10 +92,12 @@ BILLING (Fakturierung)      PREMIUM (Berechnung)      BENEFITS (Leistungen)
 
 | Task | Status | Priority |
 |------|--------|----------|
-| Complete JpaPersonRepository | TODO | P1 |
-| Implement JpaHouseholdRepository | TODO | P1 |
-| Implement JpaAddressRepository | TODO | P1 |
-| PersonController integration tests | TODO | P1 |
+| Complete JpaPersonRepository | DONE | P1 |
+| Implement JpaHouseholdRepository | DONE | P1 |
+| Implement JpaAddressRepository | DONE | P1 |
+| PersonService unit tests | DONE | P1 |
+| PersonRepository integration tests | DONE (needs Docker) | P1 |
+| PersonController tests | DONE (needs Java 21) | P1 |
 | HouseholdController (new) | TODO | P2 |
 | E2E: Create person with household | TODO | P2 |
 
