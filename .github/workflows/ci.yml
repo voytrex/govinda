@@ -14,6 +14,8 @@ jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
+    permissions:
+      checks: write
 
     services:
       postgres:
