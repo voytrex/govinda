@@ -1,0 +1,95 @@
+# Govinda ERP - Cursor AI Coding Rules
+
+## Internationalization (i18n) - CRITICAL
+
+**ALL user-facing text MUST be internationalized. NO EXCEPTIONS.**
+
+### Supported Languages
+- DE (German) - Primary/fallback language
+- FR (French)
+- IT (Italian)
+- EN (English)
+
+### Rules
+
+1. **Use `LocalizedText` for user-facing content**
+   - Product names, descriptions, labels, UI text
+   - Always provide all 4 language variants
+   - Use `LocalizedText` from `net.voytrex.govinda.common.domain.model`
+
+2. **NEVER hardcode translations in enums**
+   - ❌ DO NOT add `nameDe`, `nameFr`, `nameIt`, `nameEn` fields to enums
+   - ❌ DO NOT hardcode German/French/Italian text in enum constructors
+   - ✅ Use enum codes and translate in API layer via MessageSource
+   - ✅ Store translations in database or message properties files
+
+3. **Error messages must be internationalized**
+   - Use Spring `MessageSource` for error translation
+   - Error codes should be language-agnostic (e.g., `ENTITY_NOT_FOUND`)
+   - Translate based on `Accept-Language` header
+   - No hardcoded English fallback messages
+
+4. **API responses**
+   - All user-facing strings must be localized
+   - Respect `Accept-Language` header
+   - Default to German (DE) if no language specified
+
+5. **When creating or modifying code:**
+   - If adding a new enum with display names → use MessageSource, not enum fields
+   - If adding error messages → use MessageSource with error codes
+   - If adding domain model fields → use `LocalizedText` for multilingual content
+   - If adding API response fields → ensure they support i18n
+
+### Examples
+
+**✅ CORRECT:**
+```java
+// Domain model with LocalizedText
+public class Product {
+    private LocalizedText name;  // ✅
+    private LocalizedText description;  // ✅
+}
+
+// Enum with code only
+public enum Status {
+    ACTIVE("ACTIVE"),  // ✅ Code only
+    INACTIVE("INACTIVE");
+    // Translate in API layer using MessageSource
+}
+```
+
+**❌ WRONG:**
+```java
+// ❌ Hardcoded translations in enum
+public enum Canton {
+    ZH("ZH", "Zürich", "Zurich"),  // ❌
+    BE("BE", "Bern", "Berne");     // ❌
+    private final String nameDe;
+    private final String nameFr;
+}
+
+// ❌ Hardcoded error message
+throw new Exception("Entity not found");  // ❌
+```
+
+## Architecture
+
+- Follow Domain-Driven Design (DDD)
+- Layer dependencies: API → Application → Domain ← Infrastructure
+- Domain layer has NO dependencies on other layers
+- Use ports and adapters pattern
+
+## Code Style
+
+- Java 21+
+- Maximum line length: 120 characters
+- Use records for DTOs when appropriate
+- Prefer immutability
+- Meaningful names (no abbreviations)
+
+## Testing
+
+- Write unit tests for domain logic
+- Write integration tests for repositories and APIs
+- Use Testcontainers for database tests
+- Minimum 80% code coverage
