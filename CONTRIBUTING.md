@@ -13,7 +13,7 @@ By participating in this project, you agree to maintain a respectful and inclusi
 - JDK 21 or later
 - Docker & Docker Compose
 - Git
-- IDE: IntelliJ IDEA (recommended) or VS Code with Kotlin plugin
+- IDE: IntelliJ IDEA (recommended) or VS Code
 
 ### Setup Development Environment
 
@@ -25,28 +25,28 @@ By participating in this project, you agree to maintain a respectful and inclusi
 
 2. **Start PostgreSQL**
    ```bash
-   cd infrastructure/docker
-   docker-compose up -d postgres
+   docker-compose -f infrastructure/docker/docker-compose.yml up -d postgres
    ```
 
 3. **Build the project**
    ```bash
-   cd backend
-   ./gradlew build
+   mvn -DskipTests package
    ```
 
 4. **Run tests**
    ```bash
-   ./gradlew test
+   mvn test
    ```
 
 5. **Start the application**
    ```bash
-   ./gradlew :govinda-app:bootRun
+   mvn -pl backend/govinda-app -am spring-boot:run
    ```
 
 6. **Access Swagger UI**
    Open http://localhost:8080/swagger-ui.html
+
+For more details, see the [Developer Guide](docs/development/developer-guide.md).
 
 ## Development Workflow
 
@@ -102,8 +102,8 @@ Closes #42
 1. **Create a feature branch** from `develop`
 2. **Write tests first** (TDD)
 3. **Implement the feature**
-4. **Ensure all tests pass**: `./gradlew test`
-5. **Run lint checks**: `./gradlew ktlintCheck`
+4. **Ensure all tests pass**: `mvn test`
+5. **Run formatting checks** (if configured)
 6. **Create a Pull Request** with:
    - Clear description of changes
    - Link to related issue
@@ -132,11 +132,11 @@ Brief description of changes
 
 ## Coding Standards
 
-### Kotlin Style
+### Java Style
 
-- Follow [Kotlin Coding Conventions](https://kotlinlang.org/docs/coding-conventions.html)
-- Use data classes for DTOs and value objects
-- Prefer immutability (`val` over `var`)
+- Follow standard Java coding conventions
+- Use records for DTOs and value objects when appropriate
+- Prefer immutability where possible
 - Use meaningful names (no abbreviations)
 - Maximum line length: 120 characters
 
@@ -161,12 +161,12 @@ Brief description of changes
 3. **Testing**
    - Unit tests for domain logic
    - Integration tests for repositories and APIs
-   - Use MockK for mocking
+   - Use Mockito for mocking
    - Use Testcontainers for database tests
 
 ### Documentation
 
-- KDoc for public APIs
+- Javadoc for public APIs
 - OpenAPI annotations for REST endpoints
 - ADR for architectural decisions
 - Update README when adding features
@@ -177,31 +177,31 @@ Brief description of changes
 
 ```bash
 # All tests
-./gradlew test
+mvn test
 
 # Specific module
-./gradlew :govinda-masterdata:test
+mvn -pl backend/govinda-masterdata -am test
 
 # With coverage
-./gradlew test jacocoTestReport
+mvn -DskipTests=false test
 ```
 
 ### Test Structure
 
-```kotlin
+```java
 class PersonServiceTest {
 
     @Nested
-    inner class `When creating a person` {
+    class WhenCreatingAPerson {
 
         @Test
-        fun `should validate AHV number format`() {
+        void shouldValidateAhvNumberFormat() {
             // Given
-            val invalidAhv = "invalid"
+            String invalidAhv = "invalid";
 
             // When / Then
-            assertThatThrownBy { /* ... */ }
-                .isInstanceOf(InvalidAhvNumberException::class.java)
+            assertThatThrownBy(() -> { /* ... */ })
+                .isInstanceOf(InvalidAhvNumberException.class);
         }
     }
 }

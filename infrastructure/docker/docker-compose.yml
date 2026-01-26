@@ -4,7 +4,7 @@
 services:
   # PostgreSQL Database
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: govinda-postgres
     environment:
       POSTGRES_DB: govinda
@@ -45,7 +45,7 @@ services:
 
   # Redis (for caching and sessions)
   redis:
-    image: redis:7-alpine
+    image: redis:alpine
     container_name: govinda-redis
     ports:
       - "6379:6379"
