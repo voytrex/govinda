@@ -128,6 +128,8 @@ Brief description of changes
 - [ ] Documentation updated
 - [ ] No breaking API changes
 - [ ] Follows coding standards
+- [ ] All user-facing text is internationalized (DE, FR, IT, EN)
+- [ ] No hardcoded translations in enums or domain models
 ```
 
 ## Coding Standards
@@ -163,6 +165,98 @@ Brief description of changes
    - Integration tests for repositories and APIs
    - Use Mockito for mocking
    - Use Testcontainers for database tests
+
+### Internationalization (i18n)
+
+**CRITICAL: All user-facing text must be internationalized.**
+
+Govinda ERP supports four languages:
+- **DE** (German) - Primary language
+- **FR** (French)
+- **IT** (Italian)
+- **EN** (English)
+
+#### Rules for i18n:
+
+1. **Use `LocalizedText` for all user-facing content**
+   - Product names, descriptions, labels, and any text displayed to users
+   - Use `LocalizedText` class from `net.voytrex.govinda.common.domain.model`
+   - Always provide all four language variants (DE, FR, IT, EN)
+   - German (DE) is the fallback language if a translation is missing
+
+2. **DO NOT hardcode translations in enums**
+   - ❌ **BAD**: `Canton` enum with `nameDe` and `nameFr` fields
+   - ❌ **BAD**: `InsuranceModel` enum with `nameDe` field
+   - ❌ **BAD**: `ProductCategory` enum with `nameDe` field
+   - ✅ **GOOD**: Use a translation service or store translations in the database
+   - ✅ **GOOD**: Return enum codes and translate them in the API layer using a message source
+
+3. **Error messages must be internationalized**
+   - Use Spring's `MessageSource` for error message translation
+   - Error codes should be language-agnostic (e.g., `ENTITY_NOT_FOUND`)
+   - Messages should be resolved based on the `Accept-Language` header
+   - Avoid hardcoded English fallback messages in exception handlers
+
+4. **API responses**
+   - All user-facing strings in API responses must be localized
+   - Use `Accept-Language` header to determine the user's preferred language
+   - Default to German (DE) if no language preference is specified
+
+5. **Database entities**
+   - Use `LocalizedText` embeddable for multilingual fields
+   - Example: Product names, descriptions, category names
+
+6. **Exception messages**
+   - Domain exceptions should use error codes, not hardcoded messages
+   - Translate error codes to messages in the API layer using `MessageSource`
+
+#### Examples:
+
+**✅ Correct - Using LocalizedText:**
+```java
+public class Product {
+    private LocalizedText name;
+    private LocalizedText description;
+    
+    public String getName(Language language) {
+        return name.get(language);
+    }
+}
+```
+
+**✅ Correct - Using MessageSource for errors:**
+```java
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+    private final MessageSource messageSource;
+    
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(
+        EntityNotFoundException ex,
+        HttpServletRequest request,
+        Locale locale
+    ) {
+        String message = messageSource.getMessage(
+            ex.getErrorCode(),
+            null,
+            locale
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            .body(new ErrorResponse(ex.getErrorCode(), message, request.getRequestURI()));
+    }
+}
+```
+
+**❌ Incorrect - Hardcoded translations:**
+```java
+public enum Canton {
+    ZH("ZH", "Zürich", "Zurich"),  // ❌ Hardcoded translations
+    BE("BE", "Bern", "Berne");
+    
+    private final String nameDe;
+    private final String nameFr;
+}
+```
 
 ### Documentation
 
