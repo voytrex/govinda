@@ -29,8 +29,7 @@ dependencies {
 
     // Database
     implementation("org.postgresql:postgresql:$postgresVersion")
-    implementation("org.flywaydb:flyway-core:$flywayVersion")
-    implementation("org.flywaydb:flyway-database-postgresql:$flywayVersion")
+    implementation("org.flywaydb:flyway-core")  // Version managed by Spring Boot
 
     // API Documentation
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:$springdocVersion")
