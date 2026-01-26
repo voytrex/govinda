@@ -28,7 +28,6 @@
         <module>govinda-premium</module>
         <module>govinda-billing</module>
         -->
-        <module>test-minimal</module>
     </modules>
 
     <properties>
