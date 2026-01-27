@@ -240,6 +240,21 @@ Missing:
 
 ---
 
+### GAP-14: Insurer Transfer & Industry Integration
+**Priority**: HIGH
+
+**Problem**: No support for insurer changes and industry data exchange:
+- Entry/Exit reasons (Eintritt/Austritt)
+- Vorversicherer/Nachversicherer tracking
+- Data transfer (franchise used, surcharges)
+- **SASIS** integration (insurer-to-insurer messaging)
+- **VeKa** (Versichertenkarte) management
+- Industry services (BAG, cantonal)
+
+**See**: [Gap Analysis - Insurer Transfer](./gaps/gap-14-insurer-transfer.md)
+
+---
+
 ## 3. Gap Resolution Approach
 
 ### Recommended Priority Order
@@ -278,6 +293,7 @@ Missing:
 | GAP-11 Cross-Border | ✓ | - | - | CrossBorderStatus, PostingCertificate |
 | GAP-12 VVG Specifics | ✓ | - | - | HealthDeclaration, CoverageReservation, WaitingPeriod |
 | GAP-13 Dunning | ✓ | ✓ | ✓ | DunningCase, PaymentPlan, LossCertificate |
+| GAP-14 Insurer Transfer | ✓ | - | - | InsurerTransfer, InsuranceCard, SasisMessage |
 
 ---
 
