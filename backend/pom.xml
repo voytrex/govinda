@@ -46,9 +46,18 @@
         <jacoco.version>0.8.11</jacoco.version>
         <maven.surefire.version>3.2.5</maven.surefire.version>
         <maven.failsafe.version>3.2.5</maven.failsafe.version>
+        <jsr305.version>3.0.2</jsr305.version>
         <!-- Default empty argLine, will be overridden by JaCoCo when running -->
         <argLine></argLine>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+            <version>${jsr305.version}</version>
+        </dependency>
+    </dependencies>
 
     <dependencyManagement>
         <dependencies>
