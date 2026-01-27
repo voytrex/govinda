@@ -42,7 +42,6 @@ public class I18nConfig {
      * Defaults to German (DE) if no language preference is specified.
      */
     @Bean
-    @SuppressWarnings("null") // Spring API lacks nullness annotations; boundary suppression.
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
         localeResolver.setDefaultLocale(Locale.GERMAN);

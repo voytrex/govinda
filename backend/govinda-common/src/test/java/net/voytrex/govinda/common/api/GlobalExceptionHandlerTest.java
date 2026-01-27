@@ -9,17 +9,14 @@ package net.voytrex.govinda.common.api;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.exception.AuthenticationException;
 import net.voytrex.govinda.common.domain.exception.BusinessRuleViolationException;
 import net.voytrex.govinda.common.domain.exception.ConcurrentModificationException;
-import net.voytrex.govinda.common.domain.exception.CoverageValidationException;
 import net.voytrex.govinda.common.domain.exception.DuplicateEntityException;
 import net.voytrex.govinda.common.domain.exception.EntityNotFoundException;
 import net.voytrex.govinda.common.domain.exception.InvalidMutationException;
-import net.voytrex.govinda.common.domain.exception.PremiumCalculationException;
 import net.voytrex.govinda.common.domain.exception.TariffNotFoundException;
 import net.voytrex.govinda.common.domain.exception.TenantNotFoundException;
 import net.voytrex.govinda.common.domain.exception.UnauthorizedTenantAccessException;
