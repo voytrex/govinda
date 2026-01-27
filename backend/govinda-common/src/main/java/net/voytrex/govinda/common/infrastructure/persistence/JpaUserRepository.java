@@ -15,6 +15,7 @@ package net.voytrex.govinda.common.infrastructure.persistence;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.lang.Nullable;
 
 /**
  * Spring Data JPA repository for User entities.
@@ -23,6 +24,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * interface which is implemented by UserRepositoryAdapter.
  */
 public interface JpaUserRepository extends JpaRepository<User, UUID> {
+    @Nullable
     User findByUsername(String username);
+
+    @Nullable
     User findByEmail(String email);
 }

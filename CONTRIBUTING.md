@@ -166,6 +166,17 @@ Brief description of changes
    - Use Mockito for mocking
    - Use Testcontainers for database tests
 
+### Null-Safety (Nullness)
+
+- We use Eclipse null analysis with **package-level defaults** (`@NonNullApi`, `@NonNullFields`) in `package-info.java`.
+- Treat all parameters, return types, and fields as **non-null by default**; use `@Nullable` where `null` is truly allowed.
+- For required JPA/domain fields (IDs, mandatory relationships, timestamps):
+  - Mark them as non-null in the mapping (`nullable = false`, `optional = false`).
+  - Initialize them via constructors/factories.
+  - Enforce the contract in getters with `Objects.requireNonNull(...)` where appropriate.
+- Suppress nullness warnings only at **framework boundaries** (e.g. Spring APIs lacking annotations), not in core domain logic.
+- When changing a domain class, **fix its null-safety warnings as part of the work**.
+
 ### Internationalization (i18n)
 
 **CRITICAL: All user-facing text must be internationalized.**

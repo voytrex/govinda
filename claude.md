@@ -361,6 +361,62 @@ insurance.model.HMO=HMO Model
 
 ---
 
+## Null-Safety (Nullness) Guidelines
+
+We use Eclipse null analysis with **package-level defaults** to enforce non-null by default.
+
+### Defaults
+
+- Add `@NonNullApi` and `@NonNullFields` in `package-info.java` for:
+  - `net.voytrex.govinda.{module}.domain.*`
+  - `application.*`, `api.*`, and `infrastructure.*` where appropriate
+- This means:
+  - Parameters and return types are treated as **non-null** by default.
+  - Fields are **non-null** by default.
+  - Use `@Nullable` to opt out where `null` is a valid value.
+
+### Domain & Entity Rules
+
+- For **required fields** (IDs, mandatory relationships, timestamps):
+  - Mark them non-null in persistence:
+    - `@Column(nullable = false)`
+    - `@ManyToOne(optional = false)` / `@JoinColumn(nullable = false)`
+  - Initialize them via constructors/factories.
+  - Enforce the contract in getters:
+    ```java
+    public Tenant getTenant() {
+        return Objects.requireNonNull(tenant, "tenant");
+    }
+    ```
+- For **optional fields**:
+  - Explicitly annotate with `@Nullable` on field and accessor:
+    ```java
+    @Nullable
+    private Instant lastLoginAt;
+
+    @Nullable
+    public Instant getLastLoginAt() { ... }
+    ```
+
+### Suppressions & Framework Boundaries
+
+- Suppress nullness warnings **only at framework boundaries** (e.g. Spring/JPA APIs with missing annotations).
+- Use narrow, documented suppressions:
+  ```java
+  @SuppressWarnings("null") // Spring API not fully annotated; safe per contract
+  ```
+- Do **not** scatter suppressions through domain or application logic.
+
+### Working with Existing Code
+
+- New code must be **warning-free** with respect to null analysis.
+- When modifying an existing domain file, clean up its nullness warnings as part of the change.
+- Prefer strengthening invariants (non-null fields with defensive getters) over relaxing them.
+
+See `docs/development/nullness-guidelines.md` for additional patterns and examples.
+
+---
+
 ## Docker & Colima Setup (macOS)
 
 **For local testing with Testcontainers and docker-compose on macOS, use Colima.**

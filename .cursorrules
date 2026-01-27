@@ -135,6 +135,62 @@ API → Application → Domain ← Infrastructure
 - **Domain has ZERO external dependencies** (no Spring, no JPA annotations)
 - Infrastructure implements domain ports
 
+## Null-Safety (Nullness) - CRITICAL
+
+We use Eclipse null analysis with **package-level defaults** and treat **nulls as exceptional** in our own code.
+
+### Defaults
+
+- Use `@NonNullApi` and `@NonNullFields` in package-level `package-info.java` for:
+  - `domain.*`
+  - `application.*`
+  - `api.*`
+  - `infrastructure.*` and `repository.*` where reasonable
+- This means:
+  - Method **parameters and return values** are non-null by default.
+  - **Fields** are non-null by default.
+  - `@Nullable` opt-out is required wherever `null` is a legitimate value.
+
+### Domain & Entity Rules
+
+- **Required fields** (IDs, mandatory relationships, timestamps, required value objects):
+  - Must be marked non-null in persistence:
+    - `@Column(nullable = false)`
+    - `@ManyToOne(optional = false)` / `@JoinColumn(nullable = false)`
+  - Must be initialized via **constructors or factory methods**.
+  - Getters should **enforce the non-null contract**:
+    ```java
+    public Tenant getTenant() {
+        return Objects.requireNonNull(tenant, "tenant");
+    }
+    ```
+- **Optional fields** (e.g. last login, optional metadata):
+  - Must be explicitly annotated with `@Nullable` on both field and accessor:
+    ```java
+    @Nullable
+    private Instant lastLoginAt;
+
+    @Nullable
+    public Instant getLastLoginAt() { ... }
+    ```
+
+### Suppressions
+
+- Suppress nullness warnings **only at boundaries** (framework integration), never across core domain logic:
+  - Example: Spring APIs or JPA callbacks that aren't properly annotated.
+- When you must suppress:
+  - Use the **narrowest possible scope** (`@SuppressWarnings("null")` on a single method).
+  - Add a **short comment** explaining why it is safe.
+
+### Refactoring Guidelines
+
+- New code:
+  - Must be written null-safe from the start and compile **without nullness warnings**.
+- Existing code:
+  - When you touch a file in `domain.*`, **clean up its nullness warnings as part of the change**.
+  - Prefer strengthening invariants (constructor initialization + non-null getters) over weakening them.
+- For more details and patterns, see `docs/development/nullness-guidelines.md`.
+
 ### Package Structure
 
 ```

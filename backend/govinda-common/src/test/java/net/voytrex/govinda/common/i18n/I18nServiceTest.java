@@ -63,6 +63,16 @@ class I18nServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("Locale fallback")
+    class LocaleFallback {
+
+        @Test
+        void shouldFallbackToEnglish_when_languageIsNull() {
+            assertThat(service.translateError("ENTITY_NOT_FOUND", null)).isEqualTo("Entity not found");
+        }
+    }
+
     private MessageSource messageSource() {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("messages");

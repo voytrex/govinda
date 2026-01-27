@@ -111,6 +111,10 @@ public class I18nService {
      * Converts a Language enum to a Java Locale.
      */
     private Locale toLocale(Language language) {
+        if (language == null) {
+            return Locale.ENGLISH;
+        }
+
         return switch (language) {
             case DE -> Locale.GERMAN;
             case FR -> Locale.FRENCH;

@@ -16,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -70,7 +71,7 @@ public class UserTenant {
     }
 
     public UUID getId() {
-        return id;
+        return Objects.requireNonNull(id, "id");
     }
 
     public void setId(UUID id) {
@@ -78,7 +79,7 @@ public class UserTenant {
     }
 
     public User getUser() {
-        return user;
+        return Objects.requireNonNull(user, "user");
     }
 
     public void setUser(User user) {
@@ -86,7 +87,7 @@ public class UserTenant {
     }
 
     public Tenant getTenant() {
-        return tenant;
+        return Objects.requireNonNull(tenant, "tenant");
     }
 
     public void setTenant(Tenant tenant) {
@@ -94,7 +95,7 @@ public class UserTenant {
     }
 
     public Role getRole() {
-        return role;
+        return Objects.requireNonNull(role, "role");
     }
 
     public void setRole(Role role) {
@@ -110,7 +111,7 @@ public class UserTenant {
     }
 
     public Instant getCreatedAt() {
-        return createdAt;
+        return Objects.requireNonNull(createdAt, "createdAt");
     }
 
     public void setCreatedAt(Instant createdAt) {
@@ -118,7 +119,7 @@ public class UserTenant {
     }
 
     public Instant getUpdatedAt() {
-        return updatedAt;
+        return Objects.requireNonNull(updatedAt, "updatedAt");
     }
 
     public void setUpdatedAt(Instant updatedAt) {
