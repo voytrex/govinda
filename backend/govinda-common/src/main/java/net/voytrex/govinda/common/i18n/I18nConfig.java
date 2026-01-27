@@ -13,7 +13,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -43,15 +43,17 @@ public class I18nConfig {
      * Defaults to German (DE) if no language preference is specified.
      */
     @Bean
+    @SuppressWarnings("null") // Spring API lacks nullness annotations; boundary suppression.
     public LocaleResolver localeResolver() {
         AcceptHeaderLocaleResolver localeResolver = new AcceptHeaderLocaleResolver();
         localeResolver.setDefaultLocale(Locale.GERMAN);
-        localeResolver.setSupportedLocales(Arrays.asList(
+        List<Locale> supportedLocales = List.of(
             Locale.GERMAN,
             Locale.FRENCH,
             Locale.ITALIAN,
             Locale.ENGLISH
-        ));
+        );
+        localeResolver.setSupportedLocales(supportedLocales);
         return localeResolver;
     }
 }

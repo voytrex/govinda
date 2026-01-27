@@ -29,4 +29,5 @@ public LocaleResolver localeResolver() {
 
 ### Notes
 - Prefer package-level `@NonNullApi` / `@NonNullFields` for our own code.
+- Apply the same defaults to test packages to keep analysis consistent across sources.
 - Revisit suppressions when Spring/JSpecify annotations become available in the APIs we use.
