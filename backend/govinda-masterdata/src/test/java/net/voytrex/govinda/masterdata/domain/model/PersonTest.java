@@ -9,11 +9,16 @@ package net.voytrex.govinda.masterdata.domain.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
+import net.voytrex.govinda.common.domain.model.AddressType;
 import net.voytrex.govinda.common.domain.model.AgeGroup;
 import net.voytrex.govinda.common.domain.model.AhvNumber;
+import net.voytrex.govinda.common.domain.model.Canton;
 import net.voytrex.govinda.common.domain.model.Gender;
+import net.voytrex.govinda.common.domain.model.Language;
 import net.voytrex.govinda.common.domain.model.MaritalStatus;
 import net.voytrex.govinda.common.domain.model.MutationType;
 import net.voytrex.govinda.common.domain.model.PersonStatus;
@@ -100,6 +105,24 @@ class PersonTest {
             ))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("Date of birth");
+        }
+
+        @Test
+        void shouldUseDefaultsWhenNationalityOrLanguageMissing() {
+            Person person = new Person(
+                tenantId,
+                new AhvNumber("756.1234.5678.90"),
+                "Müller",
+                "Hans",
+                LocalDate.of(1985, 3, 15),
+                Gender.MALE,
+                null,
+                null,
+                null
+            );
+
+            assertThat(person.getNationality()).isEqualTo("CHE");
+            assertThat(person.getPreferredLanguage()).isEqualTo(Language.DE);
         }
     }
 
@@ -191,6 +214,109 @@ class PersonTest {
         }
     }
 
+    @Nested
+    @DisplayName("Address Management")
+    class AddressManagement {
+
+        @Test
+        void shouldReturnCurrentAndHistoricMainAddresses() {
+            Person person = createTestPerson("Müller", "Hans");
+            Address oldAddress = createAddress(
+                person.getId(),
+                LocalDate.of(2020, 1, 1),
+                LocalDate.of(2023, 12, 31)
+            );
+            Address currentAddress = createAddress(
+                person.getId(),
+                LocalDate.of(2024, 1, 1),
+                null
+            );
+            person.setAddresses(List.of(oldAddress, currentAddress));
+
+            assertThat(person.currentAddress()).isEqualTo(currentAddress);
+            assertThat(person.addressAt(LocalDate.of(2022, 6, 1))).isEqualTo(oldAddress);
+        }
+
+        @Test
+        void shouldCloseExistingAddressWhenAddingNewOne() {
+            Person person = createTestPerson("Müller", "Hans");
+            Address currentAddress = createAddress(person.getId(), LocalDate.of(2023, 1, 1), null);
+            person.addAddress(currentAddress, null);
+
+            LocalDate closeOn = LocalDate.of(2024, 1, 31);
+            Address newAddress = createAddress(person.getId(), LocalDate.of(2024, 2, 1), null);
+            person.addAddress(newAddress, closeOn);
+
+            assertThat(currentAddress.getValidTo()).isEqualTo(closeOn);
+            assertThat(person.currentAddress()).isEqualTo(newAddress);
+        }
+    }
+
+    @Nested
+    @DisplayName("Setters and Equality")
+    class SettersAndEquality {
+
+        @Test
+        void shouldUpdateFieldsUsingSetters() {
+            Person person = createTestPerson("Müller", "Hans");
+            UUID newTenantId = UUID.randomUUID();
+            AhvNumber newAhv = new AhvNumber("756.9876.5432.10");
+
+            person.setId(UUID.randomUUID());
+            person.setTenantId(newTenantId);
+            person.setAhvNr(newAhv);
+            person.setLastName("Schmidt");
+            person.setFirstName("Anna");
+            person.setDateOfBirth(LocalDate.of(1990, 4, 10));
+            person.setGender(Gender.FEMALE);
+            person.setMaritalStatus(MaritalStatus.MARRIED);
+            person.setNationality("DEU");
+            person.setPreferredLanguage(Language.FR);
+            person.setStatus(PersonStatus.DECEASED);
+            person.setCreatedAt(Instant.parse("2024-01-01T00:00:00Z"));
+            person.setUpdatedAt(Instant.parse("2024-02-01T00:00:00Z"));
+            person.setVersion(2L);
+
+            assertThat(person.getTenantId()).isEqualTo(newTenantId);
+            assertThat(person.getAhvNr()).isEqualTo(newAhv);
+            assertThat(person.getLastName()).isEqualTo("Schmidt");
+            assertThat(person.getFirstName()).isEqualTo("Anna");
+            assertThat(person.getDateOfBirth()).isEqualTo(LocalDate.of(1990, 4, 10));
+            assertThat(person.getGender()).isEqualTo(Gender.FEMALE);
+            assertThat(person.getMaritalStatus()).isEqualTo(MaritalStatus.MARRIED);
+            assertThat(person.getNationality()).isEqualTo("DEU");
+            assertThat(person.getPreferredLanguage()).isEqualTo(Language.FR);
+            assertThat(person.getStatus()).isEqualTo(PersonStatus.DECEASED);
+            assertThat(person.getCreatedAt()).isEqualTo(Instant.parse("2024-01-01T00:00:00Z"));
+            assertThat(person.getUpdatedAt()).isEqualTo(Instant.parse("2024-02-01T00:00:00Z"));
+            assertThat(person.getVersion()).isEqualTo(2L);
+        }
+
+        @Test
+        void shouldRejectBlankNamesInSetters() {
+            Person person = createTestPerson("Müller", "Hans");
+
+            assertThatThrownBy(() -> person.setLastName(" "))
+                .isInstanceOf(IllegalArgumentException.class);
+            assertThatThrownBy(() -> person.setFirstName(" "))
+                .isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        void shouldCompareByIdAndProvideString() {
+            Person first = createTestPerson("Müller", "Hans");
+            Person second = createTestPerson("Schmidt", "Anna");
+            UUID sharedId = UUID.randomUUID();
+
+            first.setId(sharedId);
+            second.setId(sharedId);
+
+            assertThat(first).isEqualTo(second);
+            assertThat(first.hashCode()).isEqualTo(second.hashCode());
+            assertThat(first.toString()).contains(sharedId.toString());
+        }
+    }
+
     private Person createTestPerson(LocalDate dateOfBirth) {
         return new Person(
             tenantId,
@@ -215,6 +341,24 @@ class PersonTest {
             Gender.MALE,
             null,
             "CHE",
+            null
+        );
+    }
+
+    private Address createAddress(UUID personId, LocalDate validFrom, LocalDate validTo) {
+        return new Address(
+            personId,
+            AddressType.MAIN,
+            "Bahnhofstrasse",
+            "42",
+            null,
+            "8001",
+            "Zürich",
+            Canton.ZH,
+            "CHE",
+            UUID.randomUUID(),
+            validFrom,
+            validTo,
             null
         );
     }

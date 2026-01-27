@@ -200,6 +200,104 @@ class AddressTest {
 
             assertThat(address.formattedStreet()).isEqualTo("Bahnhofstrasse");
         }
+
+        @Test
+        void shouldIncludeAdditionalLineInFormattedLines() {
+            Address address = new Address(
+                personId,
+                AddressType.MAIN,
+                "Bahnhofstrasse",
+                "42",
+                "c/o Muster AG",
+                "8001",
+                "Zürich",
+                Canton.ZH,
+                "CHE",
+                regionId,
+                LocalDate.of(2024, 1, 1),
+                null,
+                null
+            );
+
+            assertThat(address.formattedLines())
+                .containsExactly("Bahnhofstrasse 42", "c/o Muster AG", "8001 Zürich");
+        }
+    }
+
+    @Nested
+    @DisplayName("Equality and String")
+    class EqualityAndString {
+
+        @Test
+        void shouldCompareByIdAndProvideString() {
+            Address first = createTestAddress(LocalDate.of(2024, 1, 1), null);
+            Address second = createTestAddress(LocalDate.of(2024, 1, 1), null);
+            UUID sharedId = UUID.randomUUID();
+
+            first.setId(sharedId);
+            second.setId(sharedId);
+
+            assertThat(first).isEqualTo(second);
+            assertThat(first.hashCode()).isEqualTo(second.hashCode());
+            assertThat(first.toString()).contains(sharedId.toString());
+        }
+    }
+
+    @Nested
+    @DisplayName("Setters and Getters")
+    class SettersAndGetters {
+
+        @Test
+        void shouldUpdateFieldsUsingSetters() {
+            Address address = createTestAddress(LocalDate.of(2024, 1, 1), null);
+            UUID newPersonId = UUID.randomUUID();
+            UUID premiumRegionId = UUID.randomUUID();
+            UUID createdBy = UUID.randomUUID();
+
+            address.setPersonId(newPersonId);
+            address.setAddressType(AddressType.BILLING);
+            address.setStreet("Seestrasse");
+            address.setHouseNumber("10a");
+            address.setAdditionalLine("Postfach 123");
+            address.setPostalCode("8002");
+            address.setCity("Zürich");
+            address.setCanton(Canton.ZH);
+            address.setCountry("DEU");
+            address.setPremiumRegionId(premiumRegionId);
+            address.setValidFrom(LocalDate.of(2024, 2, 1));
+            address.setValidTo(LocalDate.of(2024, 12, 31));
+            address.setRecordedAt(java.time.Instant.parse("2024-02-01T00:00:00Z"));
+            address.setSupersededAt(java.time.Instant.parse("2024-03-01T00:00:00Z"));
+            address.setCreatedBy(createdBy);
+
+            assertThat(address.getPersonId()).isEqualTo(newPersonId);
+            assertThat(address.getAddressType()).isEqualTo(AddressType.BILLING);
+            assertThat(address.getStreet()).isEqualTo("Seestrasse");
+            assertThat(address.getHouseNumber()).isEqualTo("10a");
+            assertThat(address.getAdditionalLine()).isEqualTo("Postfach 123");
+            assertThat(address.getPostalCode()).isEqualTo("8002");
+            assertThat(address.getCity()).isEqualTo("Zürich");
+            assertThat(address.getCanton()).isEqualTo(Canton.ZH);
+            assertThat(address.getCountry()).isEqualTo("DEU");
+            assertThat(address.getPremiumRegionId()).isEqualTo(premiumRegionId);
+            assertThat(address.getValidFrom()).isEqualTo(LocalDate.of(2024, 2, 1));
+            assertThat(address.getValidTo()).isEqualTo(LocalDate.of(2024, 12, 31));
+            assertThat(address.getRecordedAt()).isEqualTo(java.time.Instant.parse("2024-02-01T00:00:00Z"));
+            assertThat(address.getSupersededAt()).isEqualTo(java.time.Instant.parse("2024-03-01T00:00:00Z"));
+            assertThat(address.getCreatedBy()).isEqualTo(createdBy);
+        }
+
+        @Test
+        void shouldRejectBlankValuesInSetters() {
+            Address address = createTestAddress(LocalDate.of(2024, 1, 1), null);
+
+            assertThatThrownBy(() -> address.setStreet(" "))
+                .isInstanceOf(IllegalArgumentException.class);
+            assertThatThrownBy(() -> address.setPostalCode(" "))
+                .isInstanceOf(IllegalArgumentException.class);
+            assertThatThrownBy(() -> address.setCity(" "))
+                .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
     private Address createTestAddress(LocalDate validTo) {

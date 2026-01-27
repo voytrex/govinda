@@ -9,7 +9,9 @@ package net.voytrex.govinda.masterdata.domain.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.model.HouseholdRole;
 import org.junit.jupiter.api.DisplayName;
@@ -160,6 +162,67 @@ class HouseholdTest {
             Household household = createTestHousehold();
 
             assertThat(household.primaryMember()).isNull();
+        }
+    }
+
+    @Nested
+    @DisplayName("Setters and Equality")
+    class SettersAndEquality {
+
+        @Test
+        void shouldUpdateFieldsUsingSetters() {
+            Household household = createTestHousehold();
+            UUID newTenantId = UUID.randomUUID();
+            HouseholdMember member = new HouseholdMember(
+                household.getId(),
+                UUID.randomUUID(),
+                HouseholdRole.PRIMARY,
+                LocalDate.of(2024, 1, 1)
+            );
+
+            household.setTenantId(newTenantId);
+            household.setName("Familie Keller");
+            household.setCreatedAt(Instant.parse("2024-01-01T00:00:00Z"));
+            household.setUpdatedAt(Instant.parse("2024-02-01T00:00:00Z"));
+            household.setVersion(3L);
+            household.setMembers(List.of(member));
+
+            assertThat(household.getTenantId()).isEqualTo(newTenantId);
+            assertThat(household.getName()).isEqualTo("Familie Keller");
+            assertThat(household.getCreatedAt()).isEqualTo(Instant.parse("2024-01-01T00:00:00Z"));
+            assertThat(household.getUpdatedAt()).isEqualTo(Instant.parse("2024-02-01T00:00:00Z"));
+            assertThat(household.getVersion()).isEqualTo(3L);
+            assertThat(household.getMembers()).containsExactly(member);
+        }
+
+        @Test
+        void shouldFilterCurrentMembersAndCompareById() {
+            Household household = createTestHousehold();
+            HouseholdMember current = new HouseholdMember(
+                household.getId(),
+                UUID.randomUUID(),
+                HouseholdRole.PRIMARY,
+                LocalDate.of(2024, 1, 1)
+            );
+            HouseholdMember former = new HouseholdMember(
+                household.getId(),
+                UUID.randomUUID(),
+                HouseholdRole.CHILD,
+                LocalDate.of(2023, 1, 1)
+            );
+            former.setValidTo(LocalDate.of(2023, 12, 31));
+            household.setMembers(List.of(current, former));
+
+            assertThat(household.currentMembers()).containsExactly(current);
+
+            Household other = createTestHousehold();
+            UUID sharedId = UUID.randomUUID();
+            household.setId(sharedId);
+            other.setId(sharedId);
+
+            assertThat(household).isEqualTo(other);
+            assertThat(household.hashCode()).isEqualTo(other.hashCode());
+            assertThat(household.toString()).contains(sharedId.toString());
         }
     }
 
