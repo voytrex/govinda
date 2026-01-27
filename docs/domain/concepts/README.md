@@ -1,6 +1,18 @@
-# Swiss Healthcare Concepts
+# Swiss Service Domain Concepts
 
-This section explains the fundamental concepts of the Swiss healthcare system. The documentation is designed for both end-users learning about Swiss health insurance and developers implementing the domain model.
+This section explains the fundamental concepts of Swiss regulated services covered by the Govinda ERP. The documentation is designed for both end-users learning about Swiss regulations and developers implementing the domain model.
+
+## Service Domains
+
+| Domain | Regulator | Description |
+|--------|-----------|-------------|
+| **Healthcare** | BAG | Mandatory (KVG) and supplementary (VVG) health insurance |
+| **Broadcast** | BAKOM | Radio and television fees (RTVG) |
+| **Telecom** | BAKOM | Telecommunications services (future) |
+
+---
+
+## Healthcare Domain
 
 ## Learning Order
 
@@ -75,4 +87,54 @@ Medical Costs
 
 ---
 
-*Last Updated: 2026-01-26*
+## Broadcast Domain (RTVG/BAKOM)
+
+Swiss radio and television fees are mandatory for all households and certain businesses.
+
+| # | Document | Duration | Description |
+|---|----------|----------|-------------|
+| 1 | [Radio/TV Fee (RTVG)](./radio-tv-fee.md) | 15 min | Complete guide to Swiss broadcast fees |
+
+### Quick Reference - Broadcast Fees
+
+| Subscriber Type | Annual Fee (CHF) | Collector |
+|-----------------|------------------|-----------|
+| Private Household | 335.00 | Serafe AG |
+| Collective Household | 670.00 | Serafe AG |
+| Business (Tier 1-18) | 160 - 49,925 | ESTV |
+
+### Exemptions Available
+
+| Exemption | Requirement | Duration |
+|-----------|-------------|----------|
+| EL Recipients | AHV/IV supplementary benefits | 3 years (renewable) |
+| Deaf-Blind | Medical certificate, all members | Indefinite |
+| Diplomatic | FDFA identity card | During status |
+
+### Business Fee Tiers
+
+```
+Turnover >= CHF 500,000 → Fee liability begins
+Turnover < CHF 500,000  → Exempt from corporate fee
+
+Tier determination based on total turnover (excl. VAT)
+18 tiers from CHF 160 to CHF 49,925 per year
+```
+
+---
+
+## Official Resources
+
+### Healthcare
+- [BAG - Krankenversicherung](https://www.bag.admin.ch/bag/de/home/versicherungen/krankenversicherung.html)
+- [Priminfo - Premium Comparison](https://www.priminfo.admin.ch)
+- [KVG Law Text](https://www.fedlex.admin.ch/eli/cc/1995/1328_1328_1328/de)
+
+### Media (Serafe)
+- [Serafe Official](https://www.serafe.ch/en)
+- [BAKOM Fee Info](https://www.bakom.admin.ch/en/electronic-media/radio-and-television-fee)
+- [ESTV Corporate Fee](https://www.estv.admin.ch/estv/en/home/federal-taxes/corporate-fee-for-radio-and-television.html)
+
+---
+
+*Last Updated: 2026-01-27*
