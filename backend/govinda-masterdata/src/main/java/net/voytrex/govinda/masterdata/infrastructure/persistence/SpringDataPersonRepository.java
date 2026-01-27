@@ -1,6 +1,6 @@
 /*
  * Govinda ERP - Spring Data Person Repository
- * Copyright 2024 Voytrex
+ * Copyright 2026 Voytrex
  * SPDX-License-Identifier: Apache-2.0
  */
 

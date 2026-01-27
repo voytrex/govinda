@@ -1,6 +1,6 @@
 /*
  * Govinda ERP - Base Test Configuration for Repository Tests
- * Copyright 2024 Voytrex
+ * Copyright 2026 Voytrex
  * SPDX-License-Identifier: Apache-2.0
  *
  * Base class for integration tests using Testcontainers.
