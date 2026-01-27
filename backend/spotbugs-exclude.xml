@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Exclude generated code and test fixtures -->
+    <Match>
+        <Source name="~.*\.java"/>
+    </Match>
+    
+    <!-- Allow equals() without hashCode() in test fixtures -->
+    <Match>
+        <Class name="~.*Test"/>
+        <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS"/>
+    </Match>
+    
+    <!-- Allow test classes to have mutable fields -->
+    <Match>
+        <Class name="~.*Test"/>
+        <Bug pattern="EI_EXPOSE_REP"/>
+    </Match>
+</FindBugsFilter>
+
