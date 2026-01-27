@@ -61,19 +61,11 @@ class JpaUserRepositoryTest {
                 System.getenv().getOrDefault("SPRING_DATASOURCE_USERNAME", "govinda"));
             registry.add("spring.datasource.password", () -> 
                 System.getenv().getOrDefault("SPRING_DATASOURCE_PASSWORD", "govinda"));
-            // For @DataJpaTest, enable Hibernate DDL since Flyway doesn't run
-            registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
-            // Enable global quoting for DDL to handle reserved words like "user"
-            registry.add("spring.jpa.properties.hibernate.globally_quoted_identifiers", () -> "true");
         } else {
             // Use Testcontainers
             registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
             registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
             registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
-            // For @DataJpaTest, enable Hibernate DDL since Flyway doesn't run
-            registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
-            // Enable global quoting for DDL to handle reserved words like "user"
-            registry.add("spring.jpa.properties.hibernate.globally_quoted_identifiers", () -> "true");
         }
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
     }

@@ -20,8 +20,7 @@ spring:
   # JPA Configuration
   jpa:
     hibernate:
-      # Default: none (Flyway manages schema)
-      # @DataJpaTest tests override this to 'create-drop' via @DynamicPropertySource
+      # Default: none (Flyway manages schema in all tests)
       ddl-auto: none
     open-in-view: false
     properties:
@@ -35,8 +34,7 @@ spring:
         show_sql: false  # Set to true for debugging
 
   # Flyway Migration Configuration
-  # Flyway runs automatically with @SpringBootTest
-  # @DataJpaTest doesn't run Flyway, so those tests use Hibernate DDL instead
+  # Flyway runs automatically for tests that include its auto-configuration
   flyway:
     enabled: true
     locations: classpath:db/migration
