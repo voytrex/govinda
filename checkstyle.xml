@@ -23,6 +23,11 @@
     </module>
 
     <module name="TreeWalker">
+        <!-- Allow inline CHECKSTYLE:OFF / CHECKSTYLE:ON comments -->
+        <module name="SuppressionCommentFilter">
+            <property name="offCommentFormat" value="CHECKSTYLE:OFF"/>
+            <property name="onCommentFormat" value="CHECKSTYLE:ON"/>
+        </module>
         <!-- Naming Conventions -->
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>

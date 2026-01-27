@@ -11,15 +11,25 @@ import jakarta.validation.constraints.NotBlank;
 
 @Schema(description = "Login credentials for authentication")
 public record LoginRequest(
-    @Schema(description = "Username for authentication", example = "admin", required = true)
+    @Schema(
+        description = "Username for authentication",
+        example = "admin",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
     @NotBlank(message = "Username is required")
     String username,
-    
-    @Schema(description = "Password for authentication", example = "password123", required = true)
+
+    @Schema(
+        description = "Password for authentication",
+        example = "password123",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
     @NotBlank(message = "Password is required")
     String password,
-    
-    @Schema(description = "Optional tenant ID (UUID). If not provided, uses user's default tenant",
-            example = "550e8400-e29b-41d4-a716-446655440000")
+
+    @Schema(
+        description = "Optional tenant ID (UUID). If not provided, uses user's default tenant",
+        example = "550e8400-e29b-41d4-a716-446655440000"
+    )
     String tenantId
 ) { }
