@@ -1,0 +1,74 @@
+# ═══════════════════════════════════════════════════════════════
+# Govinda ERP - Test Configuration for Masterdata Module
+# ═══════════════════════════════════════════════════════════════
+#
+# This configuration is used for all tests in govinda-masterdata.
+# It ensures proper database setup for both @DataJpaTest and @SpringBootTest.
+#
+
+spring:
+  # Database Configuration
+  # Note: Actual datasource URL is set via @DynamicPropertySource in test classes
+  # This allows tests to work with both Testcontainers and service PostgreSQL
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 5
+      minimum-idle: 1
+      connection-timeout: 10000
+
+  # JPA Configuration
+  jpa:
+    hibernate:
+      # Default: none (Flyway manages schema)
+      # @DataJpaTest tests override this to 'create-drop' via @DynamicPropertySource
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        # Don't quote all identifiers globally - only quote reserved words explicitly
+        # globally_quoted_identifiers: true
+        jdbc:
+          time_zone: UTC
+        show_sql: false  # Set to true for debugging
+
+  # Flyway Migration Configuration
+  # Flyway runs automatically with @SpringBootTest
+  # @DataJpaTest doesn't run Flyway, so those tests use Hibernate DDL instead
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    clean-disabled: true  # Prevent accidental cleanup in tests
+
+  # Jackson Configuration
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+  # Security Configuration for Tests
+  # Disable Swagger UI in tests to avoid security filter chain issues
+  springdoc:
+    swagger-ui:
+      enabled: false
+
+# JWT Configuration for Tests
+govinda:
+  jwt:
+    secret: test-secret-key-for-integration-tests-minimum-32-characters-long
+    expiration-seconds: 3600
+
+# Logging Configuration for Tests
+logging:
+  level:
+    root: WARN
+    net.voytrex.govinda: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+    org.flywaydb: INFO
+    org.testcontainers: INFO
