@@ -36,6 +36,27 @@ class MoneyTest {
         }
 
         @Test
+        void shouldDefaultCurrencyWhenNullProvided() {
+            Money money = new Money(new BigDecimal("50.00"), null);
+
+            assertThat(money.getCurrency()).isEqualTo(Currency.CHF);
+        }
+
+        @Test
+        void shouldRejectNullAmount() {
+            assertThatThrownBy(() -> new Money(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Money amount cannot be null");
+        }
+
+        @Test
+        void shouldRejectAmountWithTooManyDecimals() {
+            assertThatThrownBy(() -> new Money(new BigDecimal("10.123")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("at most 2 decimal places");
+        }
+
+        @Test
         void shouldCreateUsingChfFactoryMethods() {
             assertThat(Money.chf(100.50).getAmount()).isEqualByComparingTo(new BigDecimal("100.50"));
             assertThat(Money.chf(100).getAmount()).isEqualByComparingTo(new BigDecimal("100.00"));
@@ -150,6 +171,15 @@ class MoneyTest {
             assertThatThrownBy(() -> chf.subtract(eur))
                 .isInstanceOf(IllegalArgumentException.class);
         }
+
+        @Test
+        void shouldRejectNullOperand() {
+            Money money = Money.chf(100);
+
+            assertThatThrownBy(() -> money.add(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("different currencies");
+        }
     }
 
     @Nested
@@ -193,6 +223,49 @@ class MoneyTest {
             Money money = Money.chf("123.45");
 
             assertThat(money.toString()).isEqualTo("CHF 123.45");
+        }
+    }
+
+    @Nested
+    @DisplayName("Mutators")
+    class Mutators {
+
+        @Test
+        void shouldUpdateAmountAndCurrency() {
+            Money money = Money.chf(100);
+
+            money.setAmount(new BigDecimal("250.00"));
+            money.setCurrency(Currency.EUR);
+
+            assertThat(money.getAmount()).isEqualByComparingTo(new BigDecimal("250.00"));
+            assertThat(money.getCurrency()).isEqualTo(Currency.EUR);
+        }
+
+        @Test
+        void shouldDefaultCurrencyWhenSetToNull() {
+            Money money = new Money(new BigDecimal("10.00"), Currency.EUR);
+
+            money.setCurrency(null);
+
+            assertThat(money.getCurrency()).isEqualTo(Currency.CHF);
+        }
+
+        @Test
+        void shouldRejectNullAmount() {
+            Money money = Money.chf(10);
+
+            assertThatThrownBy(() -> money.setAmount(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Money amount cannot be null");
+        }
+
+        @Test
+        void shouldRejectAmountWithTooManyDecimals() {
+            Money money = Money.chf(10);
+
+            assertThatThrownBy(() -> money.setAmount(new BigDecimal("10.123")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("at most 2 decimal places");
         }
     }
 }

@@ -8,6 +8,7 @@ package net.voytrex.govinda.common.domain.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -40,6 +41,37 @@ class UserTenantTest {
             assertThat(userTenant.getTenant().getId()).isEqualTo(tenantId);
             assertThat(userTenant.getRole().getId()).isEqualTo(roleId);
             assertThat(userTenant.isDefault()).isTrue();
+        }
+
+        @Test
+        void shouldAllowUpdatingReferences() {
+            User user = new User("testuser", "test@example.com", "hashed_password");
+            Tenant tenant = new Tenant(tenantId, "TENANT1", "Test Tenant");
+            Role role = new Role("USER", "User");
+            UserTenant userTenant = new UserTenant(user, tenant, role);
+            UUID newId = UUID.randomUUID();
+            Instant createdAt = Instant.now().minusSeconds(60);
+            Instant updatedAt = Instant.now();
+
+            User otherUser = new User("other", "other@example.com", "hash");
+            Tenant otherTenant = new Tenant(UUID.randomUUID(), "TENANT2", "Other Tenant");
+            Role otherRole = new Role("ADMIN", "Admin");
+
+            userTenant.setUser(otherUser);
+            userTenant.setTenant(otherTenant);
+            userTenant.setRole(otherRole);
+            userTenant.setDefault(false);
+            userTenant.setId(newId);
+            userTenant.setCreatedAt(createdAt);
+            userTenant.setUpdatedAt(updatedAt);
+
+            assertThat(userTenant.getUser()).isEqualTo(otherUser);
+            assertThat(userTenant.getTenant()).isEqualTo(otherTenant);
+            assertThat(userTenant.getRole()).isEqualTo(otherRole);
+            assertThat(userTenant.isDefault()).isFalse();
+            assertThat(userTenant.getId()).isEqualTo(newId);
+            assertThat(userTenant.getCreatedAt()).isEqualTo(createdAt);
+            assertThat(userTenant.getUpdatedAt()).isEqualTo(updatedAt);
         }
     }
 

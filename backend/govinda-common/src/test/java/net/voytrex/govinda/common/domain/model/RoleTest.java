@@ -8,6 +8,8 @@ package net.voytrex.govinda.common.domain.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
+import java.util.Set;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,6 +33,25 @@ class RoleTest {
             assertThat(role.getCode()).isEqualTo("ADMIN");
             assertThat(role.getName()).isEqualTo("Administrator");
             assertThat(role.getDescription()).isEqualTo("Full system access");
+        }
+
+        @Test
+        void shouldAllowUpdatingCoreFields() {
+            Role role = new Role("USER", "User");
+            Instant createdAt = Instant.now().minusSeconds(120);
+            Instant updatedAt = Instant.now();
+
+            role.setCode("MANAGER");
+            role.setName("Manager");
+            role.setDescription("Manages users");
+            role.setCreatedAt(createdAt);
+            role.setUpdatedAt(updatedAt);
+
+            assertThat(role.getCode()).isEqualTo("MANAGER");
+            assertThat(role.getName()).isEqualTo("Manager");
+            assertThat(role.getDescription()).isEqualTo("Manages users");
+            assertThat(role.getCreatedAt()).isEqualTo(createdAt);
+            assertThat(role.getUpdatedAt()).isEqualTo(updatedAt);
         }
     }
 
@@ -83,6 +104,14 @@ class RoleTest {
             role.getPermissions().add(permission);
 
             assertThat(role.hasPermission("contract", "read")).isFalse();
+        }
+
+        @Test
+        void shouldAllowReplacingPermissionsSet() {
+            Role role = new Role("USER", "User");
+            role.setPermissions(Set.of());
+
+            assertThat(role.getPermissions()).isEmpty();
         }
     }
 }

@@ -9,6 +9,7 @@ package net.voytrex.govinda.common.domain.model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -47,6 +48,14 @@ class UserTest {
             assertThat(user.getFirstName()).isNull();
             assertThat(user.getLastName()).isNull();
             assertThat(user.fullName()).isEqualTo("testuser");
+        }
+
+        @Test
+        void shouldDefaultToActiveStatus() {
+            User user = new User("testuser", "test@example.com", "hashed_password");
+
+            assertThat(user.getStatus()).isEqualTo(UserStatus.ACTIVE);
+            assertThat(user.isActive()).isTrue();
         }
     }
 
@@ -124,6 +133,42 @@ class UserTest {
             assertThat(user.getLastLoginAt()).isAfterOrEqualTo(beforeUpdate);
             assertThat(user.getLastLoginAt()).isBeforeOrEqualTo(afterUpdate);
             assertThat(user.getUpdatedAt()).isAfterOrEqualTo(beforeUpdate);
+        }
+    }
+
+    @Nested
+    @DisplayName("Mutators")
+    class Mutators {
+
+        @Test
+        void shouldUpdateProfileFields() {
+            User user = new User("initial", "initial@example.com", "hash");
+            Instant createdAt = Instant.now().minusSeconds(60);
+            Instant updatedAt = Instant.now();
+            Instant lastLoginAt = Instant.now().minusSeconds(5);
+
+            user.setUsername("updated");
+            user.setEmail("updated@example.com");
+            user.setPasswordHash("newhash");
+            user.setCreatedAt(createdAt);
+            user.setUpdatedAt(updatedAt);
+            user.setLastLoginAt(lastLoginAt);
+
+            assertThat(user.getUsername()).isEqualTo("updated");
+            assertThat(user.getEmail()).isEqualTo("updated@example.com");
+            assertThat(user.getPasswordHash()).isEqualTo("newhash");
+            assertThat(user.getCreatedAt()).isEqualTo(createdAt);
+            assertThat(user.getUpdatedAt()).isEqualTo(updatedAt);
+            assertThat(user.getLastLoginAt()).isEqualTo(lastLoginAt);
+        }
+
+        @Test
+        void shouldAllowReplacingTenantAccessList() {
+            User user = new User("testuser", "test@example.com", "hashed_password");
+
+            user.setTenantAccess(List.of());
+
+            assertThat(user.getTenantAccess()).isEmpty();
         }
     }
 }
