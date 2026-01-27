@@ -76,9 +76,6 @@ jobs:
       - name: Build
         run: mvn -B -DskipTests clean package
 
-      - name: Prepare JaCoCo agent
-        run: mvn -B jacoco:prepare-agent
-
       - name: Run unit tests
         run: mvn -B surefire:test
         env:
