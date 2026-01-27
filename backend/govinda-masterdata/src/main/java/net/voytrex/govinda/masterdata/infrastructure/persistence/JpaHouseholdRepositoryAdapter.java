@@ -6,6 +6,7 @@
 
 package net.voytrex.govinda.masterdata.infrastructure.persistence;
 
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.masterdata.domain.model.Household;
 import net.voytrex.govinda.masterdata.domain.repository.HouseholdRepository;
@@ -27,12 +28,12 @@ public class JpaHouseholdRepositoryAdapter implements HouseholdRepository {
     }
 
     @Override
-    public Household findById(UUID id) {
-        return jpaHouseholdRepository.findById(id).orElse(null);
+    public Optional<Household> findById(UUID id) {
+        return jpaHouseholdRepository.findById(id);
     }
 
     @Override
-    public Household findByIdAndTenantId(UUID id, UUID tenantId) {
+    public Optional<Household> findByIdAndTenantId(UUID id, UUID tenantId) {
         return jpaHouseholdRepository.findByIdAndTenantId(id, tenantId);
     }
 
@@ -42,7 +43,7 @@ public class JpaHouseholdRepositoryAdapter implements HouseholdRepository {
     }
 
     @Override
-    public Household findByPersonId(UUID personId, UUID tenantId) {
+    public Optional<Household> findByPersonId(UUID personId, UUID tenantId) {
         return jpaHouseholdRepository.findByPersonId(personId, tenantId);
     }
 

@@ -50,11 +50,8 @@ public class AuthenticationService {
      */
     @Transactional
     public String authenticate(String username, String password, UUID tenantId) {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            // Return 401 (Unauthorized) for authentication failures, not 404
-            throw new AuthenticationException("Invalid credentials");
-        }
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new AuthenticationException("Invalid credentials"));
 
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new AuthenticationException("User account is " + user.getStatus().name().toLowerCase());
@@ -90,10 +87,8 @@ public class AuthenticationService {
      * Gets all tenants a user can access.
      */
     public List<UserTenantInfo> getUserTenants(UUID userId) {
-        User user = userRepository.findById(userId);
-        if (user == null) {
-            throw new EntityNotFoundByFieldException("User", "id", userId.toString());
-        }
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new EntityNotFoundByFieldException("User", "id", userId.toString()));
 
         return userTenantRepository.findByUserId(userId).stream()
             .map(ut -> new UserTenantInfo(

@@ -41,16 +41,16 @@ class JpaHouseholdRepositoryAdapterTest {
 
         when(jpaHouseholdRepository.save(household)).thenReturn(household);
         when(jpaHouseholdRepository.findById(householdId)).thenReturn(Optional.of(household));
-        when(jpaHouseholdRepository.findByIdAndTenantId(householdId, tenantId)).thenReturn(household);
+        when(jpaHouseholdRepository.findByIdAndTenantId(householdId, tenantId)).thenReturn(Optional.of(household));
         when(jpaHouseholdRepository.findByTenantId(tenantId, PageRequest.of(0, 10)))
             .thenReturn(new PageImpl<>(java.util.List.of(household)));
-        when(jpaHouseholdRepository.findByPersonId(personId, tenantId)).thenReturn(household);
+        when(jpaHouseholdRepository.findByPersonId(personId, tenantId)).thenReturn(Optional.of(household));
 
         assertThat(adapter.save(household)).isEqualTo(household);
-        assertThat(adapter.findById(householdId)).isEqualTo(household);
-        assertThat(adapter.findByIdAndTenantId(householdId, tenantId)).isEqualTo(household);
+        assertThat(adapter.findById(householdId)).contains(household);
+        assertThat(adapter.findByIdAndTenantId(householdId, tenantId)).contains(household);
         assertThat(adapter.findByTenantId(tenantId, PageRequest.of(0, 10)).getContent()).containsExactly(household);
-        assertThat(adapter.findByPersonId(personId, tenantId)).isEqualTo(household);
+        assertThat(adapter.findByPersonId(personId, tenantId)).contains(household);
 
         adapter.delete(household);
 
@@ -58,11 +58,11 @@ class JpaHouseholdRepositoryAdapterTest {
     }
 
     @Test
-    @DisplayName("should return null when household not found")
-    void should_returnNullWhenNotFound() {
+    @DisplayName("should return empty when household not found")
+    void should_returnEmptyWhenNotFound() {
         UUID householdId = UUID.randomUUID();
         when(jpaHouseholdRepository.findById(householdId)).thenReturn(Optional.empty());
 
-        assertThat(adapter.findById(householdId)).isNull();
+        assertThat(adapter.findById(householdId)).isEmpty();
     }
 }

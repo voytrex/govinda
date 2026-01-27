@@ -62,14 +62,14 @@ class JpaPersonRepositoryAdapterTest {
 
         when(jpaPersonRepository.save(person)).thenReturn(person);
         when(jpaPersonRepository.findById(personId)).thenReturn(Optional.of(person));
-        when(jpaPersonRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
-        when(jpaPersonRepository.findByAhvNrAndTenantId(person.getAhvNr(), tenantId)).thenReturn(person);
+        when(jpaPersonRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
+        when(jpaPersonRepository.findByAhvNrAndTenantId(person.getAhvNr(), tenantId)).thenReturn(Optional.of(person));
         when(jpaPersonRepository.existsByAhvNrAndTenantId(person.getAhvNr(), tenantId)).thenReturn(true);
 
         assertThat(adapter.save(person)).isEqualTo(person);
-        assertThat(adapter.findById(personId)).isEqualTo(person);
-        assertThat(adapter.findByIdAndTenantId(personId, tenantId)).isEqualTo(person);
-        assertThat(adapter.findByAhvNr(person.getAhvNr(), tenantId)).isEqualTo(person);
+        assertThat(adapter.findById(personId)).contains(person);
+        assertThat(adapter.findByIdAndTenantId(personId, tenantId)).contains(person);
+        assertThat(adapter.findByAhvNr(person.getAhvNr(), tenantId)).contains(person);
         assertThat(adapter.existsByAhvNr(person.getAhvNr(), tenantId)).isTrue();
 
         adapter.delete(person);
@@ -78,12 +78,12 @@ class JpaPersonRepositoryAdapterTest {
     }
 
     @Test
-    @DisplayName("should return null when person not found")
-    void should_returnNullWhenNotFound() {
+    @DisplayName("should return empty when person not found")
+    void should_returnEmptyWhenNotFound() {
         UUID personId = UUID.randomUUID();
         when(jpaPersonRepository.findById(personId)).thenReturn(Optional.empty());
 
-        assertThat(adapter.findById(personId)).isNull();
+        assertThat(adapter.findById(personId)).isEmpty();
     }
 
     @Test
@@ -140,10 +140,10 @@ class JpaPersonRepositoryAdapterTest {
 
         when(jpaPersonHistoryRepository.save(entry)).thenReturn(entry);
         when(jpaPersonHistoryRepository.findByPersonIdOrderByValidFromDesc(personId)).thenReturn(List.of(entry));
-        when(jpaPersonHistoryRepository.findByPersonIdAndDate(personId, date)).thenReturn(entry);
+        when(jpaPersonHistoryRepository.findByPersonIdAndDate(personId, date)).thenReturn(Optional.of(entry));
 
         assertThat(adapter.saveHistory(entry)).isEqualTo(entry);
         assertThat(adapter.findHistoryByPersonId(personId)).containsExactly(entry);
-        assertThat(adapter.findHistoryAt(personId, date)).isEqualTo(entry);
+        assertThat(adapter.findHistoryAt(personId, date)).contains(entry);
     }
 }

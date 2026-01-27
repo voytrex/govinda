@@ -8,6 +8,7 @@ package net.voytrex.govinda.masterdata.infrastructure.persistence;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.masterdata.domain.model.PersonHistoryEntry;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,7 +26,7 @@ public interface SpringDataPersonHistoryRepository extends JpaRepository<PersonH
         AND h.supersededAt IS NULL
         ORDER BY h.validFrom DESC
         """)
-    PersonHistoryEntry findByPersonIdAndDate(
+    Optional<PersonHistoryEntry> findByPersonIdAndDate(
         @Param("personId") UUID personId,
         @Param("date") LocalDate date
     );

@@ -6,22 +6,22 @@
 
 package net.voytrex.govinda.common.domain.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.model.User;
 
 /**
  * Repository interface for User entities.
  * 
- * Note: When implemented by Spring Data JPA repositories, findById may return
- * Optional internally, but the interface contract returns User (or null if not found).
+ * Note: Use Optional return types for lookups that may not exist.
  */
 public interface UserRepository {
     /**
-     * Find user by ID. Returns null if not found.
+     * Find user by ID.
      */
-    User findById(UUID id);
-    
-    User findByUsername(String username);
-    User findByEmail(String email);
+    Optional<User> findById(UUID id);
+
+    Optional<User> findByUsername(String username);
+    Optional<User> findByEmail(String email);
     User save(User user);
 }

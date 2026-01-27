@@ -100,10 +100,10 @@ class JpaUserRepositoryTest {
             User user = new User("testuser", "test@example.com", "hashed_password");
             jpaUserRepository.save(user);
 
-            User found = jpaUserRepository.findByUsername("testuser");
+            var found = jpaUserRepository.findByUsername("testuser");
 
-            assertThat(found).isNotNull();
-            assertThat(found.getUsername()).isEqualTo("testuser");
+            assertThat(found).isPresent();
+            assertThat(found.orElseThrow().getUsername()).isEqualTo("testuser");
         }
 
         @Test
@@ -111,17 +111,17 @@ class JpaUserRepositoryTest {
             User user = new User("testuser", "test@example.com", "hashed_password");
             jpaUserRepository.save(user);
 
-            User found = jpaUserRepository.findByEmail("test@example.com");
+            var found = jpaUserRepository.findByEmail("test@example.com");
 
-            assertThat(found).isNotNull();
-            assertThat(found.getEmail()).isEqualTo("test@example.com");
+            assertThat(found).isPresent();
+            assertThat(found.orElseThrow().getEmail()).isEqualTo("test@example.com");
         }
 
         @Test
-        void shouldReturnNullWhenUserNotFoundByUsername() {
-            User found = jpaUserRepository.findByUsername("nonexistent");
+        void shouldReturnEmptyWhenUserNotFoundByUsername() {
+            var found = jpaUserRepository.findByUsername("nonexistent");
 
-            assertThat(found).isNull();
+            assertThat(found).isEmpty();
         }
     }
 
@@ -142,9 +142,12 @@ class JpaUserRepositoryTest {
             jpaUserRepository.save(inactiveUser);
             jpaUserRepository.save(lockedUser);
 
-            assertThat(jpaUserRepository.findByUsername("active").getStatus()).isEqualTo(UserStatus.ACTIVE);
-            assertThat(jpaUserRepository.findByUsername("inactive").getStatus()).isEqualTo(UserStatus.INACTIVE);
-            assertThat(jpaUserRepository.findByUsername("locked").getStatus()).isEqualTo(UserStatus.LOCKED);
+            assertThat(jpaUserRepository.findByUsername("active").orElseThrow().getStatus())
+                .isEqualTo(UserStatus.ACTIVE);
+            assertThat(jpaUserRepository.findByUsername("inactive").orElseThrow().getStatus())
+                .isEqualTo(UserStatus.INACTIVE);
+            assertThat(jpaUserRepository.findByUsername("locked").orElseThrow().getStatus())
+                .isEqualTo(UserStatus.LOCKED);
         }
     }
 

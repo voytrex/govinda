@@ -8,6 +8,7 @@ package net.voytrex.govinda.masterdata.application;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.exception.DuplicateEntityException;
 import net.voytrex.govinda.common.domain.exception.EntityNotFoundException;
@@ -63,11 +64,8 @@ public class PersonService {
      */
     @Transactional(readOnly = true)
     public Person getPerson(UUID id, UUID tenantId) {
-        Person person = personRepository.findByIdAndTenantId(id, tenantId);
-        if (person == null) {
-            throw new EntityNotFoundException("Person", id);
-        }
-        return person;
+        return personRepository.findByIdAndTenantId(id, tenantId)
+            .orElseThrow(() -> new EntityNotFoundException("Person", id));
     }
 
     /**
@@ -76,11 +74,8 @@ public class PersonService {
     @Transactional(readOnly = true)
     public Person getPersonByAhvNr(String ahvNr, UUID tenantId) {
         AhvNumber ahvNumber = new AhvNumber(ahvNr);
-        Person person = personRepository.findByAhvNr(ahvNumber, tenantId);
-        if (person == null) {
-            throw new EntityNotFoundException("Person", UUID.randomUUID());
-        }
-        return person;
+        return personRepository.findByAhvNr(ahvNumber, tenantId)
+            .orElseThrow(() -> new EntityNotFoundException("Person", UUID.randomUUID()));
     }
 
     /**
@@ -171,7 +166,7 @@ public class PersonService {
      * Gets the person state at a specific date.
      */
     @Transactional(readOnly = true)
-    public PersonHistoryEntry getPersonStateAt(UUID personId, UUID tenantId, LocalDate date) {
+    public Optional<PersonHistoryEntry> getPersonStateAt(UUID personId, UUID tenantId, LocalDate date) {
         getPerson(personId, tenantId);
         return personRepository.findHistoryAt(personId, date);
     }

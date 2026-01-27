@@ -7,6 +7,7 @@
 package net.voytrex.govinda.masterdata.infrastructure.persistence;
 
 import java.time.LocalDate;
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.model.AhvNumber;
 import net.voytrex.govinda.masterdata.domain.model.Person;
@@ -17,8 +18,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface SpringDataPersonRepository extends JpaRepository<Person, UUID> {
-    Person findByIdAndTenantId(UUID id, UUID tenantId);
-    Person findByAhvNrAndTenantId(AhvNumber ahvNr, UUID tenantId);
+    Optional<Person> findByIdAndTenantId(UUID id, UUID tenantId);
+    Optional<Person> findByAhvNrAndTenantId(AhvNumber ahvNr, UUID tenantId);
     Page<Person> findByTenantId(UUID tenantId, Pageable pageable);
     boolean existsByAhvNrAndTenantId(AhvNumber ahvNr, UUID tenantId);
 

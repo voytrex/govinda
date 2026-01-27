@@ -6,6 +6,7 @@
 
 package net.voytrex.govinda.common.infrastructure.persistence;
 
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.model.User;
 import net.voytrex.govinda.common.domain.repository.UserRepository;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Repository;
  * Adapter that implements UserRepository domain interface by delegating to JpaUserRepository.
  * 
  * This bridges the gap between the domain interface (UserRepository) and Spring Data JPA
- * repository (JpaUserRepository), handling the Optional return type from Spring Data.
+ * repository (JpaUserRepository), keeping Optional return types for lookups.
  */
 @Repository
 public class UserRepositoryAdapter implements UserRepository {
@@ -26,17 +27,17 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
-    public User findById(UUID id) {
-        return jpaUserRepository.findById(id).orElse(null);
+    public Optional<User> findById(UUID id) {
+        return jpaUserRepository.findById(id);
     }
 
     @Override
-    public User findByUsername(String username) {
+    public Optional<User> findByUsername(String username) {
         return jpaUserRepository.findByUsername(username);
     }
 
     @Override
-    public User findByEmail(String email) {
+    public Optional<User> findByEmail(String email) {
         return jpaUserRepository.findByEmail(email);
     }
 

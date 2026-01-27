@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.exception.DuplicateEntityException;
 import net.voytrex.govinda.common.domain.exception.EntityNotFoundException;
@@ -168,7 +169,7 @@ class PersonServiceTest {
         @DisplayName("should return person when found")
         void should_returnPerson_when_found() {
             Person person = createTestPerson();
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
 
             Person result = personService.getPerson(personId, tenantId);
 
@@ -179,7 +180,7 @@ class PersonServiceTest {
         @Test
         @DisplayName("should throw exception when person not found")
         void should_throwException_when_personNotFound() {
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(null);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> personService.getPerson(personId, tenantId))
                 .isInstanceOf(EntityNotFoundException.class)
@@ -195,7 +196,7 @@ class PersonServiceTest {
         @DisplayName("should return person when found by AHV number")
         void should_returnPerson_when_foundByAhvNr() {
             Person person = createTestPerson();
-            when(personRepository.findByAhvNr(any(AhvNumber.class), eq(tenantId))).thenReturn(person);
+            when(personRepository.findByAhvNr(any(AhvNumber.class), eq(tenantId))).thenReturn(Optional.of(person));
 
             Person result = personService.getPersonByAhvNr(ahvNr, tenantId);
 
@@ -205,7 +206,7 @@ class PersonServiceTest {
         @Test
         @DisplayName("should throw exception when person not found by AHV number")
         void should_throwException_when_notFoundByAhvNr() {
-            when(personRepository.findByAhvNr(any(AhvNumber.class), eq(tenantId))).thenReturn(null);
+            when(personRepository.findByAhvNr(any(AhvNumber.class), eq(tenantId))).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> personService.getPersonByAhvNr(ahvNr, tenantId))
                 .isInstanceOf(EntityNotFoundException.class);
@@ -290,7 +291,7 @@ class PersonServiceTest {
         @DisplayName("should update nationality")
         void should_updateNationality_when_provided() {
             Person person = createTestPerson();
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
             when(personRepository.save(any(Person.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
             UpdatePersonCommand command = new UpdatePersonCommand(
@@ -310,7 +311,7 @@ class PersonServiceTest {
         @DisplayName("should update preferred language")
         void should_updatePreferredLanguage_when_provided() {
             Person person = createTestPerson();
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
             when(personRepository.save(any(Person.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
             UpdatePersonCommand command = new UpdatePersonCommand(
@@ -328,7 +329,7 @@ class PersonServiceTest {
         @Test
         @DisplayName("should throw exception when person not found")
         void should_throwException_when_personNotFoundForUpdate() {
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(null);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.empty());
 
             UpdatePersonCommand command = new UpdatePersonCommand(
                 tenantId,
@@ -350,7 +351,7 @@ class PersonServiceTest {
         @DisplayName("should change name and create history entry")
         void should_changeNameAndCreateHistory_when_validCommand() {
             Person person = createTestPerson();
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
             when(personRepository.save(any(Person.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
             ChangeNameCommand command = new ChangeNameCommand(
@@ -374,7 +375,7 @@ class PersonServiceTest {
         @DisplayName("should keep original first name when not provided")
         void should_keepOriginalFirstName_when_notProvided() {
             Person person = createTestPerson();
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
             when(personRepository.save(any(Person.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
             ChangeNameCommand command = new ChangeNameCommand(
@@ -396,7 +397,7 @@ class PersonServiceTest {
         @Test
         @DisplayName("should throw exception when person not found for name change")
         void should_throwException_when_personNotFoundForNameChange() {
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(null);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.empty());
 
             ChangeNameCommand command = new ChangeNameCommand(
                 tenantId,
@@ -424,7 +425,7 @@ class PersonServiceTest {
         void should_changeMaritalStatusAndCreateHistory_when_validCommand() {
             Person person = createTestPerson();
             person.setMaritalStatus(MaritalStatus.SINGLE);
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
             when(personRepository.save(any(Person.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
             ChangeMaritalStatusCommand command = new ChangeMaritalStatusCommand(
@@ -446,7 +447,7 @@ class PersonServiceTest {
         @Test
         @DisplayName("should throw exception when person not found for marital status change")
         void should_throwException_when_personNotFoundForMaritalStatusChange() {
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(null);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.empty());
 
             ChangeMaritalStatusCommand command = new ChangeMaritalStatusCommand(
                 tenantId,
@@ -474,7 +475,7 @@ class PersonServiceTest {
             Person person = createTestPerson();
             PersonHistoryEntry historyEntry = createTestHistoryEntry();
 
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
             when(personRepository.findHistoryByPersonId(personId)).thenReturn(List.of(historyEntry));
 
             List<PersonHistoryEntry> result = personService.getPersonHistory(personId, tenantId);
@@ -487,7 +488,7 @@ class PersonServiceTest {
         @DisplayName("should return empty list when no history exists")
         void should_returnEmptyList_when_noHistoryExists() {
             Person person = createTestPerson();
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
             when(personRepository.findHistoryByPersonId(personId)).thenReturn(List.of());
 
             List<PersonHistoryEntry> result = personService.getPersonHistory(personId, tenantId);
@@ -498,7 +499,7 @@ class PersonServiceTest {
         @Test
         @DisplayName("should throw exception when person not found for history")
         void should_throwException_when_personNotFoundForHistory() {
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(null);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> personService.getPersonHistory(personId, tenantId))
                 .isInstanceOf(EntityNotFoundException.class);
@@ -518,33 +519,33 @@ class PersonServiceTest {
             PersonHistoryEntry historyEntry = createTestHistoryEntry();
             LocalDate date = LocalDate.of(2024, 6, 1);
 
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
-            when(personRepository.findHistoryAt(personId, date)).thenReturn(historyEntry);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
+            when(personRepository.findHistoryAt(personId, date)).thenReturn(Optional.of(historyEntry));
 
-            PersonHistoryEntry result = personService.getPersonStateAt(personId, tenantId, date);
+            var result = personService.getPersonStateAt(personId, tenantId, date);
 
-            assertThat(result).isNotNull();
+            assertThat(result).isPresent();
             verify(personRepository).findHistoryAt(personId, date);
         }
 
         @Test
-        @DisplayName("should return null when no history exists at date")
-        void should_returnNull_when_noHistoryAtDate() {
+        @DisplayName("should return empty when no history exists at date")
+        void should_returnEmpty_when_noHistoryAtDate() {
             Person person = createTestPerson();
             LocalDate date = LocalDate.of(2020, 1, 1);
 
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(person);
-            when(personRepository.findHistoryAt(personId, date)).thenReturn(null);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.of(person));
+            when(personRepository.findHistoryAt(personId, date)).thenReturn(Optional.empty());
 
-            PersonHistoryEntry result = personService.getPersonStateAt(personId, tenantId, date);
+            var result = personService.getPersonStateAt(personId, tenantId, date);
 
-            assertThat(result).isNull();
+            assertThat(result).isEmpty();
         }
 
         @Test
         @DisplayName("should throw exception when person not found for state at date")
         void should_throwException_when_personNotFoundForStateAtDate() {
-            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(null);
+            when(personRepository.findByIdAndTenantId(personId, tenantId)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> personService.getPersonStateAt(personId, tenantId, LocalDate.now()))
                 .isInstanceOf(EntityNotFoundException.class);

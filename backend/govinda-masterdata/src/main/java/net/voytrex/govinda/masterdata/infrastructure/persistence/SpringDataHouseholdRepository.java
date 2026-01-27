@@ -6,6 +6,7 @@
 
 package net.voytrex.govinda.masterdata.infrastructure.persistence;
 
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.masterdata.domain.model.Household;
 import org.springframework.data.domain.Page;
@@ -15,7 +16,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface SpringDataHouseholdRepository extends JpaRepository<Household, UUID> {
-    Household findByIdAndTenantId(UUID id, UUID tenantId);
+    Optional<Household> findByIdAndTenantId(UUID id, UUID tenantId);
     Page<Household> findByTenantId(UUID tenantId, Pageable pageable);
 
     @Query("""
@@ -25,5 +26,5 @@ public interface SpringDataHouseholdRepository extends JpaRepository<Household, 
         AND h.tenantId = :tenantId
         AND m.validTo IS NULL
         """)
-    Household findByPersonId(@Param("personId") UUID personId, @Param("tenantId") UUID tenantId);
+    Optional<Household> findByPersonId(@Param("personId") UUID personId, @Param("tenantId") UUID tenantId);
 }

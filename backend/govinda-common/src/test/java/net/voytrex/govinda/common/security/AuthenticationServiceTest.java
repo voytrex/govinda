@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.exception.AuthenticationException;
 import net.voytrex.govinda.common.domain.exception.EntityNotFoundByFieldException;
@@ -75,7 +76,7 @@ class AuthenticationServiceTest {
         void shouldAuthenticateUserWithValidCredentialsAndDefaultTenant() {
             User user = createTestUser(UserStatus.ACTIVE);
             UserTenant userTenant = createTestUserTenant(user);
-            when(userRepository.findByUsername(username)).thenReturn(user);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
             when(userTenantRepository.findByUserIdAndIsDefaultTrue(userId)).thenReturn(userTenant);
             when(userTenantRepository.findUserTenantAccess(userId, tenantId)).thenReturn(userTenant);
@@ -94,7 +95,7 @@ class AuthenticationServiceTest {
             User user = createTestUser(UserStatus.ACTIVE);
             UserTenant userTenant = createTestUserTenant(user);
             UUID specifiedTenantId = UUID.randomUUID();
-            when(userRepository.findByUsername(username)).thenReturn(user);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
             when(userTenantRepository.findUserTenantAccess(userId, specifiedTenantId)).thenReturn(userTenant);
             when(userRepository.save(user)).thenReturn(user);
@@ -109,7 +110,7 @@ class AuthenticationServiceTest {
         void shouldUseFirstTenantIfNoDefaultTenantExists() {
             User user = createTestUser(UserStatus.ACTIVE);
             UserTenant userTenant = createTestUserTenant(user);
-            when(userRepository.findByUsername(username)).thenReturn(user);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
             when(userTenantRepository.findByUserIdAndIsDefaultTrue(userId)).thenReturn(null);
             when(userTenantRepository.findByUserId(userId)).thenReturn(List.of(userTenant));
@@ -132,7 +133,7 @@ class AuthenticationServiceTest {
             User user = createTestUser(UserStatus.ACTIVE);
             Tenant tenant = new Tenant(tenantId, "T1", "Tenant 1");
             UserTenant userTenant = new UserTenant(user, tenant, role);
-            when(userRepository.findByUsername(username)).thenReturn(user);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
             when(userTenantRepository.findByUserIdAndIsDefaultTrue(userId)).thenReturn(userTenant);
             when(userTenantRepository.findUserTenantAccess(userId, tenantId)).thenReturn(userTenant);
@@ -150,7 +151,7 @@ class AuthenticationServiceTest {
 
         @Test
         void shouldThrowExceptionWhenUserNotFound() {
-            when(userRepository.findByUsername(username)).thenReturn(null);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> authenticationService.authenticate(username, password, null))
                 .isInstanceOf(AuthenticationException.class)
@@ -161,7 +162,7 @@ class AuthenticationServiceTest {
         void shouldThrowExceptionWhenPasswordIsIncorrect() {
             User user = createTestUser(UserStatus.ACTIVE);
 
-            when(userRepository.findByUsername(username)).thenReturn(user);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(false);
 
             assertThatThrownBy(() -> authenticationService.authenticate(username, password, null))
@@ -173,7 +174,7 @@ class AuthenticationServiceTest {
         void shouldThrowExceptionWhenUserIsInactive() {
             User user = createTestUser(UserStatus.INACTIVE);
 
-            when(userRepository.findByUsername(username)).thenReturn(user);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
             assertThatThrownBy(() -> authenticationService.authenticate(username, password, null))
                 .isInstanceOf(AuthenticationException.class)
@@ -184,7 +185,7 @@ class AuthenticationServiceTest {
         void shouldThrowExceptionWhenUserIsLocked() {
             User user = createTestUser(UserStatus.LOCKED);
 
-            when(userRepository.findByUsername(username)).thenReturn(user);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
 
             assertThatThrownBy(() -> authenticationService.authenticate(username, password, null))
                 .isInstanceOf(AuthenticationException.class)
@@ -195,7 +196,7 @@ class AuthenticationServiceTest {
         void shouldThrowExceptionWhenUserHasNoTenantAccess() {
             User user = createTestUser(UserStatus.ACTIVE);
 
-            when(userRepository.findByUsername(username)).thenReturn(user);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
             when(userTenantRepository.findByUserIdAndIsDefaultTrue(userId)).thenReturn(null);
             when(userTenantRepository.findByUserId(userId)).thenReturn(List.of());
@@ -210,7 +211,7 @@ class AuthenticationServiceTest {
             User user = createTestUser(UserStatus.ACTIVE);
             UUID specifiedTenantId = UUID.randomUUID();
 
-            when(userRepository.findByUsername(username)).thenReturn(user);
+            when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
             when(userTenantRepository.findUserTenantAccess(userId, specifiedTenantId)).thenReturn(null);
 
@@ -237,7 +238,7 @@ class AuthenticationServiceTest {
             UserTenant userTenant2 = new UserTenant(user, tenant2, role);
             userTenant2.setDefault(false);
 
-            when(userRepository.findById(userId)).thenReturn(user);
+            when(userRepository.findById(userId)).thenReturn(Optional.of(user));
             when(userTenantRepository.findByUserId(userId)).thenReturn(List.of(userTenant1, userTenant2));
 
             var result = authenticationService.getUserTenants(userId);
@@ -250,7 +251,7 @@ class AuthenticationServiceTest {
 
         @Test
         void shouldThrowExceptionWhenUserNotFound() {
-            when(userRepository.findById(userId)).thenReturn(null);
+            when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> authenticationService.getUserTenants(userId))
                 .isInstanceOf(EntityNotFoundByFieldException.class);

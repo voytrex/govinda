@@ -6,6 +6,7 @@
 
 package net.voytrex.govinda.masterdata.domain.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.masterdata.domain.model.Household;
 import org.springframework.data.domain.Page;
@@ -16,9 +17,9 @@ import org.springframework.data.domain.Pageable;
  */
 public interface HouseholdRepository {
     Household save(Household household);
-    Household findById(UUID id);
-    Household findByIdAndTenantId(UUID id, UUID tenantId);
+    Optional<Household> findById(UUID id);
+    Optional<Household> findByIdAndTenantId(UUID id, UUID tenantId);
     Page<Household> findByTenantId(UUID tenantId, Pageable pageable);
-    Household findByPersonId(UUID personId, UUID tenantId);
+    Optional<Household> findByPersonId(UUID personId, UUID tenantId);
     void delete(Household household);
 }

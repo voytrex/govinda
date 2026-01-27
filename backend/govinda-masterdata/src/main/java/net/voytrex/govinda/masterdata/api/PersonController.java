@@ -256,12 +256,14 @@ public class PersonController {
         security = @SecurityRequirement(name = "bearerAuth")
     )
     @PreAuthorize("hasAuthority('person:read')")
-    public PersonHistoryResponse getPersonStateAt(
+    public ResponseEntity<PersonHistoryResponse> getPersonStateAt(
         @RequestHeader("X-Tenant-Id") UUID tenantId,
         @PathVariable UUID id,
         @PathVariable @Parameter(description = "Date in YYYY-MM-DD format") LocalDate date
     ) {
-        var state = personService.getPersonStateAt(id, tenantId, date);
-        return state != null ? PersonMapper.toResponse(state) : null;
+        return personService.getPersonStateAt(id, tenantId, date)
+            .map(PersonMapper::toResponse)
+            .map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

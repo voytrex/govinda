@@ -25,34 +25,34 @@ class UserRepositoryAdapterTest {
     private JpaUserRepository jpaUserRepository;
 
     @Test
-    void shouldReturnNullWhenUserNotFoundById() {
+    void shouldReturnEmptyWhenUserNotFoundById() {
         UUID userId = UUID.randomUUID();
         when(jpaUserRepository.findById(userId)).thenReturn(Optional.empty());
 
         UserRepositoryAdapter adapter = new UserRepositoryAdapter(jpaUserRepository);
 
-        assertThat(adapter.findById(userId)).isNull();
+        assertThat(adapter.findById(userId)).isEmpty();
     }
 
     @Test
     void shouldDelegateFindByUsername() {
         User user = new User("user", "user@example.com", "hash");
-        when(jpaUserRepository.findByUsername("user")).thenReturn(user);
+        when(jpaUserRepository.findByUsername("user")).thenReturn(Optional.of(user));
 
         UserRepositoryAdapter adapter = new UserRepositoryAdapter(jpaUserRepository);
 
-        assertThat(adapter.findByUsername("user")).isSameAs(user);
+        assertThat(adapter.findByUsername("user")).contains(user);
         verify(jpaUserRepository).findByUsername("user");
     }
 
     @Test
     void shouldDelegateFindByEmail() {
         User user = new User("user", "user@example.com", "hash");
-        when(jpaUserRepository.findByEmail("user@example.com")).thenReturn(user);
+        when(jpaUserRepository.findByEmail("user@example.com")).thenReturn(Optional.of(user));
 
         UserRepositoryAdapter adapter = new UserRepositoryAdapter(jpaUserRepository);
 
-        assertThat(adapter.findByEmail("user@example.com")).isSameAs(user);
+        assertThat(adapter.findByEmail("user@example.com")).contains(user);
         verify(jpaUserRepository).findByEmail("user@example.com");
     }
 

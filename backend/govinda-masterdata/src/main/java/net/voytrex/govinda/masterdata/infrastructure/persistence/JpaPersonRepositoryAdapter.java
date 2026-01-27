@@ -8,6 +8,7 @@ package net.voytrex.govinda.masterdata.infrastructure.persistence;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.model.AhvNumber;
 import net.voytrex.govinda.masterdata.domain.model.Person;
@@ -36,17 +37,17 @@ public class JpaPersonRepositoryAdapter implements PersonRepository {
     }
 
     @Override
-    public Person findById(UUID id) {
-        return jpaPersonRepository.findById(id).orElse(null);
+    public Optional<Person> findById(UUID id) {
+        return jpaPersonRepository.findById(id);
     }
 
     @Override
-    public Person findByIdAndTenantId(UUID id, UUID tenantId) {
+    public Optional<Person> findByIdAndTenantId(UUID id, UUID tenantId) {
         return jpaPersonRepository.findByIdAndTenantId(id, tenantId);
     }
 
     @Override
-    public Person findByAhvNr(AhvNumber ahvNr, UUID tenantId) {
+    public Optional<Person> findByAhvNr(AhvNumber ahvNr, UUID tenantId) {
         return jpaPersonRepository.findByAhvNrAndTenantId(ahvNr, tenantId);
     }
 
@@ -99,7 +100,7 @@ public class JpaPersonRepositoryAdapter implements PersonRepository {
     }
 
     @Override
-    public PersonHistoryEntry findHistoryAt(UUID personId, LocalDate date) {
+    public Optional<PersonHistoryEntry> findHistoryAt(UUID personId, LocalDate date) {
         return jpaPersonHistoryRepository.findByPersonIdAndDate(personId, date);
     }
 }

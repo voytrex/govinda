@@ -94,20 +94,21 @@ class PersonRepositoryIT {
             assertThat(saved.getId()).isNotNull();
             assertThat(saved.getVersion()).isEqualTo(0L);
 
-            Person found = personRepository.findById(saved.getId());
+            var found = personRepository.findById(saved.getId());
 
-            assertThat(found).isNotNull();
-            assertThat(found.getLastName()).isEqualTo("Müller");
-            assertThat(found.getFirstName()).isEqualTo("Hans");
-            assertThat(found.getAhvNr().getValue()).isEqualTo("756.1234.5678.90");
+            assertThat(found).isPresent();
+            Person retrieved = found.orElseThrow();
+            assertThat(retrieved.getLastName()).isEqualTo("Müller");
+            assertThat(retrieved.getFirstName()).isEqualTo("Hans");
+            assertThat(retrieved.getAhvNr().getValue()).isEqualTo("756.1234.5678.90");
         }
 
         @Test
-        @DisplayName("should return null when person not found by ID")
+        @DisplayName("should return empty when person not found by ID")
         void should_returnNull_when_personNotFoundById() {
-            Person found = personRepository.findById(UUID.randomUUID());
+            var found = personRepository.findById(UUID.randomUUID());
 
-            assertThat(found).isNull();
+            assertThat(found).isEmpty();
         }
 
         @Test
@@ -115,20 +116,20 @@ class PersonRepositoryIT {
         void should_findPerson_when_idAndTenantIdMatch() {
             Person saved = personRepository.save(testPerson);
 
-            Person found = personRepository.findByIdAndTenantId(saved.getId(), tenantId);
+            var found = personRepository.findByIdAndTenantId(saved.getId(), tenantId);
 
-            assertThat(found).isNotNull();
-            assertThat(found.getId()).isEqualTo(saved.getId());
+            assertThat(found).isPresent();
+            assertThat(found.orElseThrow().getId()).isEqualTo(saved.getId());
         }
 
         @Test
-        @DisplayName("should return null when tenant ID does not match")
+        @DisplayName("should return empty when tenant ID does not match")
         void should_returnNull_when_tenantIdDoesNotMatch() {
             Person saved = personRepository.save(testPerson);
 
-            Person found = personRepository.findByIdAndTenantId(saved.getId(), otherTenantId);
+            var found = personRepository.findByIdAndTenantId(saved.getId(), otherTenantId);
 
-            assertThat(found).isNull();
+            assertThat(found).isEmpty();
         }
     }
 
@@ -142,20 +143,20 @@ class PersonRepositoryIT {
             personRepository.save(testPerson);
             AhvNumber ahvNr = new AhvNumber("756.1234.5678.90");
 
-            Person found = personRepository.findByAhvNr(ahvNr, tenantId);
+            var found = personRepository.findByAhvNr(ahvNr, tenantId);
 
-            assertThat(found).isNotNull();
-            assertThat(found.getLastName()).isEqualTo("Müller");
+            assertThat(found).isPresent();
+            assertThat(found.orElseThrow().getLastName()).isEqualTo("Müller");
         }
 
         @Test
-        @DisplayName("should return null when AHV number not found")
+        @DisplayName("should return empty when AHV number not found")
         void should_returnNull_when_ahvNumberNotFound() {
             AhvNumber ahvNr = new AhvNumber("756.9999.9999.90");
 
-            Person found = personRepository.findByAhvNr(ahvNr, tenantId);
+            var found = personRepository.findByAhvNr(ahvNr, tenantId);
 
-            assertThat(found).isNull();
+            assertThat(found).isEmpty();
         }
 
         @Test
@@ -269,8 +270,8 @@ class PersonRepositoryIT {
 
             personRepository.delete(saved);
 
-            Person found = personRepository.findById(personId);
-            assertThat(found).isNull();
+            var found = personRepository.findById(personId);
+            assertThat(found).isEmpty();
         }
     }
 
@@ -357,20 +358,20 @@ class PersonRepositoryIT {
 
             personRepository.saveHistory(entry);
 
-            PersonHistoryEntry found = personRepository.findHistoryAt(saved.getId(), LocalDate.of(2022, 6, 15));
+            var found = personRepository.findHistoryAt(saved.getId(), LocalDate.of(2022, 6, 15));
 
-            assertThat(found).isNotNull();
-            assertThat(found.getLastName()).isEqualTo("Müller");
+            assertThat(found).isPresent();
+            assertThat(found.orElseThrow().getLastName()).isEqualTo("Müller");
         }
 
         @Test
-        @DisplayName("should return null when no history at date")
-        void should_returnNull_when_noHistoryAtDate() {
+        @DisplayName("should return empty when no history at date")
+        void should_returnEmpty_when_noHistoryAtDate() {
             Person saved = personRepository.save(testPerson);
 
-            PersonHistoryEntry found = personRepository.findHistoryAt(saved.getId(), LocalDate.of(2022, 6, 15));
+            var found = personRepository.findHistoryAt(saved.getId(), LocalDate.of(2022, 6, 15));
 
-            assertThat(found).isNull();
+            assertThat(found).isEmpty();
         }
     }
 
@@ -396,9 +397,9 @@ class PersonRepositoryIT {
             personRepository.save(testPerson);
             AhvNumber ahvNr = new AhvNumber("756.1234.5678.90");
 
-            Person found = personRepository.findByAhvNr(ahvNr, otherTenantId);
+            var found = personRepository.findByAhvNr(ahvNr, otherTenantId);
 
-            assertThat(found).isNull();
+            assertThat(found).isEmpty();
         }
 
         @Test
