@@ -28,6 +28,9 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
+      - name: Build modules (no tests)
+        run: mvn -B -DskipTests install
+
       - name: Checkstyle
         run: mvn -B -DskipTests checkstyle:check
 
