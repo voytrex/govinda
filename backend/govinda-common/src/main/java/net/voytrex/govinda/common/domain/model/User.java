@@ -19,7 +19,10 @@ import jakarta.persistence.Table;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+
+import org.springframework.lang.Nullable;
 
 /**
  * Application user entity.
@@ -53,9 +56,11 @@ public class User {
     private String passwordHash;
 
     @Column(name = "first_name", length = 100)
+    @Nullable
     private String firstName;
 
     @Column(name = "last_name", length = 100)
+    @Nullable
     private String lastName;
 
     @Enumerated(EnumType.STRING)
@@ -63,6 +68,7 @@ public class User {
     private UserStatus status = UserStatus.ACTIVE;
 
     @Column(name = "last_login_at")
+    @Nullable
     private Instant lastLoginAt;
 
     @Column(name = "created_at", updatable = false, nullable = false)
@@ -84,7 +90,7 @@ public class User {
     }
 
     public UUID getId() {
-        return id;
+        return Objects.requireNonNull(id, "id");
     }
 
     public void setId(UUID id) {
@@ -92,7 +98,7 @@ public class User {
     }
 
     public String getUsername() {
-        return username;
+        return Objects.requireNonNull(username, "username");
     }
 
     public void setUsername(String username) {
@@ -100,7 +106,7 @@ public class User {
     }
 
     public String getEmail() {
-        return email;
+        return Objects.requireNonNull(email, "email");
     }
 
     public void setEmail(String email) {
@@ -108,13 +114,14 @@ public class User {
     }
 
     public String getPasswordHash() {
-        return passwordHash;
+        return Objects.requireNonNull(passwordHash, "passwordHash");
     }
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
     }
 
+    @Nullable
     public String getFirstName() {
         return firstName;
     }
@@ -123,6 +130,7 @@ public class User {
         this.firstName = firstName;
     }
 
+    @Nullable
     public String getLastName() {
         return lastName;
     }
@@ -132,13 +140,14 @@ public class User {
     }
 
     public UserStatus getStatus() {
-        return status;
+        return Objects.requireNonNull(status, "status");
     }
 
     public void setStatus(UserStatus status) {
         this.status = status;
     }
 
+    @Nullable
     public Instant getLastLoginAt() {
         return lastLoginAt;
     }
@@ -148,7 +157,7 @@ public class User {
     }
 
     public Instant getCreatedAt() {
-        return createdAt;
+        return Objects.requireNonNull(createdAt, "createdAt");
     }
 
     public void setCreatedAt(Instant createdAt) {
@@ -156,7 +165,7 @@ public class User {
     }
 
     public Instant getUpdatedAt() {
-        return updatedAt;
+        return Objects.requireNonNull(updatedAt, "updatedAt");
     }
 
     public void setUpdatedAt(Instant updatedAt) {
@@ -164,11 +173,11 @@ public class User {
     }
 
     public List<UserTenant> getTenantAccess() {
-        return tenantAccess;
+        return Objects.requireNonNull(tenantAccess, "tenantAccess");
     }
 
     public void setTenantAccess(List<UserTenant> tenantAccess) {
-        this.tenantAccess = tenantAccess;
+        this.tenantAccess = Objects.requireNonNull(tenantAccess, "tenantAccess");
     }
 
     public String fullName() {
@@ -176,7 +185,7 @@ public class User {
             firstName != null ? firstName : "",
             lastName != null ? lastName : ""
         )).trim();
-        return full.isBlank() ? username : full;
+        return full.isBlank() ? Objects.requireNonNull(username, "username") : full;
     }
 
     public boolean isActive() {
