@@ -15,20 +15,32 @@ import java.util.List;
  */
 @Schema(description = "Standard error response structure returned by the API")
 public record ErrorResponse(
-    @Schema(description = "Machine-readable error code", example = "ENTITY_NOT_FOUND", required = true)
+    @Schema(
+        description = "Machine-readable error code",
+        example = "ENTITY_NOT_FOUND",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
     String errorCode,
     
-    @Schema(description = "Human-readable error message (localized)", 
-            example = "Person with ID 550e8400-e29b-41d4-a716-446655440000 not found", 
-            required = true)
+    @Schema(
+        description = "Human-readable error message (localized)",
+        example = "Person with ID 550e8400-e29b-41d4-a716-446655440000 not found",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
     String message,
     
-    @Schema(description = "Timestamp when the error occurred", example = "2024-01-15T10:30:00Z", required = true)
+    @Schema(
+        description = "Timestamp when the error occurred",
+        example = "2024-01-15T10:30:00Z",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
     Instant timestamp,
     
-    @Schema(description = "API path where the error occurred", 
-            example = "/api/v1/masterdata/persons/550e8400-e29b-41d4-a716-446655440000", 
-            required = true)
+    @Schema(
+        description = "API path where the error occurred",
+        example = "/api/v1/masterdata/persons/550e8400-e29b-41d4-a716-446655440000",
+        requiredMode = Schema.RequiredMode.REQUIRED
+    )
     String path,
     
     @Schema(description = "Optional field-level validation errors. Only present for validation errors.")
