@@ -255,6 +255,21 @@ Missing:
 
 ---
 
+### GAP-15: Reference Data & Industry Master Data
+**Priority**: MEDIUM
+
+**Problem**: No integration with healthcare reference data:
+- **GLN** (Global Location Number) - participant identification
+- **Refdata** - medication & partner master data
+- **SASIS Datenpool** - industry statistics exchange
+- **Tarifpool** - TARMED, SwissDRG, etc.
+- **MedReg** - medical professional register
+- Classification catalogs (ICD-10, CHOP)
+
+**See**: [Gap Analysis - Reference Data](./gaps/gap-15-reference-data.md)
+
+---
+
 ## 3. Gap Resolution Approach
 
 ### Recommended Priority Order
@@ -294,6 +309,7 @@ Missing:
 | GAP-12 VVG Specifics | ✓ | - | - | HealthDeclaration, CoverageReservation, WaitingPeriod |
 | GAP-13 Dunning | ✓ | ✓ | ✓ | DunningCase, PaymentPlan, LossCertificate |
 | GAP-14 Insurer Transfer | ✓ | - | - | InsurerTransfer, InsuranceCard, SasisMessage |
+| GAP-15 Reference Data | ✓ | - | - | GlnEntry, RefdataArticle, TariffPosition, Icd10Code |
 
 ---
 
