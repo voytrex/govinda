@@ -7,6 +7,7 @@
 package net.voytrex.govinda.common.infrastructure.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.model.UserTenant;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,9 +21,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface JpaUserTenantRepository extends JpaRepository<UserTenant, UUID> {
     List<UserTenant> findByUserId(UUID userId);
-    UserTenant findByUserIdAndTenantId(UUID userId, UUID tenantId);
-    UserTenant findByUserIdAndIsDefaultTrue(UUID userId);
+    Optional<UserTenant> findByUserIdAndTenantId(UUID userId, UUID tenantId);
+    Optional<UserTenant> findByUserIdAndIsDefaultTrue(UUID userId);
 
     @Query("SELECT ut FROM UserTenant ut WHERE ut.user.id = :userId AND ut.tenant.id = :tenantId")
-    UserTenant findUserTenantAccess(@Param("userId") UUID userId, @Param("tenantId") UUID tenantId);
+    Optional<UserTenant> findUserTenantAccess(@Param("userId") UUID userId, @Param("tenantId") UUID tenantId);
 }

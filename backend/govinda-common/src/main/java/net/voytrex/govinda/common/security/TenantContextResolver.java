@@ -66,7 +66,7 @@ public class TenantContextResolver implements HandlerInterceptor {
                 return false;
             }
             var userTenant = userTenantRepository.findUserTenantAccess(userId, tenantId);
-            if (userTenant == null) {
+            if (userTenant.isEmpty()) {
                 throw new UnauthorizedTenantAccessException(tenantId);
             }
         }

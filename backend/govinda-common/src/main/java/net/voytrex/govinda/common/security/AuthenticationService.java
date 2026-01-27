@@ -63,10 +63,8 @@ public class AuthenticationService {
 
         UUID targetTenantId = tenantId != null ? tenantId : resolveDefaultTenantId(user);
 
-        var userTenant = userTenantRepository.findUserTenantAccess(user.getId(), targetTenantId);
-        if (userTenant == null) {
-            throw new AuthenticationException("User does not have access to tenant " + targetTenantId);
-        }
+        var userTenant = userTenantRepository.findUserTenantAccess(user.getId(), targetTenantId)
+            .orElseThrow(() -> new AuthenticationException("User does not have access to tenant " + targetTenantId));
 
         user.updateLastLogin();
         userRepository.save(user);
@@ -87,7 +85,7 @@ public class AuthenticationService {
      * Gets all tenants a user can access.
      */
     public List<UserTenantInfo> getUserTenants(UUID userId) {
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundByFieldException("User", "id", userId.toString()));
 
         return userTenantRepository.findByUserId(userId).stream()
@@ -103,15 +101,10 @@ public class AuthenticationService {
     }
 
     private UUID resolveDefaultTenantId(User user) {
-        var defaultTenant = userTenantRepository.findByUserIdAndIsDefaultTrue(user.getId());
-        if (defaultTenant == null) {
-            List<net.voytrex.govinda.common.domain.model.UserTenant> allTenants =
-                userTenantRepository.findByUserId(user.getId());
-            if (!allTenants.isEmpty()) {
-                defaultTenant = allTenants.get(0);
-            }
-        }
-        if (defaultTenant == null || defaultTenant.getTenant() == null) {
+        var defaultTenant = userTenantRepository.findByUserIdAndIsDefaultTrue(user.getId())
+            .or(() -> userTenantRepository.findByUserId(user.getId()).stream().findFirst())
+            .orElseThrow(() -> new AuthenticationException("User has no tenant access"));
+        if (defaultTenant.getTenant() == null) {
             throw new AuthenticationException("User has no tenant access");
         }
         return defaultTenant.getTenant().getId();

@@ -90,10 +90,10 @@ class JpaUserTenantRepositoryTest {
             entityManager.flush();
             entityManager.clear();
 
-            UserTenant result = userTenantRepository.findByUserIdAndTenantId(user.getId(), tenant.getId());
+            var result = userTenantRepository.findByUserIdAndTenantId(user.getId(), tenant.getId());
 
-            assertThat(result).isNotNull();
-            assertThat(result.getId()).isEqualTo(userTenant.getId());
+            assertThat(result).isPresent();
+            assertThat(result.orElseThrow().getId()).isEqualTo(userTenant.getId());
         }
 
         @Test
@@ -105,10 +105,10 @@ class JpaUserTenantRepositoryTest {
             entityManager.flush();
             entityManager.clear();
 
-            UserTenant result = userTenantRepository.findByUserIdAndIsDefaultTrue(user.getId());
+            var result = userTenantRepository.findByUserIdAndIsDefaultTrue(user.getId());
 
-            assertThat(result).isNotNull();
-            assertThat(result.getId()).isEqualTo(defaultTenant.getId());
+            assertThat(result).isPresent();
+            assertThat(result.orElseThrow().getId()).isEqualTo(defaultTenant.getId());
         }
 
         @Test
@@ -120,10 +120,10 @@ class JpaUserTenantRepositoryTest {
             entityManager.flush();
             entityManager.clear();
 
-            UserTenant result = userTenantRepository.findUserTenantAccess(user.getId(), tenant.getId());
+            var result = userTenantRepository.findUserTenantAccess(user.getId(), tenant.getId());
 
-            assertThat(result).isNotNull();
-            assertThat(result.getId()).isEqualTo(userTenant.getId());
+            assertThat(result).isPresent();
+            assertThat(result.orElseThrow().getId()).isEqualTo(userTenant.getId());
         }
     }
 

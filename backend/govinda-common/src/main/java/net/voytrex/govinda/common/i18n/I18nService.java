@@ -6,11 +6,11 @@
 
 package net.voytrex.govinda.common.i18n;
 
+import java.util.Locale;
 import net.voytrex.govinda.common.domain.model.Language;
 import org.springframework.context.MessageSource;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
-
-import java.util.Locale;
 
 /**
  * Service for internationalization and translation.
@@ -36,7 +36,8 @@ public class I18nService {
      */
     public String translate(String key, Language language, Object... args) {
         Locale locale = toLocale(language);
-        return messageSource.getMessage(key, args, locale);
+        String message = messageSource.getMessage(key, args, locale);
+        return message;
     }
 
     /**
@@ -110,10 +111,12 @@ public class I18nService {
     /**
      * Converts a Language enum to a Java Locale.
      *
-     * <p>Language is non-null by contract (see {@link net.voytrex.govinda.common.i18n} package
-     * {@code @NonNullApi}), so callers must never pass {@code null}.</p>
+     * <p>If {@code language} is {@code null}, English is used as a safe fallback.</p>
      */
-    private Locale toLocale(Language language) {
+    private Locale toLocale(@Nullable Language language) {
+        if (language == null) {
+            return Locale.ENGLISH;
+        }
         return switch (language) {
             case DE -> Locale.GERMAN;
             case FR -> Locale.FRENCH;

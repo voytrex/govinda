@@ -12,6 +12,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.exception.UnauthorizedTenantAccessException;
 import net.voytrex.govinda.common.domain.model.Role;
@@ -78,7 +79,7 @@ class TenantContextResolverTest {
             request.addHeader("X-Tenant-Id", tenantId.toString());
 
             when(userTenantRepository.findUserTenantAccess(userId, tenantId))
-                .thenReturn(createUserTenant(userId, tenantId));
+                .thenReturn(Optional.of(createUserTenant(userId, tenantId)));
 
             boolean result = resolver.preHandle(request, new MockHttpServletResponse(), new Object());
 
@@ -99,7 +100,7 @@ class TenantContextResolverTest {
             request.setAttribute("tenantId", tenantId);
 
             when(userTenantRepository.findUserTenantAccess(userId, tenantId))
-                .thenReturn(createUserTenant(userId, tenantId));
+                .thenReturn(Optional.of(createUserTenant(userId, tenantId)));
 
             boolean result = resolver.preHandle(request, new MockHttpServletResponse(), new Object());
 
@@ -120,7 +121,7 @@ class TenantContextResolverTest {
             request.setAttribute("tenantId", tenantId);
 
             when(userTenantRepository.findUserTenantAccess(userId, tenantId))
-                .thenReturn(createUserTenant(userId, tenantId));
+                .thenReturn(Optional.of(createUserTenant(userId, tenantId)));
 
             boolean result = resolver.preHandle(request, new MockHttpServletResponse(), new Object());
 
@@ -178,7 +179,7 @@ class TenantContextResolverTest {
             request.setRequestURI("/api/v1/persons");
             request.addHeader("X-Tenant-Id", tenantId.toString());
 
-            when(userTenantRepository.findUserTenantAccess(userId, tenantId)).thenReturn(null);
+            when(userTenantRepository.findUserTenantAccess(userId, tenantId)).thenReturn(Optional.empty());
 
             assertThatThrownBy(() -> resolver.preHandle(request, new MockHttpServletResponse(), new Object()))
                 .isInstanceOf(UnauthorizedTenantAccessException.class);
