@@ -56,21 +56,6 @@ jobs:
       contents: read
       checks: write
 
-    services:
-      postgres:
-        image: postgres:18-alpine
-        env:
-          POSTGRES_DB: govinda_test
-          POSTGRES_USER: govinda
-          POSTGRES_PASSWORD: govinda
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -84,10 +69,6 @@ jobs:
 
       - name: Build & run tests (unit + integration)
         run: mvn -B verify
-        env:
-          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/govinda_test
-          SPRING_DATASOURCE_USERNAME: govinda
-          SPRING_DATASOURCE_PASSWORD: govinda
 
       - name: Generate test report
         uses: dorny/test-reporter@v1

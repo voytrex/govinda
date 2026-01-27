@@ -39,29 +39,10 @@ public abstract class AbstractRepositoryTest {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        // Check if we're in CI (GitHub Actions provides SPRING_DATASOURCE_URL)
-        String datasourceUrl = System.getenv("SPRING_DATASOURCE_URL");
-        if (datasourceUrl != null && !datasourceUrl.isEmpty()) {
-            // Use CI-provided PostgreSQL service
-            registry.add("spring.datasource.url", () -> datasourceUrl);
-            registry.add("spring.datasource.username", () -> 
-                System.getenv().getOrDefault("SPRING_DATASOURCE_USERNAME", "govinda"));
-            registry.add("spring.datasource.password", () -> 
-                System.getenv().getOrDefault("SPRING_DATASOURCE_PASSWORD", "govinda"));
-            // For @DataJpaTest, enable Hibernate DDL since Flyway doesn't run
-            registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
-            // Enable global quoting for DDL to handle reserved words like "user"
-            registry.add("spring.jpa.properties.hibernate.globally_quoted_identifiers", () -> "true");
-        } else {
-            // Use Testcontainers
-            registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
-            registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
-            registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
-            // For @DataJpaTest, enable Hibernate DDL since Flyway doesn't run
-            registry.add("spring.jpa.hibernate.ddl-auto", () -> "create-drop");
-            // Enable global quoting for DDL to handle reserved words like "user"
-            registry.add("spring.jpa.properties.hibernate.globally_quoted_identifiers", () -> "true");
-        }
+        // Always use Testcontainers-managed PostgreSQL for repository integration tests
+        registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
     }
 }

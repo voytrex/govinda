@@ -62,29 +62,10 @@ class AuthControllerIT {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        // Check if we're in CI (GitHub Actions provides SPRING_DATASOURCE_URL)
-        String datasourceUrl = System.getenv("SPRING_DATASOURCE_URL");
-        if (datasourceUrl != null && !datasourceUrl.isEmpty()) {
-            // Use CI-provided PostgreSQL service
-            registry.add("spring.datasource.url", () -> datasourceUrl);
-            registry.add("spring.datasource.username", () -> 
-                System.getenv().getOrDefault("SPRING_DATASOURCE_USERNAME", "govinda"));
-            registry.add("spring.datasource.password", () -> 
-                System.getenv().getOrDefault("SPRING_DATASOURCE_PASSWORD", "govinda"));
-            // Ensure Flyway runs for @SpringBootTest
-            registry.add("spring.flyway.enabled", () -> "true");
-            registry.add("spring.flyway.locations", () -> "classpath:db/migration");
-            registry.add("spring.flyway.baseline-on-migrate", () -> "true");
-        } else {
-            // Use Testcontainers
-            registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
-            registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
-            registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
-            // Ensure Flyway runs for @SpringBootTest
-            registry.add("spring.flyway.enabled", () -> "true");
-            registry.add("spring.flyway.locations", () -> "classpath:db/migration");
-            registry.add("spring.flyway.baseline-on-migrate", () -> "true");
-        }
+        // Always use Testcontainers-managed PostgreSQL for integration tests
+        registry.add("spring.datasource.url", POSTGRES_CONTAINER::getJdbcUrl);
+        registry.add("spring.datasource.username", POSTGRES_CONTAINER::getUsername);
+        registry.add("spring.datasource.password", POSTGRES_CONTAINER::getPassword);
         registry.add("spring.datasource.driver-class-name", () -> "org.postgresql.Driver");
     }
 
