@@ -51,7 +51,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @org.junit.jupiter.api.Tag("integration")
 @org.junit.jupiter.api.Tag("api")
 @org.junit.jupiter.api.Tag("database")
-class AuthControllerIntegrationTest {
+class AuthControllerIT {
 
     @Container
     public static final PostgreSQLContainer<?> POSTGRES_CONTAINER = new PostgreSQLContainer<>("postgres:18-alpine")

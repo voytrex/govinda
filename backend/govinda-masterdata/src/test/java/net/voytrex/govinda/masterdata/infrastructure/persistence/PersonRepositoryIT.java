@@ -47,7 +47,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Tag("integration")
 @Tag("database")
 // CHECKSTYLE:OFF: MethodName - Test methods follow BDD naming convention (should_X_when_Y)
-class PersonRepositoryIntegrationTest {
+class PersonRepositoryIT {
 
     @Container
     public static final PostgreSQLContainer<?> POSTGRES_CONTAINER = new PostgreSQLContainer<>("postgres:18-alpine")
