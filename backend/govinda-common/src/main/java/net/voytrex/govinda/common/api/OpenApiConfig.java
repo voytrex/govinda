@@ -164,8 +164,8 @@ public class OpenApiConfig {
                 .in("header")
                 .name("X-User-Id")
                 .required(false)
-                .description("User UUID for audit purposes. " +
-                    "Automatically extracted from JWT token if not provided.")
+                .description("User UUID for audit purposes. "
+                    + "Automatically extracted from JWT token if not provided.")
                 .schema(new Schema<>().type("string").format("uuid"))
                 .example("123e4567-e89b-12d3-a456-426614174000")
         );
@@ -355,7 +355,7 @@ public class OpenApiConfig {
                           "errorCode": "BUSINESS_RULE_VIOLATION",
                           "message": "Cannot change marital status: effective date must be in the future",
                           "timestamp": "2024-01-15T10:30:00Z",
-                          "path": "/api/v1/masterdata/persons/550e8400-e29b-41d4-a716-446655440000/marital-status-change"
+                          "path": "/api/v1/masterdata/persons/{personId}/marital-status-change"
                         }
                         """))
                     // CHECKSTYLE:ON: LineLength

@@ -65,7 +65,7 @@ public class AuthController {
                                 {
                                   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                                   "tokenType": "Bearer",
-                                  "message": "Use this token in the Authorization header: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'"
+                                  "message": "Use this token in the Authorization header: 'Bearer &lt;token&gt;'"
                                 }
                                 """
                         )
