@@ -474,12 +474,12 @@ export DOCKER_HOST="unix://${HOME}/.colima/default/docker.sock"
 
 ### Running Tests
 
-**The `test-local.sh` script automatically configures Docker for Colima:**
+**The `scripts/test-local.sh` script automatically configures Docker for Colima:**
 
 ```bash
-./test-local.sh                    # All tests
-./test-local.sh --unit-only         # Unit tests only
-./test-local.sh --integration-only  # Integration tests only
+./scripts/test-local.sh                    # All tests
+./scripts/test-local.sh --unit-only         # Unit tests only
+./scripts/test-local.sh --integration-only  # Integration tests only
 ```
 
 **Manual execution:**

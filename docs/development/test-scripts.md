@@ -4,15 +4,15 @@
 
 Two test scripts are provided to run the full test suite locally, mirroring the CI pipeline:
 
-- **`test-local.sh`** - Uses Testcontainers (requires Docker/Colima)
-- **`test-ci-mode.sh`** - Uses docker-compose PostgreSQL service (simulates CI)
+- **`scripts/test-local.sh`** - Uses Testcontainers (requires Docker/Colima)
+- **`scripts/test-ci-mode.sh`** - Uses docker-compose PostgreSQL service (simulates CI)
 
 ## Quick Start
 
 ### Local Testing (Testcontainers)
 
 ```bash
-./test-local.sh
+./scripts/test-local.sh
 ```
 
 This script:
@@ -26,7 +26,7 @@ This script:
 ### CI Mode Testing (docker-compose)
 
 ```bash
-./test-ci-mode.sh
+./scripts/test-ci-mode.sh
 ```
 
 This script:
@@ -43,29 +43,29 @@ Both scripts support the same options:
 
 ```bash
 # Skip code quality checks
-./test-local.sh --skip-quality
+./scripts/test-local.sh --skip-quality
 
 # Skip unit tests
-./test-local.sh --skip-unit
+./scripts/test-local.sh --skip-unit
 
 # Skip integration tests
-./test-local.sh --skip-integration
+./scripts/test-local.sh --skip-integration
 
 # Skip coverage report
-./test-local.sh --skip-coverage
+./scripts/test-local.sh --skip-coverage
 
 # Combine options
-./test-local.sh --skip-quality --skip-coverage
+./scripts/test-local.sh --skip-quality --skip-coverage
 ```
 
 ### Run Only Specific Phases
 
 ```bash
 # Unit tests only (fast feedback)
-./test-local.sh --unit-only
+./scripts/test-local.sh --unit-only
 
 # Integration tests only
-./test-local.sh --integration-only
+./scripts/test-local.sh --integration-only
 ```
 
 ## Usage Examples
@@ -75,7 +75,7 @@ Both scripts support the same options:
 During active development, run only unit tests:
 
 ```bash
-./test-local.sh --unit-only
+./scripts/test-local.sh --unit-only
 ```
 
 This skips:
@@ -88,7 +88,7 @@ This skips:
 Run full suite to ensure everything passes:
 
 ```bash
-./test-local.sh
+./scripts/test-local.sh
 ```
 
 ### Before Pushing
@@ -96,7 +96,7 @@ Run full suite to ensure everything passes:
 Run in CI mode to simulate GitHub Actions:
 
 ```bash
-./test-ci-mode.sh
+./scripts/test-ci-mode.sh
 ```
 
 ### Debugging Integration Tests
@@ -104,12 +104,12 @@ Run in CI mode to simulate GitHub Actions:
 Run only integration tests with verbose output:
 
 ```bash
-./test-local.sh --integration-only -X
+./scripts/test-local.sh --integration-only -X
 ```
 
 ## What Each Script Does
 
-### test-local.sh
+### scripts/test-local.sh
 
 1. **Setup**: Configures `DOCKER_HOST` for Colima
 2. **Code Quality**:
@@ -120,7 +120,7 @@ Run only integration tests with verbose output:
 5. **Integration Tests**: Runs Failsafe (database tests)
 6. **Coverage**: Generates JaCoCo reports
 
-### test-ci-mode.sh
+### scripts/test-ci-mode.sh
 
 1. **Setup**: Starts PostgreSQL container via docker-compose
 2. **Wait**: Ensures PostgreSQL is ready
@@ -166,7 +166,7 @@ backend/**/target/failsafe-reports/  # Integration tests
 **Solution**:
 ```bash
 colima start
-./test-local.sh
+./scripts/test-local.sh
 ```
 
 ### PostgreSQL Not Ready
@@ -183,7 +183,7 @@ docker-compose -f infrastructure/docker/docker-compose.yml restart postgres
 
 # Wait a bit longer
 sleep 5
-./test-ci-mode.sh
+./scripts/test-ci-mode.sh
 ```
 
 ### Checkstyle Failures
@@ -193,7 +193,7 @@ sleep 5
 **Solution**:
 1. Review violations: `mvn checkstyle:checkstyle`
 2. Fix code style issues
-3. Re-run: `./test-local.sh`
+3. Re-run: `./scripts/test-local.sh`
 
 ### Test Failures
 
@@ -228,9 +228,9 @@ sleep 5
 ## Best Practices
 
 1. **During Development**: Use `--unit-only` for fast feedback
-2. **Before Commit**: Run full `./test-local.sh`
-3. **Before Push**: Run `./test-ci-mode.sh` to simulate CI
-4. **CI Failures**: Reproduce locally with `./test-ci-mode.sh`
+2. **Before Commit**: Run full `./scripts/test-local.sh`
+3. **Before Push**: Run `./scripts/test-ci-mode.sh` to simulate CI
+4. **CI Failures**: Reproduce locally with `./scripts/test-ci-mode.sh`
 
 ## Integration with IDE
 
@@ -243,7 +243,7 @@ sleep 5
 ### VS Code
 
 1. Use integrated terminal
-2. Run: `./test-local.sh`
+2. Run: `./scripts/test-local.sh`
 3. View test results in Test Explorer
 
 ## Next Steps

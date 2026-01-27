@@ -86,7 +86,10 @@ govinda/
 git clone https://github.com/voytrex/govinda.git
 cd govinda
 
-# Start PostgreSQL with Docker
+# Run the application (starts PostgreSQL + app)
+./scripts/run-local.sh
+
+# Manual steps
 docker-compose -f infrastructure/docker/docker-compose.yml up -d postgres
 
 # Build the project (from root)

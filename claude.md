@@ -474,17 +474,17 @@ colima restart
 
 ### Running Tests with Testcontainers
 
-**The `test-local.sh` script automatically configures Docker for Colima:**
+**The `scripts/test-local.sh` script automatically configures Docker for Colima:**
 
 ```bash
 # Run all tests (automatically uses Colima)
-./test-local.sh
+./scripts/test-local.sh
 
 # Run only unit tests
-./test-local.sh --unit-only
+./scripts/test-local.sh --unit-only
 
 # Run only integration tests
-./test-local.sh --integration-only
+./scripts/test-local.sh --integration-only
 ```
 
 **Manual test execution with Colima:**
@@ -586,7 +586,7 @@ colima restart
 ./mvnw test jacoco:report
 
 # Local test runner (uses Colima automatically)
-./test-local.sh
+./scripts/test-local.sh
 ```
 
 ### Build

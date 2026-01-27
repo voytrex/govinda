@@ -41,6 +41,12 @@ mvn -DskipTests package
 
 ## Run the Application
 
+Quick start (starts PostgreSQL + app):
+
+```bash
+./scripts/run-local.sh
+```
+
 ```bash
 mvn -pl backend/govinda-app -am spring-boot:run
 ```
