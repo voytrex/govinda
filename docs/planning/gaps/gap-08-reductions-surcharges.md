@@ -1,4 +1,4 @@
-# GAP-04: Reductions, Surcharges & Payment Incentives
+# GAP-08: Reductions, Surcharges & Payment Incentives
 
 ## Problem Statement
 

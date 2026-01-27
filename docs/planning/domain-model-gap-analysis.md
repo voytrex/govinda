@@ -156,6 +156,21 @@ Missing:
 
 ---
 
+### GAP-08: Reductions, Surcharges & Payment Incentives
+**Priority**: HIGH
+
+**Problem**: No support for premium/fee adjustments:
+- **IPV** (Individuelle Prämienverbilligung) - cantonal premium subsidies
+- **Skonto** - prepayment discounts (1-2% for annual payment)
+- **Malus** - late enrollment surcharge (KVG Art. 5: 30-50%, max 5 years)
+- Other reductions (family, model, accident exclusion)
+
+**Impact**: Cannot calculate correct net premiums, missing legal compliance for KVG Art. 5
+
+**See**: [Gap Analysis - Reductions & Surcharges](./gaps/gap-08-reductions-surcharges.md)
+
+---
+
 ## 3. Gap Resolution Approach
 
 ### Recommended Priority Order
@@ -188,6 +203,7 @@ Missing:
 | GAP-05 Exemption Workflow | ✓ | ✓ | ✓ | ExemptionDocument, VerificationTask |
 | GAP-06 Household Member | - | ✓ | - | (extend HouseholdMember) |
 | GAP-07 Telecom | - | - | ✓ | Contract, DeviceBundle, UsageRecord |
+| GAP-08 Reductions/Surcharges | ✓ | - | ✓ | PremiumAdjustment, EnrollmentSurcharge, PremiumSubsidy |
 
 ---
 
