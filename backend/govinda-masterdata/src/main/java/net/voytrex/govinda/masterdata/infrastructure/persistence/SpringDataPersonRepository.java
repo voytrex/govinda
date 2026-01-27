@@ -25,10 +25,10 @@ public interface SpringDataPersonRepository extends JpaRepository<Person, UUID> 
     @Query("""
         SELECT p FROM Person p
         WHERE p.tenantId = :tenantId
-        AND (:lastName IS NULL OR LOWER(p.lastName) LIKE CONCAT('%', :lastName, '%'))
-        AND (:firstName IS NULL OR LOWER(p.firstName) LIKE CONCAT('%', :firstName, '%'))
-        AND (:ahvNr IS NULL OR p.ahvNr.value LIKE CONCAT('%', :ahvNr, '%'))
-        AND (:dateOfBirth IS NULL OR p.dateOfBirth = :dateOfBirth)
+        AND (:lastName IS NULL OR LOWER(p.lastName) LIKE CONCAT('%', CAST(:lastName AS string), '%'))
+        AND (:firstName IS NULL OR LOWER(p.firstName) LIKE CONCAT('%', CAST(:firstName AS string), '%'))
+        AND (:ahvNr IS NULL OR p.ahvNr.value LIKE CONCAT('%', CAST(:ahvNr AS string), '%'))
+        AND (CAST(:dateOfBirth AS date) IS NULL OR p.dateOfBirth = CAST(:dateOfBirth AS date))
         AND (:postalCode IS NULL OR EXISTS (
             SELECT a FROM Address a WHERE a.personId = p.id
             AND a.postalCode = :postalCode AND a.validTo IS NULL

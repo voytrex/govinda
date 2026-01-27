@@ -12,6 +12,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootConfiguration
 @EnableAutoConfiguration
-@ComponentScan(basePackages = "net.voytrex.govinda")
+@ComponentScan(basePackages = "net.voytrex.govinda.masterdata")
 public class TestApplication {
 }
