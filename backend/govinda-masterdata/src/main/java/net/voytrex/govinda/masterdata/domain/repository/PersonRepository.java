@@ -15,6 +15,7 @@ import net.voytrex.govinda.masterdata.domain.model.Person;
 import net.voytrex.govinda.masterdata.domain.model.PersonHistoryEntry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 
 /**
  * Repository interface for Person aggregate.
@@ -27,11 +28,11 @@ public interface PersonRepository {
     Page<Person> findByTenantId(UUID tenantId, Pageable pageable);
     Page<Person> search(
         UUID tenantId,
-        String lastName,
-        String firstName,
-        String ahvNr,
-        LocalDate dateOfBirth,
-        String postalCode,
+        @Nullable String lastName,
+        @Nullable String firstName,
+        @Nullable String ahvNr,
+        @Nullable LocalDate dateOfBirth,
+        @Nullable String postalCode,
         Pageable pageable
     );
     boolean existsByAhvNr(AhvNumber ahvNr, UUID tenantId);

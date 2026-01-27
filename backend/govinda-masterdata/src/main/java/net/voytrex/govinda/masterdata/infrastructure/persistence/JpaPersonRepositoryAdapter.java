@@ -16,6 +16,7 @@ import net.voytrex.govinda.masterdata.domain.model.PersonHistoryEntry;
 import net.voytrex.govinda.masterdata.domain.repository.PersonRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -59,11 +60,11 @@ public class JpaPersonRepositoryAdapter implements PersonRepository {
     @Override
     public Page<Person> search(
         UUID tenantId,
-        String lastName,
-        String firstName,
-        String ahvNr,
-        LocalDate dateOfBirth,
-        String postalCode,
+        @Nullable String lastName,
+        @Nullable String firstName,
+        @Nullable String ahvNr,
+        @Nullable LocalDate dateOfBirth,
+        @Nullable String postalCode,
         Pageable pageable
     ) {
         String lastNameLower = lastName != null ? lastName.toLowerCase() : null;

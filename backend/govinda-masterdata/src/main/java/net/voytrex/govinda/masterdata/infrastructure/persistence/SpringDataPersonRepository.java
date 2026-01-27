@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.Nullable;
 
 public interface SpringDataPersonRepository extends JpaRepository<Person, UUID> {
     Optional<Person> findByIdAndTenantId(UUID id, UUID tenantId);
@@ -37,11 +38,11 @@ public interface SpringDataPersonRepository extends JpaRepository<Person, UUID> 
         """)
     Page<Person> search(
         @Param("tenantId") UUID tenantId,
-        @Param("lastName") String lastName,
-        @Param("firstName") String firstName,
-        @Param("ahvNr") String ahvNr,
-        @Param("dateOfBirth") LocalDate dateOfBirth,
-        @Param("postalCode") String postalCode,
+        @Nullable @Param("lastName") String lastName,
+        @Nullable @Param("firstName") String firstName,
+        @Nullable @Param("ahvNr") String ahvNr,
+        @Nullable @Param("dateOfBirth") LocalDate dateOfBirth,
+        @Nullable @Param("postalCode") String postalCode,
         Pageable pageable
     );
 }
