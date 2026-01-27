@@ -171,6 +171,75 @@ Missing:
 
 ---
 
+### GAP-09: KVG Cost Sharing (Franchise & Selbstbehalt)
+**Priority**: HIGH
+
+**Problem**: No tracking for annual cost sharing:
+- Franchise (CHF 300-2500 deductible)
+- Selbstbehalt (10% co-pay, max CHF 700)
+- Annual reset, mid-year insurer transfer
+- Maternity exemption
+
+**See**: [Gap Analysis - Cost Sharing](./gaps/gap-09-cost-sharing.md)
+
+---
+
+### GAP-10: Life Events Handling
+**Priority**: HIGH
+
+**Problem**: No automated handling for:
+- Newborn registration (3-month deadline, retroactive coverage)
+- Death (termination, refunds, household update)
+- Age transitions (19, 26 - automatic premium change)
+- Marriage/Divorce (household merge/split)
+- Address change (premium region, canton, IPV)
+
+**See**: [Gap Analysis - Life Events](./gaps/gap-10-life-events.md)
+
+---
+
+### GAP-11: Cross-Border Cases
+**Priority**: MEDIUM
+
+**Problem**: No support for special residence situations:
+- **Grenzgänger** - cross-border commuters (insurance choice)
+- **Fürstentum Liechtenstein** - special KVG agreement, own premium region
+- **Enclaves**: Büsingen (DE), Campione d'Italia (IT)
+- **Posted workers** - A1, E106/S1 certificates
+- **Foreign students** - exemption possibility
+
+**See**: [Gap Analysis - Cross-Border](./gaps/gap-11-cross-border.md)
+
+---
+
+### GAP-12: VVG-Specific Features
+**Priority**: HIGH
+
+**Problem**: Missing VVG underwriting and coverage features:
+- Health questionnaire (Gesundheitserklärung)
+- Reservations (Vorbehalte) - pre-existing condition exclusions
+- Waiting periods (Wartefristen) - 3-24 months
+- Premium loading (Prämienzuschlag) for health/lifestyle risks
+- VVG application workflow (no acceptance obligation)
+
+**See**: [Gap Analysis - VVG Specifics](./gaps/gap-12-vvg-specifics.md)
+
+---
+
+### GAP-13: Dunning & Collection
+**Priority**: MEDIUM
+
+**Problem**: No payment collection workflow:
+- Reminders (Mahnungen) - levels 1, 2, final
+- Debt collection (Betreibung)
+- Loss certificates (Verlustscheine) - 20-year validity
+- Payment plans
+- KVG 2025 rules (max 2 Betreibungen/year, canton transfer)
+
+**See**: [Gap Analysis - Dunning](./gaps/gap-13-dunning-collection.md)
+
+---
+
 ## 3. Gap Resolution Approach
 
 ### Recommended Priority Order
@@ -204,6 +273,11 @@ Missing:
 | GAP-06 Household Member | - | ✓ | - | (extend HouseholdMember) |
 | GAP-07 Telecom | - | - | ✓ | Contract, DeviceBundle, UsageRecord |
 | GAP-08 Reductions/Surcharges | ✓ | - | ✓ | PremiumAdjustment, EnrollmentSurcharge, PremiumSubsidy |
+| GAP-09 Cost Sharing | ✓ | - | - | CostSharingAccount, CostSharingEntry |
+| GAP-10 Life Events | ✓ | ✓ | - | LifeEvent, LifeEventType |
+| GAP-11 Cross-Border | ✓ | - | - | CrossBorderStatus, PostingCertificate |
+| GAP-12 VVG Specifics | ✓ | - | - | HealthDeclaration, CoverageReservation, WaitingPeriod |
+| GAP-13 Dunning | ✓ | ✓ | ✓ | DunningCase, PaymentPlan, LossCertificate |
 
 ---
 
