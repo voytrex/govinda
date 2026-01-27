@@ -276,5 +276,12 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <!-- Enable Failsafe plugin for all modules so integration tests run in verify -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+            </plugin>
+        </plugins>
     </build>
 </project>
