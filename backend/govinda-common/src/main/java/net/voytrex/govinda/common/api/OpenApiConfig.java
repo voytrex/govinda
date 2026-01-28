@@ -38,6 +38,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @SuppressWarnings("unchecked") // OpenAPI library uses raw types in its API
 public class OpenApiConfig {
+    private static final String MEDIA_TYPE_JSON = "application/json";
+    private static final String TYPE_STRING = "string";
+    private static final String ERROR_RESPONSE_REF = "#/components/schemas/ErrorResponse";
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -154,7 +157,7 @@ public class OpenApiConfig {
                 .description("Tenant UUID for multi-tenant isolation. "
                     + "Required for all authenticated requests. "
                     + "The tenant ID must match the tenant in the JWT token.")
-                .schema(new Schema<>().type("string").format("uuid"))
+                .schema(new Schema<>().type(TYPE_STRING).format("uuid"))
                 .example("550e8400-e29b-41d4-a716-446655440000")
         );
         
@@ -166,7 +169,7 @@ public class OpenApiConfig {
                 .required(false)
                 .description("User UUID for audit purposes. "
                     + "Automatically extracted from JWT token if not provided.")
-                .schema(new Schema<>().type("string").format("uuid"))
+                .schema(new Schema<>().type(TYPE_STRING).format("uuid"))
                 .example("123e4567-e89b-12d3-a456-426614174000")
         );
         
@@ -179,7 +182,7 @@ public class OpenApiConfig {
                 .description("Preferred language for responses. "
                     + "Supported: DE (German), FR (French), IT (Italian), EN (English). "
                     + "Default: DE")
-                .schema(new Schema<String>().type("string")._default("DE")) // NOSONAR - OpenAPI uses raw types
+                .schema(new Schema<String>().type(TYPE_STRING)._default("DE")) // NOSONAR - OpenAPI uses raw types
                 .example("DE")
         );
         
@@ -204,20 +207,20 @@ public class OpenApiConfig {
             .type("object")
             .description("Standard error response structure")
             .addProperty("errorCode", new Schema<>()
-                .type("string")
+                .type(TYPE_STRING)
                 .description("Machine-readable error code")
                 .example("ENTITY_NOT_FOUND"))
             .addProperty("message", new Schema<>()
-                .type("string")
+                .type(TYPE_STRING)
                 .description("Human-readable error message (localized)")
                 .example("Person with ID 550e8400-e29b-41d4-a716-446655440000 not found"))
             .addProperty("timestamp", new Schema<>()
-                .type("string")
+                .type(TYPE_STRING)
                 .format("date-time")
                 .description("Timestamp when the error occurred")
                 .example("2024-01-15T10:30:00Z"))
             .addProperty("path", new Schema<>()
-                .type("string")
+                .type(TYPE_STRING)
                 .description("API path where the error occurred")
                 .example("/api/v1/masterdata/persons/550e8400-e29b-41d4-a716-446655440000"))
             .addProperty("details", new Schema<>()
@@ -232,15 +235,15 @@ public class OpenApiConfig {
             .type("object")
             .description("Field-level validation error detail")
             .addProperty("field", new Schema<>()
-                .type("string")
+                .type(TYPE_STRING)
                 .description("Field name that failed validation")
                 .example("ahvNr"))
             .addProperty("message", new Schema<>()
-                .type("string")
+                .type(TYPE_STRING)
                 .description("Validation error message")
                 .example("Invalid AHV number format"))
             .addProperty("rejectedValue", new Schema<>()
-                .type("string")
+                .type(TYPE_STRING)
                 .description("The value that was rejected")
                 .example("123456789"));
     }
@@ -249,9 +252,9 @@ public class OpenApiConfig {
         return new ApiResponse()
             .description("Bad Request - Validation error with field details")
             .content(new Content().addMediaType(
-                "application/json",
+                MEDIA_TYPE_JSON,
                 new MediaType()
-                    .schema(new Schema<>().$ref("#/components/schemas/ErrorResponse"))
+                    .schema(new Schema<>().$ref(ERROR_RESPONSE_REF))
                     .example(new Example().value("""
                         {
                           "errorCode": "VALIDATION_ERROR",
@@ -274,9 +277,9 @@ public class OpenApiConfig {
         return new ApiResponse()
             .description("Unauthorized - Authentication required or failed")
             .content(new Content().addMediaType(
-                "application/json",
+                MEDIA_TYPE_JSON,
                 new MediaType()
-                    .schema(new Schema<>().$ref("#/components/schemas/ErrorResponse"))
+                    .schema(new Schema<>().$ref(ERROR_RESPONSE_REF))
                     .example(new Example().value("""
                         {
                           "errorCode": "AUTHENTICATION_REQUIRED",
@@ -292,9 +295,9 @@ public class OpenApiConfig {
         return new ApiResponse()
             .description("Forbidden - Insufficient permissions or unauthorized tenant access")
             .content(new Content().addMediaType(
-                "application/json",
+                MEDIA_TYPE_JSON,
                 new MediaType()
-                    .schema(new Schema<>().$ref("#/components/schemas/ErrorResponse"))
+                    .schema(new Schema<>().$ref(ERROR_RESPONSE_REF))
                     .example(new Example().value("""
                         {
                           "errorCode": "ACCESS_DENIED",
@@ -310,9 +313,9 @@ public class OpenApiConfig {
         return new ApiResponse()
             .description("Not Found - Resource not found")
             .content(new Content().addMediaType(
-                "application/json",
+                MEDIA_TYPE_JSON,
                 new MediaType()
-                    .schema(new Schema<>().$ref("#/components/schemas/ErrorResponse"))
+                    .schema(new Schema<>().$ref(ERROR_RESPONSE_REF))
                     .example(new Example().value("""
                         {
                           "errorCode": "ENTITY_NOT_FOUND",
@@ -328,9 +331,9 @@ public class OpenApiConfig {
         return new ApiResponse()
             .description("Conflict - Duplicate entity or concurrent modification")
             .content(new Content().addMediaType(
-                "application/json",
+                MEDIA_TYPE_JSON,
                 new MediaType()
-                    .schema(new Schema<>().$ref("#/components/schemas/ErrorResponse"))
+                    .schema(new Schema<>().$ref(ERROR_RESPONSE_REF))
                     .example(new Example().value("""
                         {
                           "errorCode": "ENTITY_DUPLICATE",
@@ -346,9 +349,9 @@ public class OpenApiConfig {
         return new ApiResponse()
             .description("Unprocessable Entity - Business rule violation")
             .content(new Content().addMediaType(
-                "application/json",
+                MEDIA_TYPE_JSON,
                 new MediaType()
-                    .schema(new Schema<>().$ref("#/components/schemas/ErrorResponse"))
+                    .schema(new Schema<>().$ref(ERROR_RESPONSE_REF))
                     // CHECKSTYLE:OFF: LineLength - Example JSON path in text block
                     .example(new Example().value("""
                         {
@@ -366,9 +369,9 @@ public class OpenApiConfig {
         return new ApiResponse()
             .description("Internal Server Error - Unexpected server error")
             .content(new Content().addMediaType(
-                "application/json",
+                MEDIA_TYPE_JSON,
                 new MediaType()
-                    .schema(new Schema<>().$ref("#/components/schemas/ErrorResponse"))
+                    .schema(new Schema<>().$ref(ERROR_RESPONSE_REF))
                     .example(new Example().value("""
                         {
                           "errorCode": "INTERNAL_ERROR",

@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "User authentication and authorization")
 public class AuthController {
+    private static final String APPLICATION_JSON = "application/json";
     private final AuthenticationService authenticationService;
 
     public AuthController(AuthenticationService authenticationService) {
@@ -56,7 +57,7 @@ public class AuthController {
                 responseCode = "200",
                 description = "Authentication successful",
                 content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = LoginResponse.class),
                     examples = {
                         @ExampleObject(
@@ -76,7 +77,7 @@ public class AuthController {
                 responseCode = "400",
                 description = "Bad Request - Invalid request format",
                 content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = ErrorResponse.class)
                 )
             ),
@@ -84,7 +85,7 @@ public class AuthController {
                 responseCode = "401",
                 description = "Unauthorized - Invalid credentials",
                 content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = ErrorResponse.class),
                     examples = {
                         @ExampleObject(
@@ -105,7 +106,7 @@ public class AuthController {
                 responseCode = "500",
                 description = "Internal Server Error",
                 content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = ErrorResponse.class)
                 )
             )
@@ -133,13 +134,13 @@ public class AuthController {
             @ApiResponse(
                 responseCode = "200",
                 description = "List of accessible tenants",
-                content = @Content(mediaType = "application/json")
+                content = @Content(mediaType = APPLICATION_JSON)
             ),
             @ApiResponse(
                 responseCode = "401",
                 description = "Unauthorized - Authentication required",
                 content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = ErrorResponse.class)
                 )
             ),
@@ -147,7 +148,7 @@ public class AuthController {
                 responseCode = "500",
                 description = "Internal Server Error",
                 content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = ErrorResponse.class)
                 )
             )
@@ -168,7 +169,7 @@ public class AuthController {
                 responseCode = "200",
                 description = "Current user information",
                 content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON,
                     examples = {
                         @ExampleObject(
                             name = "User Info",
@@ -186,7 +187,7 @@ public class AuthController {
                 responseCode = "401",
                 description = "Unauthorized - Authentication required",
                 content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = ErrorResponse.class)
                 )
             ),
@@ -194,7 +195,7 @@ public class AuthController {
                 responseCode = "500",
                 description = "Internal Server Error",
                 content = @Content(
-                    mediaType = "application/json",
+                    mediaType = APPLICATION_JSON,
                     schema = @Schema(implementation = ErrorResponse.class)
                 )
             )

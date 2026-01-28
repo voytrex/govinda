@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
     }
 
     private String translateError(String errorCode, HttpServletRequest request, Object... args) {
-        String key = "error." + errorCode.toLowerCase().replace("_", ".");
+        String key = "error." + errorCode.toLowerCase(Locale.ROOT).replace("_", ".");
         Locale locale = getLocale(request);
         return messageSource.getMessage(key, args, locale);
     }

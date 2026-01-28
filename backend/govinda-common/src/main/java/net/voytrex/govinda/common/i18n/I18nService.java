@@ -104,7 +104,7 @@ public class I18nService {
      * @return the translated error message
      */
     public String translateError(String errorCode, Language language, Object... args) {
-        String key = "error." + errorCode.toLowerCase().replace("_", ".");
+        String key = "error." + errorCode.toLowerCase(Locale.ROOT).replace("_", ".");
         return translate(key, language, args);
     }
 

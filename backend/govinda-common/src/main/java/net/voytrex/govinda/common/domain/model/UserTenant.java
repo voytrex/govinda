@@ -53,7 +53,7 @@ public class UserTenant {
     private Role role;
 
     @Column(name = "is_default", nullable = false)
-    private boolean isDefault = false;
+    private boolean defaultAccess = false;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     private Instant createdAt = Instant.now();
@@ -103,11 +103,11 @@ public class UserTenant {
     }
 
     public boolean isDefault() {
-        return isDefault;
+        return defaultAccess;
     }
 
     public void setDefault(boolean isDefault) {
-        this.isDefault = isDefault;
+        this.defaultAccess = isDefault;
     }
 
     public Instant getCreatedAt() {

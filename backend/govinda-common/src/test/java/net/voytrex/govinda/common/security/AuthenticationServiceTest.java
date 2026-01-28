@@ -78,7 +78,7 @@ class AuthenticationServiceTest {
             UserTenant userTenant = createTestUserTenant(user);
             when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
-            when(userTenantRepository.findByUserIdAndIsDefaultTrue(userId)).thenReturn(Optional.of(userTenant));
+            when(userTenantRepository.findByUserIdAndDefaultAccessTrue(userId)).thenReturn(Optional.of(userTenant));
             when(userTenantRepository.findUserTenantAccess(userId, tenantId)).thenReturn(Optional.of(userTenant));
             when(userRepository.save(user)).thenReturn(user);
 
@@ -112,7 +112,7 @@ class AuthenticationServiceTest {
             UserTenant userTenant = createTestUserTenant(user);
             when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
-            when(userTenantRepository.findByUserIdAndIsDefaultTrue(userId)).thenReturn(Optional.empty());
+            when(userTenantRepository.findByUserIdAndDefaultAccessTrue(userId)).thenReturn(Optional.empty());
             when(userTenantRepository.findByUserId(userId)).thenReturn(List.of(userTenant));
             when(userTenantRepository.findUserTenantAccess(userId, tenantId)).thenReturn(Optional.of(userTenant));
             when(userRepository.save(user)).thenReturn(user);
@@ -135,7 +135,7 @@ class AuthenticationServiceTest {
             UserTenant userTenant = new UserTenant(user, tenant, role);
             when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
-            when(userTenantRepository.findByUserIdAndIsDefaultTrue(userId)).thenReturn(Optional.of(userTenant));
+            when(userTenantRepository.findByUserIdAndDefaultAccessTrue(userId)).thenReturn(Optional.of(userTenant));
             when(userTenantRepository.findUserTenantAccess(userId, tenantId)).thenReturn(Optional.of(userTenant));
             when(userRepository.save(user)).thenReturn(user);
 
@@ -198,7 +198,7 @@ class AuthenticationServiceTest {
 
             when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
             when(passwordEncoder.matches(password, hashedPassword)).thenReturn(true);
-            when(userTenantRepository.findByUserIdAndIsDefaultTrue(userId)).thenReturn(Optional.empty());
+            when(userTenantRepository.findByUserIdAndDefaultAccessTrue(userId)).thenReturn(Optional.empty());
             when(userTenantRepository.findByUserId(userId)).thenReturn(List.of());
 
             assertThatThrownBy(() -> authenticationService.authenticate(username, password, null))

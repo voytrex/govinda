@@ -105,7 +105,7 @@ class JpaUserTenantRepositoryTest {
             entityManager.flush();
             entityManager.clear();
 
-            var result = userTenantRepository.findByUserIdAndIsDefaultTrue(user.getId());
+            var result = userTenantRepository.findByUserIdAndDefaultAccessTrue(user.getId());
 
             assertThat(result).isPresent();
             assertThat(result.orElseThrow().getId()).isEqualTo(defaultTenant.getId());

@@ -9,6 +9,7 @@ package net.voytrex.govinda.common.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class JwtTokenService {
+    private static final int MIN_SECRET_LENGTH = 32;
     private final String secret;
     private final long expirationSeconds;
     private volatile SecretKey secretKey;
@@ -39,10 +41,12 @@ public class JwtTokenService {
             synchronized (this) {
                 if (secretKey == null) {
                     byte[] keyBytes;
-                    if (secret.length() < 32) {
-                        keyBytes = String.format("%1$-" + 32 + "s", secret).replace(' ', '0').getBytes();
+                    if (secret.length() < MIN_SECRET_LENGTH) {
+                        keyBytes = String.format("%1$-" + MIN_SECRET_LENGTH + "s", secret)
+                            .replace(' ', '0')
+                            .getBytes(StandardCharsets.UTF_8);
                     } else {
-                        keyBytes = secret.getBytes();
+                        keyBytes = secret.getBytes(StandardCharsets.UTF_8);
                     }
                     secretKey = Keys.hmacShaKeyFor(keyBytes);
                 }

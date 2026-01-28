@@ -19,6 +19,9 @@ public enum AgeGroup {
     YOUNG_ADULT(19, 25),
     ADULT(26, null);
 
+    private static final int CHILD_MAX_AGE = 18;
+    private static final int YOUNG_ADULT_MAX_AGE = 25;
+
     private final int minAge;
     private final Integer maxAge;
 
@@ -39,10 +42,10 @@ public enum AgeGroup {
      * Determines the age group for a given age.
      */
     public static AgeGroup forAge(int age) {
-        if (age <= 18) {
+        if (age <= CHILD_MAX_AGE) {
             return CHILD;
         }
-        if (age <= 25) {
+        if (age <= YOUNG_ADULT_MAX_AGE) {
             return YOUNG_ADULT;
         }
         return ADULT;

@@ -20,6 +20,7 @@ import java.util.Objects;
 @Embeddable
 public class Money implements Comparable<Money> {
     public static final Money ZERO = new Money(BigDecimal.ZERO, Currency.CHF);
+    private static final int SCALE = 2;
 
     @Column(name = "amount", precision = 12, scale = 2)
     private BigDecimal amount;
@@ -38,7 +39,7 @@ public class Money implements Comparable<Money> {
         if (amount == null) {
             throw new IllegalArgumentException("Money amount cannot be null");
         }
-        if (amount.scale() > 2) {
+        if (amount.scale() > SCALE) {
             throw new IllegalArgumentException("Money amount must have at most 2 decimal places");
         }
         this.amount = amount;
@@ -53,7 +54,7 @@ public class Money implements Comparable<Money> {
         if (amount == null) {
             throw new IllegalArgumentException("Money amount cannot be null");
         }
-        if (amount.scale() > 2) {
+        if (amount.scale() > SCALE) {
             throw new IllegalArgumentException("Money amount must have at most 2 decimal places");
         }
         this.amount = amount;
@@ -74,7 +75,7 @@ public class Money implements Comparable<Money> {
         BigDecimal rounded = amount
             .multiply(new BigDecimal("20"))
             .setScale(0, RoundingMode.HALF_UP)
-            .divide(new BigDecimal("20"), 2, RoundingMode.HALF_UP);
+            .divide(new BigDecimal("20"), SCALE, RoundingMode.HALF_UP);
         return new Money(rounded, currency);
     }
 
@@ -93,7 +94,7 @@ public class Money implements Comparable<Money> {
     }
 
     public Money multiply(BigDecimal factor) {
-        return new Money(amount.multiply(factor).setScale(2, RoundingMode.HALF_UP), currency);
+        return new Money(amount.multiply(factor).setScale(SCALE, RoundingMode.HALF_UP), currency);
     }
 
     public Money negate() {
@@ -120,19 +121,19 @@ public class Money implements Comparable<Money> {
 
     @Override
     public String toString() {
-        return currency + " " + amount.setScale(2, RoundingMode.HALF_UP);
+        return currency + " " + amount.setScale(SCALE, RoundingMode.HALF_UP);
     }
 
     public static Money chf(double amount) {
-        return new Money(BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP), Currency.CHF);
+        return new Money(BigDecimal.valueOf(amount).setScale(SCALE, RoundingMode.HALF_UP), Currency.CHF);
     }
 
     public static Money chf(int amount) {
-        return new Money(BigDecimal.valueOf(amount).setScale(2, RoundingMode.HALF_UP), Currency.CHF);
+        return new Money(BigDecimal.valueOf(amount).setScale(SCALE, RoundingMode.HALF_UP), Currency.CHF);
     }
 
     public static Money chf(String amount) {
-        return new Money(new BigDecimal(amount).setScale(2, RoundingMode.HALF_UP), Currency.CHF);
+        return new Money(new BigDecimal(amount).setScale(SCALE, RoundingMode.HALF_UP), Currency.CHF);
     }
 
     private void requireSameCurrency(Money other) {

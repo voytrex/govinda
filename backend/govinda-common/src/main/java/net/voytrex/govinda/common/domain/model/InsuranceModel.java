@@ -26,11 +26,11 @@ public enum InsuranceModel {
     TELMED("TLM", true);
 
     private final String code;
-    private final boolean hasProviderRestriction;
+    private final boolean providerRestriction;
 
     InsuranceModel(String code, boolean hasProviderRestriction) {
         this.code = code;
-        this.hasProviderRestriction = hasProviderRestriction;
+        this.providerRestriction = hasProviderRestriction;
     }
 
     public String getCode() {
@@ -38,7 +38,7 @@ public enum InsuranceModel {
     }
 
     public boolean hasProviderRestriction() {
-        return hasProviderRestriction;
+        return providerRestriction;
     }
 
     public static InsuranceModel fromCode(String code) {

@@ -42,11 +42,12 @@ import org.springframework.lang.Nullable;
     }
 )
 public class User {
+    private static final String USERNAME_COLUMN = "username";
     @Id
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id = UUID.randomUUID();
 
-    @Column(name = "username", nullable = false, unique = true, length = 100)
+    @Column(name = USERNAME_COLUMN, nullable = false, unique = true, length = 100)
     private String username;
 
     @Column(name = "email", nullable = false, unique = true, length = 255)
@@ -98,7 +99,7 @@ public class User {
     }
 
     public String getUsername() {
-        return Objects.requireNonNull(username, "username");
+        return Objects.requireNonNull(username, USERNAME_COLUMN);
     }
 
     public void setUsername(String username) {
@@ -185,7 +186,7 @@ public class User {
             firstName != null ? firstName : "",
             lastName != null ? lastName : ""
         )).trim();
-        return full.isBlank() ? Objects.requireNonNull(username, "username") : full;
+        return full.isBlank() ? Objects.requireNonNull(username, USERNAME_COLUMN) : full;
     }
 
     public boolean isActive() {

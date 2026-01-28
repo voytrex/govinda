@@ -7,6 +7,7 @@
 package net.voytrex.govinda.common.security;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.exception.AuthenticationException;
 import net.voytrex.govinda.common.domain.exception.EntityNotFoundByFieldException;
@@ -54,7 +55,7 @@ public class AuthenticationService {
             .orElseThrow(() -> new AuthenticationException("Invalid credentials"));
 
         if (user.getStatus() != UserStatus.ACTIVE) {
-            throw new AuthenticationException("User account is " + user.getStatus().name().toLowerCase());
+            throw new AuthenticationException("User account is " + user.getStatus().name().toLowerCase(Locale.ROOT));
         }
 
         if (!passwordEncoder.matches(password, user.getPasswordHash())) {
@@ -101,7 +102,7 @@ public class AuthenticationService {
     }
 
     private UUID resolveDefaultTenantId(User user) {
-        var defaultTenant = userTenantRepository.findByUserIdAndIsDefaultTrue(user.getId())
+        var defaultTenant = userTenantRepository.findByUserIdAndDefaultAccessTrue(user.getId())
             .or(() -> userTenantRepository.findByUserId(user.getId()).stream().findFirst())
             .orElseThrow(() -> new AuthenticationException("User has no tenant access"));
         if (defaultTenant.getTenant() == null) {
