@@ -88,3 +88,10 @@ mvn -pl backend/govinda-common -am -Dtest=AuthControllerIntegrationTest test
 - Rebuild with tests: `mvn clean test`
 - Rebuild and run app: `mvn -pl backend/govinda-app -am spring-boot:run`
 
+## Frontend Docs
+
+- `docs/development/frontend-strategy.md`
+- `docs/development/frontend-web-client.md`
+- `docs/development/frontend-desktop-client.md`
+- `docs/development/frontend-deployment.md`
+
