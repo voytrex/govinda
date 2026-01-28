@@ -12,428 +12,79 @@
 
 ## Categories of Cross-Border Situations
 
-### 1. Cross-Border Workers (Grenzgänger)
+Cross-border cases typically fall into:
 
-Persons who work in Switzerland but live in a neighboring country:
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           GRENZGÄNGER                                       │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  RESIDENCE                              WORK                                │
-│  ─────────                              ────                                │
-│  • Germany (DE)                         • Switzerland (CH)                  │
-│  • France (FR)                          • Employment with Swiss employer    │
-│  • Italy (IT)                           • Subject to Swiss social security  │
-│  • Austria (AT)                                                             │
-│                                                                             │
-│  INSURANCE OPTIONS (Optionsrecht)                                           │
-│  ─────────────────────────────────                                          │
-│  1. Swiss KVG insurance (default)                                           │
-│  2. Exemption to use home country insurance                                 │
-│     (must apply within 3 months of starting work)                           │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### 2. Posted Workers (Entsandte Arbeitnehmer)
-
-Temporarily assigned to Switzerland from another country:
-
-| Situation | Insurance | Duration |
-|-----------|-----------|----------|
-| Posted from EU/EFTA | Home country | Max 24 months |
-| Posted from non-EU | Often Swiss KVG | Varies |
-
-### 3. Multi-State Workers
-
-Working in multiple countries simultaneously:
-
-```
-Coverage determined by:
-1. Country of residence (if substantial activity there)
-2. Country of employer's registered office
-3. Coordination via A1/E101 certificate
-```
-
----
-
-## Special Territories
-
-### Liechtenstein (FL)
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        FÜRSTENTUM LIECHTENSTEIN                             │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  STATUS: EEA member, not EU member, currency CHF                            │
-│                                                                             │
-│  HEALTHCARE:                                                                │
-│  • Own mandatory insurance system (KVG-FL)                                  │
-│  • Similar to Swiss KVG but separate                                        │
-│  • Mutual recognition of coverage                                           │
-│                                                                             │
-│  CROSS-BORDER:                                                              │
-│  • Many FL residents work in CH                                             │
-│  • Many CH providers treat FL patients                                      │
-│  • Settlement via coordination office                                       │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Büsingen am Hochrhein (DE)
-
-German exclave entirely surrounded by Swiss territory:
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           BÜSINGEN (DE)                                     │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  SOVEREIGNTY: German                                                        │
-│  CUSTOMS: Swiss customs area                                                │
-│  CURRENCY: CHF (mainly) and EUR                                             │
-│                                                                             │
-│  HEALTHCARE:                                                                │
-│  • Residents can choose CH or DE insurance                                  │
-│  • Special agreements for healthcare access                                 │
-│  • Swiss providers commonly used                                            │
-│                                                                             │
-│  POPULATION: ~1,500                                                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Campione d'Italia (IT)
-
-Italian exclave within Swiss territory (Ticino):
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                        CAMPIONE D'ITALIA (IT)                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  SOVEREIGNTY: Italian                                                       │
-│  CUSTOMS: Swiss customs area (since 2020)                                   │
-│  CURRENCY: CHF (since 2020)                                                 │
-│                                                                             │
-│  HEALTHCARE:                                                                │
-│  • Italian SSN (Servizio Sanitario Nazionale)                               │
-│  • Swiss providers often used due to proximity                              │
-│  • Complex reimbursement procedures                                         │
-│                                                                             │
-│  POPULATION: ~1,900                                                         │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Samnaun (CH) - Duty-Free Zone
-
-Swiss municipality with special customs status:
-
-```
-Not a cross-border case per se, but:
-• Duty-free zone
-• Special VAT rules
-• Normal Swiss KVG applies
-```
+- **Cross-border workers** who live abroad and work in Switzerland.
+- **Posted workers** temporarily assigned to Switzerland.
+- **Multi-state workers** active in multiple countries.
+- **Special territories** with distinct coordination rules.
 
 ---
 
 ## Options Right (Optionsrecht)
 
-Cross-border workers from certain countries have the right to choose their insurance system:
-
-### Eligible Countries
-
-| Country | Options Right | Deadline |
-|---------|--------------|----------|
-| Germany | Yes | 3 months from work start |
-| France | Yes | 3 months from work start |
-| Italy | Yes | 3 months from work start |
-| Austria | Yes | 3 months from work start |
-| Liechtenstein | Special agreement | Varies |
-
-### Exercising the Option
+Eligible cross-border workers can choose between Swiss KVG and home-country insurance within a legal deadline. The choice affects coverage coordination and billing.
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                       OPTIONS RIGHT PROCESS                                 │
-└─────────────────────────────────────────────────────────────────────────────┘
-
-Day 0: Start employment in Switzerland
-         │
-         ▼
-     ┌───────────────────────────────────────────┐
-     │  DEFAULT: Subject to Swiss KVG            │
-     │  Must obtain Swiss insurance within       │
-     │  3 months of starting work                │
-     └───────────────────────────────────────────┘
-         │
-         │ Within 3 months
-         ▼
-     ┌───────────────────────────────────────────┐
-     │  OPTION: Request exemption from KVG       │
-     │  • Submit to cantonal authority           │
-     │  • Prove equivalent home country coverage │
-     │  • Family members also covered            │
-     └───────────────────────────────────────────┘
-         │
-         ├─────────────────────┬────────────────────┐
-         ▼                     ▼                    ▼
-┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐
-│ Option A:       │   │ Option B:       │   │ Deadline passed:│
-│ Swiss KVG       │   │ Home country    │   │ Swiss KVG       │
-│ (default)       │   │ insurance       │   │ mandatory       │
-└─────────────────┘   │ (with exemption)│   └─────────────────┘
-                      └─────────────────┘
+Start employment in CH
+    │
+    ├─ Default: Swiss KVG applies
+    │
+    └─ Option (typically within 3 months):
+         Request exemption with proof of equivalent coverage
 ```
 
 ---
 
-## Entity Model
+## Coordination Rules (EU/EFTA)
 
-### CrossBorderStatus
+Cross-border coverage follows the principle of **one applicable social security system at a time**. Coordination is typically based on:
 
-```java
-@Entity
-@Table(name = "cross_border_statuses")
-public class CrossBorderStatus {
+1. Country of work
+2. Country of residence for multi-state workers
+3. Employer’s registered office (if needed)
 
-    @Id
-    private UUID id;
-
-    @Column(name = "tenant_id", nullable = false)
-    private UUID tenantId;
-
-    @Column(name = "person_id", nullable = false)
-    private UUID personId;
-
-    // Classification
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status_type", nullable = false)
-    private CrossBorderType statusType;
-
-    // Work location
-    @Column(name = "work_country", length = 2)
-    private String workCountry;  // ISO 3166-1 alpha-2
-
-    @Column(name = "work_canton", length = 2)
-    private String workCanton;
-
-    @Column(name = "employer_name")
-    private String employerName;
-
-    // Residence
-    @Column(name = "residence_country", length = 2, nullable = false)
-    private String residenceCountry;
-
-    @Column(name = "residence_region")
-    private String residenceRegion;
-
-    // Options right
-    @Enumerated(EnumType.STRING)
-    @Column(name = "insurance_choice")
-    private InsuranceChoice insuranceChoice;
-
-    @Column(name = "exemption_granted")
-    private boolean exemptionGranted;
-
-    @Column(name = "exemption_date")
-    private LocalDate exemptionDate;
-
-    @Column(name = "exemption_reference")
-    private String exemptionReference;
-
-    // Coordination
-    @Column(name = "a1_certificate_number")
-    private String a1CertificateNumber;
-
-    @Column(name = "a1_valid_from")
-    private LocalDate a1ValidFrom;
-
-    @Column(name = "a1_valid_to")
-    private LocalDate a1ValidTo;
-
-    // Foreign insurer (if exempted)
-    @Column(name = "foreign_insurer_name")
-    private String foreignInsurerName;
-
-    @Column(name = "foreign_policy_number")
-    private String foreignPolicyNumber;
-
-    // Validity
-    @Column(name = "valid_from", nullable = false)
-    private LocalDate validFrom;
-
-    @Column(name = "valid_to")
-    private LocalDate validTo;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private CrossBorderStatusState status;
-
-    // Audit
-    @Column(name = "created_at")
-    private Instant createdAt;
-
-    @Version
-    private long version;
-}
-```
-
-### Enums
-
-```java
-public enum CrossBorderType {
-    GRENZGAENGER("Grenzgänger"),           // Cross-border worker
-    POSTED_WORKER("Entsandter"),           // Posted worker
-    MULTI_STATE("Mehrstaatlich tätig"),    // Multi-state worker
-    LIECHTENSTEIN("FL-Versicherter"),       // Liechtenstein resident
-    BUESINGEN("Büsingen-Einwohner"),       // Büsingen resident
-    CAMPIONE("Campione-Einwohner"),        // Campione resident
-    PENSIONER_ABROAD("Rentner im Ausland"); // Swiss pensioner abroad
-}
-
-public enum InsuranceChoice {
-    SWISS_KVG("Schweizer KVG"),
-    HOME_COUNTRY("Wohnsitzland"),
-    LIECHTENSTEIN_KVG("Liechtenstein KVG");
-}
-
-public enum CrossBorderStatusState {
-    PENDING("Ausstehend"),
-    ACTIVE("Aktiv"),
-    EXEMPTED("Befreit"),
-    EXPIRED("Abgelaufen"),
-    TERMINATED("Beendet");
-}
-```
+Common documents:
+- **A1 certificate** (applicable legislation)
+- **S1 form** (healthcare entitlement in residence country)
+- **EHIC** (temporary stays)
 
 ---
 
-## Coverage Coordination
+## Special Territories
 
-### EU/EFTA Coordination Rules
+Examples with specific coordination rules:
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                     EU REGULATION 883/2004                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  PRINCIPLE: One country's social security system at a time                  │
-│                                                                             │
-│  DETERMINATION:                                                             │
-│  1. Country of work (generally)                                             │
-│  2. Country of residence (for multi-state workers)                          │
-│  3. Country of employer's seat (if no residence activity)                   │
-│                                                                             │
-│  DOCUMENTATION:                                                             │
-│  • A1 Certificate: Proof of applicable legislation                          │
-│  • S1 Form: Entitlement to healthcare in residence country                  │
-│  • EHIC: European Health Insurance Card for temporary stays                 │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
-
-### Healthcare Access for Cross-Border Workers
-
-```java
-public class CrossBorderHealthcareAccess {
-
-    // Worker with Swiss KVG living in France
-    public Set<Country> treatmentCountries(CrossBorderStatus status) {
-        if (status.getInsuranceChoice() == InsuranceChoice.SWISS_KVG) {
-            return Set.of(
-                Country.CH,  // Full access
-                Country.FR   // Access in residence country (with S1)
-            );
-        } else {
-            return Set.of(
-                Country.FR,  // Full access (home insurance)
-                Country.CH   // Emergency only or with prior authorization
-            );
-        }
-    }
-}
-```
+- **Liechtenstein**: own mandatory system, mutual recognition
+- **Büsingen (DE)** and **Campione d’Italia (IT)**: special agreements
+- **Samnaun (CH)**: customs exception, standard KVG applies
 
 ---
 
-## Premium Implications
-
-### Cross-Border Worker Premiums
+## Premium Implications (Conceptual)
 
 | Scenario | Premium Region | Cost Sharing |
 |----------|---------------|--------------|
 | Swiss KVG, works in CH | Swiss rates | Swiss rules |
-| Swiss KVG, lives in FR | Usually lower | Swiss rules |
+| Swiss KVG, lives in FR/DE/IT | Often reduced | Swiss rules |
 | Home country insurance | Home country rates | Home country rules |
-
-### Special Premium Calculations
-
-```java
-public Money calculateGrenzgaengerPremium(CrossBorderStatus status) {
-    if (status.getInsuranceChoice() == InsuranceChoice.SWISS_KVG) {
-        // Special rates often apply for cross-border workers
-        // Based on residence country cost levels
-        return premiumService.getGrenzgaengerRate(
-            status.getResidenceCountry(),
-            status.getWorkCanton(),
-            status.getPerson().getAgeGroup()
-        );
-    }
-    return Money.ZERO;  // Not applicable if exempted
-}
-```
 
 ---
 
-## Administrative Processes
+## Administrative Process
 
-### KVG Exemption Request (Grenzgänger)
+- Collect proof of residence and employment
+- Validate coverage equivalence
+- Submit request to cantonal authority
+- Track approval and effective dates
 
-```
-Documents required:
-├── Employment contract (Swiss employer)
-├── Proof of residence abroad
-├── Proof of foreign health insurance coverage
-├── Family status documentation
-└── Completed exemption application form
+---
 
-Submit to:
-└── Cantonal health department (Gesundheitsdirektion)
-    of work canton
+## Legal References
 
-Timeline:
-├── Deadline: 3 months from start of employment
-├── Processing: 2-4 weeks typically
-└── Effective: Retroactive to employment start if approved
-```
-
-### End of Cross-Border Status
-
-```java
-@Service
-public class CrossBorderStatusService {
-
-    public void handleEndOfEmployment(CrossBorderStatus status) {
-        status.setValidTo(LocalDate.now());
-        status.setStatus(CrossBorderStatusState.TERMINATED);
-
-        if (status.getExemptionGranted()) {
-            // Person may now need Swiss KVG if staying in CH
-            // or is no longer subject to Swiss insurance
-            notifyComplianceTeam(status);
-        }
-
-        // Update coverage accordingly
-        coverageService.reviewCoverage(status.getPersonId());
-    }
-}
-```
+- **EU Regulation 883/2004** (coordination of social security systems)
+- **Bilateral EU/EFTA agreements** applicable to CH residents
+- **Cantonal health authorities** procedures for Optionsrecht
 
 ---
 

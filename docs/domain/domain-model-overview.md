@@ -12,64 +12,7 @@ Govinda is a multi-tenant ERP for Swiss subscription-based services, supporting:
 
 ## Domain Model Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           GOVINDA DOMAIN MODEL                                   │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│   MASTERDATA CONTEXT              PRODUCT CONTEXT           CONTRACT CONTEXT     │
-│   ══════════════════              ═══════════════           ════════════════     │
-│                                                                                  │
-│   ┌──────────────┐               ┌──────────────┐          ┌──────────────┐     │
-│   │   Person     │               │   Product    │          │    Policy    │     │
-│   │──────────────│               │──────────────│          │──────────────│     │
-│   │ AHV-Nr       │               │ domain       │          │ policyHolder │     │
-│   │ name         │               │ pricingModel │          │ billingPerson│     │
-│   │ dateOfBirth  │               │ eligibleTypes│          │ status       │     │
-│   │ circumstances│               └──────┬───────┘          └──────┬───────┘     │
-│   └──────┬───────┘                      │                         │             │
-│          │                       ┌──────▼───────┐          ┌──────▼───────┐     │
-│   ┌──────▼───────┐               │   Tariff     │          │   Coverage   │     │
-│   │  Household   │               │──────────────│          │──────────────│     │
-│   │──────────────│               │ validFrom/To │          │ productId    │     │
-│   │ type         │               │ premiumTable │          │ effectiveDate│     │
-│   │ members[]    │               └──────────────┘          │ status       │     │
-│   └──────┬───────┘                                         └──────┬───────┘     │
-│          │                       ┌──────────────┐                 │             │
-│   ┌──────▼───────┐               │ PricingTier  │          ┌──────▼───────┐     │
-│   │ Organization │               │──────────────│          │  Exemption   │     │
-│   │──────────────│               │ minTurnover  │          │──────────────│     │
-│   │ UID          │               │ maxTurnover  │          │ reason       │     │
-│   │ turnover     │               │ amount       │          │ validFrom/To │     │
-│   │ type         │               └──────────────┘          └──────────────┘     │
-│   └──────────────┘                                                              │
-│                                                             ┌──────────────┐     │
-│   ┌──────────────┐                                         │  Suspension  │     │
-│   │BusinessPartner│                                         │──────────────│     │
-│   │──────────────│                                         │ reason       │     │
-│   │ partnerType  │                                         │ billingTreat │     │
-│   │ category     │                                         └──────────────┘     │
-│   └──────────────┘                                                              │
-│                                                             ┌──────────────┐     │
-│   ┌──────────────┐                                         │ PaymentArr.  │     │
-│   │   Address    │                                         │──────────────│     │
-│   └──────────────┘                                         │ payerType    │     │
-│                                                            │ coverage%    │     │
-│                                                            └──────────────┘     │
-│                                                                                  │
-│   BILLING CONTEXT                 DOMAIN-SPECIFIC CONTEXTS                      │
-│   ═══════════════                 ════════════════════════                      │
-│                                                                                  │
-│   ┌──────────────┐               ┌───────────────────────────────────┐          │
-│   │   Invoice    │               │ Healthcare    │ Broadcast│Telecom │          │
-│   │──────────────│               │───────────────│──────────│────────│          │
-│   │ positions[]  │               │ KvgRules      │ FeeRules │ (future)│          │
-│   │ status       │               │ VvgRules      │ TierCalc │         │          │
-│   └──────────────┘               │ PremiumCalc   │ Exempt   │         │          │
-│                                  └───────────────────────────────────┘          │
-│                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+Govinda is organized into bounded contexts (masterdata, product, contract, billing). Each context owns its entities and rules, while shared concepts (e.g., exemptions) connect across domains.
 
 ---
 
@@ -162,98 +105,21 @@ The system supports multiple regulatory/business domains:
 - **SuspensionReason**: MILITARY_SERVICE, STUDY_ABROAD, MOVING, etc.
 - **CircumstanceType**: REFUGEE, STUDENT, DISABLED, etc.
 
-**Full specification**: [docs/planning/new-enums-specification.md](../planning/new-enums-specification.md)
-
 ---
 
 ## Cross-Domain Features
 
 ### Exemption Framework
 
-Supports fee exemptions across all domains:
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                 EXEMPTION FRAMEWORK                      │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  Person/Household/Organization                           │
-│           │                                              │
-│           ▼                                              │
-│  ┌─────────────────┐     ┌─────────────────┐            │
-│  │ Circumstance    │────►│   Exemption     │            │
-│  │─────────────────│     │─────────────────│            │
-│  │ EL_RECIPIENT    │     │ domain=BROADCAST│            │
-│  │ DEAF_BLIND      │     │ type=FULL       │            │
-│  │ DIPLOMATIC      │     │ validFrom/To    │            │
-│  └─────────────────┘     └─────────────────┘            │
-│                                                          │
-│  Healthcare: PREMIUM_SUBSIDY (partial)                   │
-│  Broadcast:  EL_RECIPIENT, DEAF_BLIND, DIPLOMATIC (full) │
-│  Telecom:    STUDENT_DISCOUNT, SENIOR_DISCOUNT (partial) │
-│                                                          │
-└─────────────────────────────────────────────────────────┘
-```
+Supports fee exemptions across domains. Circumstances determine exemption eligibility and scope.
 
 ### Suspension Framework
 
-Supports temporary pauses:
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                 SUSPENSION FRAMEWORK                     │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  Coverage/Subscription                                   │
-│           │                                              │
-│           ▼                                              │
-│  ┌─────────────────┐                                    │
-│  │   Suspension    │                                    │
-│  │─────────────────│                                    │
-│  │ reason          │  MILITARY_SERVICE, STUDY_ABROAD    │
-│  │ type            │  FULL, PARTIAL, BILLING_ONLY       │
-│  │ billingTreatment│  NO_BILLING, REDUCED_BILLING       │
-│  │ effectiveFrom/To│                                    │
-│  │ autoReactivate  │                                    │
-│  └─────────────────┘                                    │
-│                                                          │
-│  Healthcare: Military, Study abroad, Hospitalization     │
-│  Telecom:    Moving, Sabbatical, Military               │
-│  Broadcast:  Generally not suspendable                   │
-│                                                          │
-└─────────────────────────────────────────────────────────┘
-```
+Supports temporary pauses of coverage or billing based on documented reasons and approval workflows.
 
 ### Third-Party Payment
 
-Supports complex payment arrangements:
-
-```
-┌─────────────────────────────────────────────────────────┐
-│              THIRD-PARTY PAYMENT                         │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  Coverage/Subscription                                   │
-│           │                                              │
-│           ▼                                              │
-│  ┌─────────────────┐                                    │
-│  │PaymentArrangement│                                    │
-│  │─────────────────│                                    │
-│  │ payerType       │  CANTON, EMPLOYER, BUSINESS_PARTNER│
-│  │ payerId         │  (FK to payer entity)              │
-│  │ arrangementType │  FULL, PARTIAL, FIXED_CONTRIBUTION │
-│  │ coveragePercent │  or fixedAmount                    │
-│  │ validFrom/To    │                                    │
-│  └─────────────────┘                                    │
-│                                                          │
-│  Examples:                                               │
-│  - Canton pays premium subsidy (Prämienverbilligung)    │
-│  - Social services pays full premium (Sozialhilfe)       │
-│  - Employer pays 50% of health insurance                │
-│  - Institution pays broadcast fee for collective HH     │
-│                                                          │
-└─────────────────────────────────────────────────────────┘
-```
+Supports payment arrangements where a third party pays all or part of a subscription (e.g., canton subsidies, employers, social services).
 
 ---
 
@@ -290,24 +156,6 @@ Supports complex payment arrangements:
 - govinda-domain-telecom module
 - Contract terms, usage tracking
 
-**Full plan**: [docs/planning/subscription-model-extension-plan.md](../planning/subscription-model-extension-plan.md)
-
----
-
-## Key Documentation References
-
-| Document | Location | Description |
-|----------|----------|-------------|
-| Gap Analysis | [docs/planning/domain-model-gap-analysis.md](../planning/domain-model-gap-analysis.md) | Identified gaps |
-| Business Partner | [docs/planning/gaps/gap-01-business-partner.md](../planning/gaps/gap-01-business-partner.md) | Partner/payer model |
-| Suspension | [docs/planning/gaps/gap-02-suspension.md](../planning/gaps/gap-02-suspension.md) | Suspension framework |
-| Circumstances | [docs/planning/gaps/gap-03-person-circumstances.md](../planning/gaps/gap-03-person-circumstances.md) | Person circumstances |
-| Enum Specs | [docs/planning/new-enums-specification.md](../planning/new-enums-specification.md) | Core enums |
-| Enum Extensions | [docs/planning/new-enums-specification-extension.md](../planning/new-enums-specification-extension.md) | Additional enums |
-| Radio/TV Fee | [docs/domain/concepts/radio-tv-fee.md](./concepts/radio-tv-fee.md) | RTVG domain knowledge |
-| Extension Plan | [docs/planning/subscription-model-extension-plan.md](../planning/subscription-model-extension-plan.md) | Implementation roadmap |
-
----
 
 ## Swiss Regulatory Compliance
 
@@ -329,6 +177,17 @@ Supports complex payment arrangements:
 - Consent management
 
 **See**: [docs/domain/regulatory/](./regulatory/)
+
+---
+
+## External References
+
+- **KVG** (Krankenversicherungsgesetz)
+- **KVV** (Krankenversicherungsverordnung)
+- **VVG** (Versicherungsvertragsgesetz)
+- **RTVG** (Radio- und Fernsehgesetz)
+- **BAG** guidance and official tariff publications
+- **BAKOM** fee rules and exemptions
 
 ---
 
