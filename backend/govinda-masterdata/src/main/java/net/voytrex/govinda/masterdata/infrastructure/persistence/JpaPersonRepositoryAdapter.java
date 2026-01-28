@@ -8,6 +8,7 @@ package net.voytrex.govinda.masterdata.infrastructure.persistence;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.model.AhvNumber;
@@ -67,8 +68,8 @@ public class JpaPersonRepositoryAdapter implements PersonRepository {
         @Nullable String postalCode,
         Pageable pageable
     ) {
-        String lastNameLower = lastName != null ? lastName.toLowerCase() : null;
-        String firstNameLower = firstName != null ? firstName.toLowerCase() : null;
+        String lastNameLower = lastName != null ? lastName.toLowerCase(Locale.ROOT) : null;
+        String firstNameLower = firstName != null ? firstName.toLowerCase(Locale.ROOT) : null;
         return jpaPersonRepository.search(
             tenantId,
             lastNameLower,

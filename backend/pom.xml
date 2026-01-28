@@ -48,6 +48,7 @@
         <jacoco.version>0.8.11</jacoco.version>
         <maven.surefire.version>3.2.5</maven.surefire.version>
         <maven.failsafe.version>3.2.5</maven.failsafe.version>
+        <maven.pmd.version>3.28.0</maven.pmd.version>
         <jsr305.version>3.0.2</jsr305.version>
         <!-- Default empty argLine, will be overridden by JaCoCo when running -->
         <argLine></argLine>
@@ -286,6 +287,29 @@
                         </dependency>
                     </dependencies>
                 </plugin>
+
+                <!-- PMD - Static Analysis (warning-only) -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>${maven.pmd.version}</version>
+                    <configuration>
+                        <rulesets>
+                            <ruleset>${project.basedir}/../pmd-ruleset.xml</ruleset>
+                        </rulesets>
+                        <failOnViolation>false</failOnViolation>
+                        <printFailingErrors>true</printFailingErrors>
+                        <includeTests>false</includeTests>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -299,6 +323,12 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+
+            <!-- Activate PMD plugin for all backend modules -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import net.voytrex.govinda.common.api.PageResponse;
 import net.voytrex.govinda.masterdata.application.ChangeMaritalStatusCommand;
@@ -42,6 +43,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/masterdata/persons")
 @Tag(name = "Persons", description = "Person management (Versicherte)")
 public class PersonController {
+    private static final String BEARER_AUTH = "bearerAuth";
+    private static final String TENANT_HEADER = "X-Tenant-Id";
+    private static final String READ_AUTHORITY = "hasAuthority('person:read')";
+    private static final String WRITE_AUTHORITY = "hasAuthority('person:write')";
+
     private final PersonService personService;
 
     public PersonController(PersonService personService) {
@@ -52,11 +58,11 @@ public class PersonController {
     @Operation(
         summary = "List persons",
         description = "Returns paginated list of persons",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = BEARER_AUTH)
     )
-    @PreAuthorize("hasAuthority('person:read')")
+    @PreAuthorize(READ_AUTHORITY)
     public PageResponse<PersonResponse> listPersons(
-        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader(TENANT_HEADER) UUID tenantId,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "20") int size,
         @RequestParam(defaultValue = "lastName") String sortBy,
@@ -65,7 +71,7 @@ public class PersonController {
         var pageable = PageRequest.of(
             page,
             Math.min(size, 100),
-            Sort.by(Sort.Direction.valueOf(sortDir.toUpperCase()), sortBy)
+            Sort.by(Sort.Direction.valueOf(sortDir.toUpperCase(Locale.ROOT)), sortBy)
         );
         var result = personService.listPersons(tenantId, pageable);
         return new PageResponse<>(
@@ -83,12 +89,12 @@ public class PersonController {
     @Operation(
         summary = "Search persons",
         description = "Search persons by various criteria",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = BEARER_AUTH)
     )
-    @PreAuthorize("hasAuthority('person:read')")
+    @PreAuthorize(READ_AUTHORITY)
     // CHECKSTYLE:OFF: ParameterNumber - Search method requires multiple optional parameters
     public PageResponse<PersonResponse> searchPersons(
-        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader(TENANT_HEADER) UUID tenantId,
         @RequestParam(required = false) String lastName,
         @RequestParam(required = false) String firstName,
         @RequestParam(required = false) String ahvNr,
@@ -123,11 +129,11 @@ public class PersonController {
     @Operation(
         summary = "Get person",
         description = "Returns a person by ID",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = BEARER_AUTH)
     )
-    @PreAuthorize("hasAuthority('person:read')")
+    @PreAuthorize(READ_AUTHORITY)
     public PersonResponse getPerson(
-        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader(TENANT_HEADER) UUID tenantId,
         @PathVariable UUID id
     ) {
         return PersonMapper.toResponse(personService.getPerson(id, tenantId));
@@ -137,11 +143,11 @@ public class PersonController {
     @Operation(
         summary = "Create person",
         description = "Creates a new person",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = BEARER_AUTH)
     )
-    @PreAuthorize("hasAuthority('person:write')")
+    @PreAuthorize(WRITE_AUTHORITY)
     public ResponseEntity<PersonResponse> createPerson(
-        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader(TENANT_HEADER) UUID tenantId,
         @Valid @RequestBody CreatePersonRequest request
     ) {
         var command = new CreatePersonCommand(
@@ -165,11 +171,11 @@ public class PersonController {
     @Operation(
         summary = "Update person",
         description = "Updates non-historical person data",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = BEARER_AUTH)
     )
-    @PreAuthorize("hasAuthority('person:write')")
+    @PreAuthorize(WRITE_AUTHORITY)
     public PersonResponse updatePerson(
-        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader(TENANT_HEADER) UUID tenantId,
         @PathVariable UUID id,
         @Valid @RequestBody UpdatePersonRequest request
     ) {
@@ -186,12 +192,12 @@ public class PersonController {
     @Operation(
         summary = "Change name",
         description = "Changes person's name (creates history)",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = BEARER_AUTH)
     )
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('person:write')")
+    @PreAuthorize(WRITE_AUTHORITY)
     public PersonResponse changeName(
-        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader(TENANT_HEADER) UUID tenantId,
         @RequestHeader("X-User-Id") UUID userId,
         @PathVariable UUID id,
         @Valid @RequestBody ChangeNameRequest request
@@ -212,12 +218,12 @@ public class PersonController {
     @Operation(
         summary = "Change marital status",
         description = "Changes person's marital status (creates history)",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = BEARER_AUTH)
     )
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasAuthority('person:write')")
+    @PreAuthorize(WRITE_AUTHORITY)
     public PersonResponse changeMaritalStatus(
-        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader(TENANT_HEADER) UUID tenantId,
         @RequestHeader("X-User-Id") UUID userId,
         @PathVariable UUID id,
         @Valid @RequestBody ChangeMaritalStatusRequest request
@@ -237,11 +243,11 @@ public class PersonController {
     @Operation(
         summary = "Get person history",
         description = "Returns the change history of a person",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = BEARER_AUTH)
     )
-    @PreAuthorize("hasAuthority('person:read')")
+    @PreAuthorize(READ_AUTHORITY)
     public List<PersonHistoryResponse> getPersonHistory(
-        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader(TENANT_HEADER) UUID tenantId,
         @PathVariable UUID id
     ) {
         return personService.getPersonHistory(id, tenantId).stream()
@@ -253,11 +259,11 @@ public class PersonController {
     @Operation(
         summary = "Get person state at date",
         description = "Returns the person's state at a specific date",
-        security = @SecurityRequirement(name = "bearerAuth")
+        security = @SecurityRequirement(name = BEARER_AUTH)
     )
-    @PreAuthorize("hasAuthority('person:read')")
+    @PreAuthorize(READ_AUTHORITY)
     public ResponseEntity<PersonHistoryResponse> getPersonStateAt(
-        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader(TENANT_HEADER) UUID tenantId,
         @PathVariable UUID id,
         @PathVariable @Parameter(description = "Date in YYYY-MM-DD format") LocalDate date
     ) {

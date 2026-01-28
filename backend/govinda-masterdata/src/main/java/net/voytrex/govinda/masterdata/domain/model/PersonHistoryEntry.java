@@ -11,7 +11,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 import net.voytrex.govinda.common.domain.model.HistoryEntry;
@@ -53,14 +52,7 @@ public class PersonHistoryEntry extends HistoryEntry {
         UUID changedBy
     ) {
         // CHECKSTYLE:ON: ParameterNumber
-        setHistoryId(UUID.randomUUID());
-        setValidFrom(validFrom);
-        setValidTo(validTo);
-        setRecordedAt(Instant.now());
-        setSupersededAt(null);
-        setMutationType(mutationType);
-        setMutationReason(mutationReason);
-        setChangedBy(changedBy);
+        super(validFrom, validTo, mutationType, mutationReason, changedBy);
         this.personId = personId;
         this.lastName = lastName;
         this.firstName = firstName;
