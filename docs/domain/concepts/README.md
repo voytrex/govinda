@@ -10,6 +10,8 @@ This section explains the fundamental concepts of Swiss regulated services cover
 | **Broadcast** | BAKOM | Radio and television fees (RTVG) |
 | **Telecom** | BAKOM | Telecommunications services (future) |
 
+**Cross-domain**: [Generic Subscription Model](./generic-subscription.md)
+
 ---
 
 ## Healthcare Domain
@@ -103,13 +105,15 @@ Swiss radio and television fees are mandatory for all households and certain bus
 | Collective Household | 670.00 | Serafe AG |
 | Business (Tier 1-18) | 160 - 49,925 | ESTV |
 
+**Billing**: Annual default; quarterly option available for private households.
+
 ### Exemptions Available
 
 | Exemption | Requirement | Duration |
 |-----------|-------------|----------|
-| EL Recipients | AHV/IV supplementary benefits | 3 years (renewable) |
-| Deaf-Blind | Medical certificate, all members | Indefinite |
-| Diplomatic | FDFA identity card | During status |
+| EL Recipients | AHV/IV supplementary benefits + application | While eligible |
+| Deaf-Blind | Deaf-blind person + no other fee-liable person in household | While condition applies |
+| Diplomatic | FDFA data exchange (Ordipro) | During status |
 
 ### Business Fee Tiers
 
@@ -132,9 +136,9 @@ Tier determination based on total turnover (excl. VAT)
 
 ### Media (Serafe)
 - [Serafe Official](https://www.serafe.ch/en)
-- [BAKOM Fee Info](https://www.bakom.admin.ch/en/electronic-media/radio-and-television-fee)
+- [BAKOM Fee Info](https://www.bakom.admin.ch/bakom/en/homepage/electronic-media/radio-and-television-fee.html)
 - [ESTV Corporate Fee](https://www.estv.admin.ch/estv/en/home/federal-taxes/corporate-fee-for-radio-and-television.html)
 
 ---
 
-*Last Updated: 2026-01-27*
+*Last Updated: 2026-01-28*

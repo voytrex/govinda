@@ -163,39 +163,35 @@ public enum ExemptionType {
 public enum ExemptionReason {
 
     // Healthcare (KVG/VVG)
-    PREMIUM_SUBSIDY("Prämienverbilligung"),
+    PREMIUM_SUBSIDY,
 
     // Media (Serafe/BAKOM)
-    AHV_IV_SUPPLEMENT("EL-Bezüger"),
-    DEAF_BLIND("Taubblind"),
-    DIPLOMATIC_STATUS("Diplomatenstatus"),
+    AHV_IV_SUPPLEMENT,
+    DEAF_BLIND,
+    DIPLOMATIC_STATUS,
 
     // Telecom
-    LOW_INCOME("Einkommensschwach"),
-    SENIOR_DISCOUNT("Seniorenrabatt"),
-    STUDENT_DISCOUNT("Studentenrabatt"),
-    DISABILITY_DISCOUNT("Behindertenrabatt"),
+    LOW_INCOME,
+    SENIOR_DISCOUNT,
+    STUDENT_DISCOUNT,
+    DISABILITY_DISCOUNT,
 
     // Business
-    BELOW_THRESHOLD("Unter Schwellenwert"),
-    NONPROFIT_STATUS("Gemeinnützig"),
-    STARTUP_DISCOUNT("Startup-Förderung"),
+    BELOW_THRESHOLD,
+    NONPROFIT_STATUS,
+    STARTUP_DISCOUNT,
 
     // General/Promotional
-    PROMOTIONAL("Werbeaktion"),
-    LOYALTY("Treuerabatt"),
-    BUNDLE_DISCOUNT("Kombi-Rabatt"),
-    REFERRAL("Weiterempfehlung"),
-    EMPLOYEE_DISCOUNT("Mitarbeiterrabatt"),
-    HARDSHIP("Härtefall");
-
-    private final String nameDe;
-
-    ExemptionReason(String nameDe) {
-        this.nameDe = nameDe;
-    }
+    PROMOTIONAL,
+    LOYALTY,
+    BUNDLE_DISCOUNT,
+    REFERRAL,
+    EMPLOYEE_DISCOUNT,
+    HARDSHIP
 }
 ```
+
+> **i18n note**: Enum values are code-only. User-facing translations must be resolved via `MessageSource` using translation keys (per project i18n rules).
 
 ---
 
@@ -581,4 +577,4 @@ void should_reduceByPercent_when_percentageProvided() {
 
 ---
 
-*Last Updated: 2026-01-27*
+*Last Updated: 2026-01-28*

@@ -54,10 +54,11 @@ Govinda is organized into bounded contexts (masterdata, product, contract, billi
 | Coverage | Active product subscription | 📋 Specified |
 | Mutation | Coverage change tracking | 📋 Specified |
 | Exemption | Fee exemption/reduction | 📋 Specified |
+| Subscription | Cross-domain subscription | 📋 Specified |
 | Suspension | Temporary coverage pause | 📋 Specified |
 | PaymentArrangement | Third-party payment setup | 📋 Specified |
 
-**See**: [docs/domain/entities/contract/](./entities/contract/)
+**See**: [docs/domain/entities/contract/](./entities/contract/), [docs/domain/entities/subscription/](./entities/subscription/)
 
 ### 4. Billing Context
 **Module**: `govinda-billing`
@@ -84,6 +85,8 @@ The system supports multiple regulatory/business domains:
 | UTILITIES | Cantonal | Household | Usage-based |
 | CUSTOM | Custom | Flexible | Flexible |
 
+**See**: [docs/domain/concepts/generic-subscription.md](./concepts/generic-subscription.md)
+
 ---
 
 ## Key Enumerations
@@ -99,9 +102,9 @@ The system supports multiple regulatory/business domains:
 ### Extension Enums (Specified)
 - **ServiceDomain**: HEALTHCARE, BROADCAST, TELECOM, UTILITIES, CUSTOM
 - **SubscriberType**: INDIVIDUAL, PRIVATE_HOUSEHOLD, COLLECTIVE_HOUSEHOLD, CORPORATE_*
-- **HouseholdType**: PRIVATE, ELDERLY_HOME, NURSING_HOME, PRISON, etc.
+- **HouseholdType**: PRIVATE, SHARED, COLLECTIVE
 - **OrganizationType**: AG, GmbH, VEREIN, STIFTUNG, etc.
-- **ExemptionReason**: EL_RECIPIENT, DEAF_BLIND, DIPLOMATIC_STATUS, etc.
+- **ExemptionReason**: AHV_IV_SUPPLEMENT, DEAF_BLIND, DIPLOMATIC_STATUS, etc.
 - **SuspensionReason**: MILITARY_SERVICE, STUDY_ABROAD, MOVING, etc.
 - **CircumstanceType**: REFUGEE, STUDENT, DISABLED, etc.
 
@@ -167,9 +170,10 @@ Supports payment arrangements where a third party pays all or part of a subscrip
 
 ### Broadcast Fee (RTVG)
 - Mandatory for all households
-- Exemptions: EL recipients, deaf-blind, diplomatic
-- Collective households pay double
+- Exemptions: EL recipients (apply), deaf-blind (no other fee-liable person), diplomatic
+- Collective households billed at CHF 670
 - Business tiers by turnover
+- Opt-out for device-free households ended 2024
 
 ### Data Protection (DSG)
 - Bitemporal data tracking
@@ -191,5 +195,5 @@ Supports payment arrangements where a third party pays all or part of a subscrip
 
 ---
 
-*Last Updated: 2026-01-27*
+*Last Updated: 2026-01-28*
 *Version: 2.0 (Extended)*

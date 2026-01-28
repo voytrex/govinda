@@ -53,6 +53,35 @@ public class Household {
 
 ---
 
+## Extension: Household Type and Institutions (Planned)
+
+To support broadcast fees and other subscription domains, households are extended with a type and optional institution linkage.
+
+```java
+public enum HouseholdType {
+    PRIVATE,            // Standard private household
+    SHARED,             // WG/Flatshare (single household for billing)
+    COLLECTIVE          // Institution-run household (collective fee)
+}
+```
+
+```java
+public class Household {
+    // ... existing fields ...
+
+    private HouseholdType type = HouseholdType.PRIVATE;
+    private Integer residentCount;   // Optional: for collective household reporting
+    private UUID institutionId;      // Optional: links to Organization
+}
+```
+
+### Institution Linkage
+
+- `institutionId` points to an `Organization` that operates the collective household (e.g., elderly home).
+- This supports centralized billing at the organization level while maintaining member records.
+
+---
+
 ## HouseholdMember Entity
 
 ```java
@@ -407,4 +436,4 @@ Family with Children:
 
 ---
 
-*Last Updated: 2026-01-26*
+*Last Updated: 2026-01-28*

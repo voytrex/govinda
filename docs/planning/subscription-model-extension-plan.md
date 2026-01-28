@@ -61,7 +61,7 @@ A generic subscription platform supporting:
 | Aspect | Details |
 |--------|---------|
 | **Authority** | BAKOM (Federal Office of Communications) |
-| **Collector** | Serafe AG (since 2019, mandate extended to 2034) |
+| **Collector** | Serafe AG (household fee) |
 | **Legal Basis** | RTVG (Radio and Television Act), Art. 69b Constitution |
 | **Effective** | Device-independent fee since Jan 1, 2019 |
 
@@ -70,7 +70,9 @@ A generic subscription platform supporting:
 | Category | Annual Fee (CHF) | Notes |
 |----------|------------------|-------|
 | Standard Household | 335.00 | All adults jointly liable |
-| Collective Household | 670.00 | Nursing homes, hostels, prisons, boarding schools |
+| Collective Household | 670.00 | Billed at collective household rate |
+
+**Billing**: Annual default; quarterly option available (administration fee applies per invoice).
 
 #### Fee Structure - Businesses (ESTV)
 
@@ -101,9 +103,9 @@ Businesses subject to VAT with turnover >= CHF 500,000:
 
 | Category | Requirement | Legal Basis |
 |----------|-------------|-------------|
-| **AHV/IV Supplement Recipients** | Receives annual supplementary benefits | RTVO Art. 61 |
-| **Deaf-Blind Persons** | Medical certificate required, household-wide | RTVO Art. 61(4) |
-| **Diplomatic Staff** | FDFA identity card holders | RTVO Art. 61 |
+| **AHV/IV Supplement Recipients** | Receives annual supplementary benefits and applies | RTVO Art. 61 |
+| **Deaf-Blind Persons** | Medical certificate required; no other fee-liable person in household | RTVO Art. 61 |
+| **Diplomatic Staff** | Exempt via FDFA data exchange (Ordipro) | RTVO Art. 61 |
 
 > **Note**: Since Jan 1, 2024, the "opting-out" option for device-free households was removed.
 
@@ -114,7 +116,7 @@ Businesses subject to VAT with turnover >= CHF 500,000:
 | **Mandatory** | Yes (all residents) | Yes (all households) |
 | **Subscriber** | Individual person | Household/Business |
 | **Pricing** | Region + Age + Franchise + Model | Flat (household) or Tiered (business) |
-| **Exemptions** | None (subsidies available) | AHV/IV recipients, deaf-blind |
+| **Exemptions** | None (subsidies available) | AHV/IV recipients, deaf-blind, diplomatic |
 | **Reductions** | Franchise choice, model choice | None for households |
 | **Frequency** | Monthly/Quarterly/Semi/Annual | Annual (quarterly installments) |
 
@@ -166,6 +168,20 @@ We propose the following core abstractions to generalize the subscription model:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### 3.1A Model Reuse in Healthcare
+
+Healthcare contracts already map cleanly onto the generic subscription model:
+
+| Generic Concept | Healthcare (KVG/VVG) |
+|----------------|-----------------------|
+| Subscriber | Person (policyholder/insured person) |
+| Subscription | Policy + Coverage (per person) |
+| Product | Insurance product + tariff |
+| Pricing Model | Region + Age + Franchise + InsuranceModel |
+| Exemption/Reduction | Premium subsidy (partial reduction) |
+
+This allows healthcare to use the same subscription/billing abstractions while keeping domain-specific rules (franchise, cost sharing) in the healthcare context.
+
 ### 3.2 New/Extended Entities
 
 #### SubscriberType (New Enum)
@@ -200,15 +216,9 @@ public enum ServiceDomain {
 ```java
 // Extend existing Household with type discrimination
 public enum HouseholdType {
-    PRIVATE,           // Standard family household
-    SHARED,            // WG/Flatshare (multiple primaries)
-    ELDERLY_HOME,      // Altersheim
-    NURSING_HOME,      // Pflegeheim
-    HOSTEL,            // Jugendherberge
-    PRISON,            // Strafanstalt
-    BOARDING_SCHOOL,   // Internat
-    ASYLUM_CENTER,     // Asylunterkunft
-    RELIGIOUS_COMMUNITY // Kloster
+    PRIVATE,           // Standard private household
+    SHARED,            // WG/Flatshare (single household for billing)
+    COLLECTIVE         // Institution-run household (collective fee)
 }
 
 public class Household {
@@ -258,6 +268,8 @@ public enum OrganizationType {
     PUBLIC_INSTITUTION      // Öffentlich-rechtlich
 }
 ```
+
+> **Note**: Broadcast corporate fees are determined by `annualTurnover` and VAT registration. `employeeCount` remains an optional metric for other industries.
 
 #### Exemption/Reduction Framework
 
@@ -600,8 +612,11 @@ feature/subscription-{phase}-{component}
 
 ### Swiss Regulations
 
-- [BAKOM - Radio and Television Fee](https://www.bakom.admin.ch/en/electronic-media/radio-and-television-fee)
-- [Serafe - Official Collection Agency](https://www.serafe.ch/en)
+- [BAKOM - Radio and Television Fee](https://www.bakom.admin.ch/bakom/en/homepage/electronic-media/radio-and-television-fee.html)
+- [Serafe - Fee Overview](https://www.serafe.ch/en/the-fee/fee-overview/)
+- [Serafe - Exemptions](https://www.serafe.ch/en/exemption-from-the-fee/)
+- [Serafe - Opt-out Ended 2024](https://www.serafe.ch/en/exemption-from-the-fee/households-with-no-means-of-receiving-radio-or-television/)
+- [ESTV - Corporate Fee Overview](https://www.estv.admin.ch/estv/en/home/federal-taxes/corporate-fee-for-radio-and-television.html)
 - [ESTV - Corporate Fee Tariffs](https://www.estv.admin.ch/estv/en/home/federal-taxes/corporate-fee-for-radio-and-television/tariff-categories.html)
 
 ### Domain Documentation
@@ -613,4 +628,5 @@ feature/subscription-{phase}-{component}
 ---
 
 *Created: 2026-01-27*
+*Updated: 2026-01-28*
 *Status: Draft - Pending Review*

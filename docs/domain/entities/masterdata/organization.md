@@ -109,32 +109,29 @@ public class Organization {
 public enum OrganizationType {
 
     // Private sector
-    SOLE_PROPRIETORSHIP("Einzelunternehmen", "Entreprise individuelle"),
-    GENERAL_PARTNERSHIP("Kollektivgesellschaft", "Société en nom collectif"),
-    LIMITED_PARTNERSHIP("Kommanditgesellschaft", "Société en commandite"),
-    LIMITED_COMPANY("GmbH", "Sàrl"),
-    STOCK_CORPORATION("AG", "SA"),
-    COOPERATIVE("Genossenschaft", "Coopérative"),
+    SOLE_PROPRIETORSHIP,
+    GENERAL_PARTNERSHIP,
+    LIMITED_PARTNERSHIP,
+    LIMITED_COMPANY,
+    STOCK_CORPORATION,
+    COOPERATIVE,
 
     // Non-profit
-    ASSOCIATION("Verein", "Association"),
-    FOUNDATION("Stiftung", "Fondation"),
+    ASSOCIATION,
+    FOUNDATION,
 
     // Public sector
-    PUBLIC_INSTITUTION("Öffentlich-rechtlich", "Institution publique"),
-    MUNICIPALITY("Gemeinde", "Commune"),
-    CANTON("Kanton", "Canton"),
+    PUBLIC_INSTITUTION,
+    MUNICIPALITY,
+    CANTON,
 
     // Other
-    BRANCH_OFFICE("Zweigniederlassung", "Succursale"),
-    FOREIGN_ENTITY("Ausländische Gesellschaft", "Société étrangère");
-
-    private final String nameDe;
-    private final String nameFr;
-
-    // Constructor and getters
+    BRANCH_OFFICE,
+    FOREIGN_ENTITY
 }
 ```
+
+> **i18n note**: Enum values are code-only. User-facing translations must be resolved via `MessageSource` using translation keys (per project i18n rules).
 
 | Type | Code | Description |
 |------|------|-------------|
@@ -490,4 +487,4 @@ void should_returnTier0_when_notVatRegistered() {
 
 ---
 
-*Last Updated: 2026-01-27*
+*Last Updated: 2026-01-28*

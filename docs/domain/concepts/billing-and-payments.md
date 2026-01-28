@@ -53,6 +53,24 @@ Maximum Savings: CHF 108.00/year (2%)
 
 ---
 
+## Cross-Domain Billing (Subscription Core)
+
+Billing rules depend on the service domain while using a shared invoice lifecycle:
+
+| Domain | Typical Frequency | Notes |
+|--------|-------------------|-------|
+| Healthcare (KVG/VVG) | Monthly / Quarterly / Semi-Annual / Annual | Discounts for longer periods |
+| Broadcast (RTVG) | Annual (default) | Quarterly option available for households; corporate fees annual |
+| Telecom (Commercial) | Monthly | Usage-based line items possible |
+
+### Collection and Dunning Differences
+
+- **KVG**: Mandatory coverage cannot be suspended for non-payment; debt collection still applies.
+- **Broadcast**: Household fees billed by Serafe; corporate fees billed by ESTV.
+- **Telecom**: Commercial terms may allow service suspension on non-payment.
+
+---
+
 ## Payment Methods
 
 ### Common Payment Methods in Switzerland
@@ -329,6 +347,7 @@ public class Policy {
 | ⚠️ Canton-specific subsidies | Each canton has own subsidy rules |
 | ⚠️ Debt collection | Unpaid premiums lead to Betreibung |
 | ⚠️ LSV benefits | Direct debit may offer additional discounts |
+| ⚠️ Domain-specific billing | Broadcast and telecom follow domain rules |
 
 ---
 
@@ -339,6 +358,9 @@ public class Policy {
 | BAG Premium Subsidies | [bag.admin.ch/praemienverbilligung](https://www.bag.admin.ch/bag/de/home/versicherungen/krankenversicherung/krankenversicherung-versicherte-mit-wohnsitz-in-der-schweiz/praemienverbilligung.html) |
 | Premium Calculator | [priminfo.admin.ch](https://www.priminfo.admin.ch) |
 | eBill Info | [ebill.ch](https://www.ebill.ch) |
+| BAKOM Fee Overview | https://www.bakom.admin.ch/bakom/en/homepage/electronic-media/radio-and-television-fee.html |
+| Serafe Fee Overview | https://www.serafe.ch/en/the-fee/fee-overview/ |
+| ESTV Corporate Fee | https://www.estv.admin.ch/estv/en/home/federal-taxes/corporate-fee-for-radio-and-television.html |
 
 ---
 
@@ -347,7 +369,8 @@ public class Policy {
 - [KVG - Mandatory Insurance](./kvg-mandatory-insurance.md)
 - [Premium Regions](./premium-regions.md)
 - [Policy Entity](../entities/contract/policy.md)
+- [Generic Subscription Model](./generic-subscription.md)
 
 ---
 
-*Last Updated: 2026-01-26*
+*Last Updated: 2026-01-28*

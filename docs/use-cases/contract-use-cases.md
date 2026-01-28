@@ -13,6 +13,15 @@ This document defines the use cases for contract management in the Govinda ERP s
 - **Mutation**: A change to a policy or coverage (new, change, termination)
 - **Policyholder**: The person responsible for the policy (may differ from insured)
 
+### Cross-Domain Mapping
+
+The policy/coverage model maps to the generic subscription abstraction:
+
+- Policyholder/Insured Person → Subscriber
+- Policy + Coverage → Subscription (healthcare domain)
+- Product/Tariff → Product
+- Premium Subsidy → Exemption/Reduction
+
 ### Key Concepts
 
 | Term | German | Description |
@@ -674,4 +683,4 @@ This document defines the use cases for contract management in the Govinda ERP s
 
 ---
 
-*Last updated: 2026-01-26*
+*Last updated: 2026-01-28*

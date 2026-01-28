@@ -63,6 +63,8 @@ For entities with natural versioning:
 - Policy status changes
 - Product/Tariff versions
 - Household membership
+- Subscription validity periods
+- Exemption validity periods
 
 ```sql
 -- valid_from/valid_to on the main entity

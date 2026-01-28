@@ -2,17 +2,18 @@
 
 ## Overview
 
-This document defines the use cases for product management in the Govinda ERP system. Products represent insurance offerings (KVG and VVG) with their associated tariffs and premium tables.
+This document defines the use cases for product management in the Govinda ERP system. Products represent subscription offerings (healthcare, broadcast, telecom) with their associated tariffs and pricing rules.
 
 ## Bounded Context: Product Catalog
 
 ### Domain Model
 
-- **Product**: An insurance product (KVG or VVG) offered by the insurer
+- **Product**: A subscription product in a service domain
 - **Tariff**: A specific version of a product with temporal validity
 - **PremiumTable**: Premium amounts by region, age group, and franchise
 - **PremiumRegion**: BAG-defined premium regions (1-3 per canton)
 - **AgeGroup**: Age brackets for premium calculation (0-18, 19-25, 26+)
+- **PricingTier**: Tiered prices (e.g., turnover-based fees)
 
 ### Product Categories
 
@@ -38,11 +39,20 @@ This document defines the use cases for product management in the Govinda ERP sy
 | Spital Halbprivat | SPITAL_HALBPRIVAT | Semi-private ward |
 | Spital Privat | SPITAL_PRIVAT | Private ward |
 
+### Non-Healthcare Products (Examples)
+
+| Domain | Product | Pricing Model | Eligible Subscribers |
+|--------|---------|---------------|----------------------|
+| Broadcast | Household fee | FIXED | PRIVATE_HOUSEHOLD, COLLECTIVE_HOUSEHOLD |
+| Broadcast | Corporate fee | TIERED | CORPORATE |
+| Telecom | Mobile plan | FIXED + USAGE | INDIVIDUAL, CORPORATE |
+
 ### Business Rules
 
-1. Each product has exactly one category (KVG or VVG)
-2. KVG products must have an insurance model
-3. VVG products do not have insurance models
+1. Each product has a ServiceDomain (HEALTHCARE, BROADCAST, TELECOM, CUSTOM)
+2. Healthcare products must have a category (KVG or VVG)
+3. KVG products must have an insurance model
+4. VVG products do not have insurance models
 4. Tariffs have validity periods (validFrom, validTo)
 5. Only one tariff per product can be active at any time
 6. Premium tables are linked to tariffs, not products directly
@@ -73,11 +83,13 @@ This document defines the use cases for product management in the Govinda ERP sy
 - Product code does not already exist
 
 **Main Flow**:
-1. User provides product details (code, name, category)
-2. For KVG products: user specifies insurance model
-3. System validates product data
-4. System creates product with INACTIVE status
-5. System returns created product
+1. User provides product details (code, name, service domain, pricing model)
+2. User selects eligible subscriber types
+3. For healthcare products: user specifies category (KVG/VVG)
+4. For KVG products: user specifies insurance model
+5. System validates product data
+6. System creates product with INACTIVE status
+7. System returns created product
 
 **Alternative Flows**:
 
@@ -94,6 +106,8 @@ This document defines the use cases for product management in the Govinda ERP sy
 **Business Rules**:
 - Product code must be unique within tenant
 - Product names must be provided in all 4 languages (DE, FR, IT, EN)
+- ServiceDomain and PricingModel are required
+- Eligible subscriber types are required
 - KVG products require insurance model
 - VVG products must not have insurance model
 
@@ -103,7 +117,10 @@ This document defines the use cases for product management in the Govinda ERP sy
 ```json
 {
   "code": "KVG_STANDARD_2024",
+  "serviceDomain": "HEALTHCARE",
   "category": "KVG",
+  "pricingModel": "REGION_AGE",
+  "eligibleSubscriberTypes": ["INDIVIDUAL"],
   "insuranceModel": "STANDARD",
   "name": {
     "de": "Grundversicherung Standard",
@@ -125,7 +142,10 @@ This document defines the use cases for product management in the Govinda ERP sy
 {
   "id": "uuid",
   "code": "KVG_STANDARD_2024",
+  "serviceDomain": "HEALTHCARE",
   "category": "KVG",
+  "pricingModel": "REGION_AGE",
+  "eligibleSubscriberTypes": ["INDIVIDUAL"],
   "insuranceModel": "STANDARD",
   "status": "INACTIVE",
   "name": { ... },
@@ -403,7 +423,8 @@ This document defines the use cases for product management in the Govinda ERP sy
 3. Each product includes current active tariff (if any)
 
 **Query Parameters**:
-- `category`: Filter by KVG or VVG
+- `serviceDomain`: Filter by domain (HEALTHCARE, BROADCAST, TELECOM)
+- `category`: Filter by KVG or VVG (healthcare only)
 - `insuranceModel`: Filter by model (KVG only)
 - `status`: Filter by ACTIVE/INACTIVE
 - `page`, `size`: Pagination
@@ -643,4 +664,4 @@ This document defines the use cases for product management in the Govinda ERP sy
 
 ---
 
-*Last updated: 2026-01-26*
+*Last updated: 2026-01-28*

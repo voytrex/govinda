@@ -8,7 +8,7 @@ The **Exemption** (Befreiung) entity tracks exemptions from mandatory fees or in
 > **Module**: `govinda-contract`
 > **Status**: Planned
 
-**Common Uses**: RTVG (broadcast fee) exemptions for EL recipients, deaf/blind persons, diplomatic immunity
+**Common Uses**: RTVG (broadcast fee) exemptions for EL recipients, deaf-blind persons, diplomatic immunity
 
 ---
 
@@ -57,7 +57,8 @@ The **Exemption** (Befreiung) entity tracks exemptions from mandatory fees or in
 
 - [PersonCircumstance](../masterdata/person-circumstance.md) - Source circumstances
 - [Household](../masterdata/household.md) - Household entity
-- [RTVG Concept](../../concepts/broadcast-fees.md) - Broadcast fee rules
+- [RTVG Concept](../../concepts/radio-tv-fee.md) - Broadcast fee rules
+- [Subscription](../subscription/subscription.md) - Cross-domain subscription entity
 
 ---
 

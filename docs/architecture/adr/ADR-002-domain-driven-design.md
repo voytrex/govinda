@@ -26,8 +26,10 @@ We adopt Domain-Driven Design (DDD) principles with the following structure:
 │   (Stammdaten)  │  │   (Produkte)    │  │   (Verträge)    │
 ├─────────────────┤  ├─────────────────┤  ├─────────────────┤
 │ • Person        │  │ • Product       │  │ • Policy        │
+│ • Organization  │  │ • PricingTier   │  │ • Coverage      │
 │ • Household     │  │ • Tariff        │  │ • Coverage      │
 │ • Address       │  │ • PremiumTable  │  │ • Mutation      │
+│                 │  │                 │  │ • Exemption     │
 └─────────────────┘  └─────────────────┘  └─────────────────┘
          │                   │                    │
          └───────────────────┼────────────────────┘
@@ -40,6 +42,16 @@ We adopt Domain-Driven Design (DDD) principles with the following structure:
 │ • Payment       │  │ • PremiumResult │  │ • Benefit       │
 └─────────────────┘  └─────────────────┘  └─────────────────┘
 ```
+
+### Domain Extensions (Multi-Subscription)
+
+Govinda is extended to support multiple regulatory domains while keeping core contexts stable:
+
+- **HEALTHCARE** (KVG/VVG): existing rules and products
+- **BROADCAST** (RTVG/BAKOM/ESTV): household and corporate fees
+- **TELECOM** (commercial): plans, bundles, usage-based billing
+
+Domain-specific rules live in dedicated modules/services, while **masterdata**, **product**, **contract**, and **billing** remain shared.
 
 ### Layer Architecture per Module
 
@@ -105,6 +117,7 @@ net.voytrex.govinda.{module}/
 - Testable business rules
 - Easier to understand and maintain
 - Supports independent module evolution
+- Shared subscription core across regulated domains
 
 ### Negative
 - More initial structure/boilerplate
@@ -114,6 +127,10 @@ net.voytrex.govinda.{module}/
 ### Risks
 - Over-engineering simple operations
 - Mitigation: Keep it pragmatic, don't force patterns
+
+## Amendments
+
+- **2026-01-28**: Extended architecture to multi-domain subscription (broadcast/telecom) while keeping shared bounded contexts.
 
 ## References
 - Evans, Eric. "Domain-Driven Design"

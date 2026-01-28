@@ -42,21 +42,18 @@ All private households in Switzerland are liable for the fee, regardless of devi
 
 | Category | Annual Fee (CHF) | Billing |
 |----------|------------------|---------|
-| **Standard Household** | 335.00 | Quarterly (4 x 83.75) |
-| **Collective Household** | 670.00 | Quarterly |
+| **Standard Household** | 335.00 | Annual default; quarterly option available |
+| **Collective Household** | 670.00 | Annual default; quarterly option available |
 
-**Collective Households** (Kollektivhaushalte) include:
-- Old-age and nursing homes (Alters- und Pflegeheime)
-- Hostels (Herbergen)
-- Penal institutions (Strafanstalten)
-- Boarding schools (Internate)
-- Asylum accommodation (Asylunterkünfte)
+**Collective Households** (Kollektivhaushalte) are billed at the collective rate.
+
+**Quarterly option**: Serafe offers quarterly invoices for private households; an administration fee applies per invoice.
 
 ### Businesses (Unternehmensabgabe)
 
 Collected by ESTV (Federal Tax Administration).
 
-**Threshold**: VAT-registered businesses with annual turnover >= CHF 500,000
+**Threshold**: VAT-registered businesses with annual turnover >= CHF 500,000 (turnover without VAT).
 
 | Tier | Turnover Range (CHF) | Annual Fee (CHF) |
 |------|----------------------|------------------|
@@ -92,25 +89,15 @@ Collected by ESTV (Federal Tax Administration).
 
 | Category | Requirement | Duration | Legal Basis |
 |----------|-------------|----------|-------------|
-| **EL Recipients** | Receives annual Ergänzungsleistungen (AHV/IV supplements) | Minimum 3 years, then re-verification | RTVO Art. 61(1) |
-| **Deaf-Blind Households** | All persons in household are deaf-blind, medical certificate required | Indefinite with verification | RTVO Art. 61(4) |
-| **Diplomatic Staff** | Holds EDA/FDFA identity card | Duration of diplomatic status | RTVO Art. 61 |
-
-### No Exemption Available
-
-The following do NOT qualify for exemption:
-- Social welfare (Sozialhilfe) recipients - fee included in welfare calculation
-- Low-income households (without EL)
-- Persons with hearing impairment only (not deaf-blind)
-- Persons with visual impairment only (not deaf-blind)
-- Students (unless receiving EL)
-- Unemployed (unless receiving EL)
+| **EL Recipients** | Receives annual Ergänzungsleistungen (AHV/IV supplements) and applies | While eligible (verification per authority) | RTVO Art. 61 |
+| **Deaf-Blind Persons** | Deaf-blind person applies and **no other fee-liable person lives in the same household** | While condition applies | RTVO Art. 61 |
+| **Diplomatic Staff** | FDFA data exchange (Ordipro), no application required | Duration of diplomatic status | RTVO Art. 61 |
 
 ### Exemption Application Process
 
-1. **EL Recipients**: Submit confirmation from Ausgleichskasse (compensation office)
-2. **Deaf-Blind**: Submit medical certificate + application form
-3. **Diplomatic**: Automatic via EDA database
+1. **EL Recipients**: Submit confirmation of supplementary benefits to Serafe
+2. **Deaf-Blind**: Submit medical certificate + application form; only if no other fee-liable person lives in the household
+3. **Diplomatic**: Automatic via FDFA/Ordipro data exchange
 
 ---
 
@@ -134,19 +121,11 @@ A private household consists of:
 - Separate households if separate entrances and facilities
 - Combined if sharing main living facilities
 
+> **Note**: Household boundary rules should be verified against official register guidance before implementation.
+
 ### Collective Households (Kollektivhaushalte)
 
-Defined as residential institutions housing multiple unrelated persons:
-
-| Type | German | Fee |
-|------|--------|-----|
-| Elderly home | Altersheim | CHF 670 |
-| Nursing home | Pflegeheim | CHF 670 |
-| Hostel | Jugendherberge | CHF 670 |
-| Prison | Strafanstalt | CHF 670 |
-| Boarding school | Internat | CHF 670 |
-| Asylum center | Asylunterkunft | CHF 670 |
-| Monastery | Kloster | CHF 670 |
+Collective households are residential institutions housing multiple unrelated persons and are billed at the collective household fee.
 
 ---
 
@@ -176,14 +155,14 @@ Defined as residential institutions housing multiple unrelated persons:
 ```
 IF household.type == PRIVATE THEN
     fee = CHF 335.00 / year
-ELSE IF household.type IN [ELDERLY_HOME, NURSING_HOME, HOSTEL, PRISON, BOARDING_SCHOOL, ASYLUM, RELIGIOUS] THEN
+ELSE IF household.type == COLLECTIVE THEN
     fee = CHF 670.00 / year
 END IF
 
 // Check exemptions
-IF ANY household.member has EL_RECIPIENT status THEN
+IF ANY household.member has EL_RECIPIENT status AND application approved THEN
     fee = CHF 0.00
-ELSE IF ALL household.members are DEAF_BLIND THEN
+ELSE IF ANY household.member is DEAF_BLIND AND NO OTHER fee-liable person lives in household THEN
     fee = CHF 0.00
 ELSE IF ANY household.member has DIPLOMATIC_STATUS THEN
     fee = CHF 0.00
@@ -260,11 +239,11 @@ ESTV determines liability from:
 | RTVG Concept | Domain Entity | Notes |
 |--------------|---------------|-------|
 | Privathaushalt | `Household` (type=PRIVATE) | Standard household |
-| Kollektivhaushalt | `Household` (type=COLLECTIVE_*) | Institutions |
+| Kollektivhaushalt | `Household` (type=COLLECTIVE) | Institutions |
 | Unternehmen | `Organization` | Businesses |
 | Haushaltsabgabe | `Subscription` (domain=BROADCAST) | Household fee |
 | Unternehmensabgabe | `Subscription` (domain=BROADCAST) | Business fee |
-| EL-Befreiung | `Exemption` (reason=EL_RECIPIENT) | Supplementary benefits exemption |
+| EL-Befreiung | `Exemption` (reason=AHV_IV_SUPPLEMENT) | Supplementary benefits exemption |
 | Taubblind-Befreiung | `Exemption` (reason=DEAF_BLIND) | Medical exemption |
 
 ---
@@ -273,11 +252,22 @@ ESTV determines liability from:
 
 | Resource | URL |
 |----------|-----|
-| BAKOM Fee Info | [bakom.admin.ch](https://www.bakom.admin.ch/bakom/de/home/elektronische-medien/empfangsgebuehren.html) |
-| ESTV Business Fee | [estv.admin.ch](https://www.estv.admin.ch/estv/de/home/die-estv/bundesabgabe-radio-tv.html) |
-| RTVG Full Text | [fedlex.admin.ch](https://www.fedlex.admin.ch/eli/cc/2007/150/de) |
-| RTVO Ordinance | [fedlex.admin.ch](https://www.fedlex.admin.ch/eli/cc/2007/151/de) |
+| BAKOM Fee Overview | https://www.bakom.admin.ch/bakom/en/homepage/electronic-media/radio-and-television-fee.html |
+| Serafe Fee Overview | https://www.serafe.ch/en/the-fee/fee-overview/ |
+| Serafe EL Exemption | https://www.serafe.ch/en/exemption-from-the-fee/people-receiving-supplementary-benefits/ |
+| Serafe Deaf-Blind Exemption | https://www.serafe.ch/en/exemption-from-the-fee/deaf-blind-households/ |
+| Serafe Diplomatic Exemption | https://www.serafe.ch/en/exemption-from-the-fee/diplomat-households/ |
+| Serafe Opt-out End (2024) | https://www.serafe.ch/en/exemption-from-the-fee/households-with-no-means-of-receiving-radio-or-television/ |
+| ESTV Corporate Fee Overview | https://www.estv.admin.ch/estv/en/home/federal-taxes/corporate-fee-for-radio-and-television.html |
+| ESTV Tariff Categories | https://www.estv.admin.ch/estv/en/home/federal-taxes/corporate-fee-for-radio-and-television/tariff-categories.html |
 
 ---
 
-*Last Updated: 2026-01-27*
+## Scope Assumptions (To Verify)
+
+- The internal list of collective household subtypes (elderly homes, prisons, etc.) should be verified against BAKOM/OFS definitions before coding.
+- Any duration or re-verification cadence for exemptions must be sourced from RTVO or official guidance before implementation.
+
+---
+
+*Last Updated: 2026-01-28*

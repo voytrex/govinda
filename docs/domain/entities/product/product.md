@@ -2,7 +2,7 @@
 
 ## Overview
 
-The **Product** entity represents an insurance product offered by the insurer. Products are categorized as either KVG (mandatory basic insurance) or VVG (supplementary insurance). Each product can have multiple tariffs over time, with only one tariff active at any given moment.
+The **Product** entity represents a subscription product offered by the provider. Products may be healthcare (KVG/VVG), broadcast fees, telecom plans, or other recurring services. Each product can have multiple tariffs over time, with only one tariff active at any given moment.
 
 > **German**: Produkt
 > **Module**: `govinda-product` (planned)
@@ -28,7 +28,18 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ProductType category;
+    private ServiceDomain serviceDomain; // HEALTHCARE, BROADCAST, TELECOM, CUSTOM
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ProductType category;        // KVG/VVG (healthcare only)
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PricingModel pricingModel;   // FIXED, TIERED, USAGE_BASED, COMPOSITE
+
+    @ElementCollection
+    private Set<SubscriberType> eligibleSubscriberTypes;
 
     @Enumerated(EnumType.STRING)
     private InsuranceModel insuranceModel;  // KVG only
@@ -75,7 +86,10 @@ public class Product {
 | `id` | UUID | ✅ | Unique identifier |
 | `tenantId` | UUID | ✅ | Multi-tenant isolation |
 | `code` | String | ✅ | Unique product code (e.g., "KVG_STANDARD_2024") |
-| `category` | ProductType | ✅ | KVG or VVG |
+| `serviceDomain` | ServiceDomain | ✅ | HEALTHCARE, BROADCAST, TELECOM, CUSTOM |
+| `category` | ProductType | ⚠️ | KVG/VVG (healthcare only) |
+| `pricingModel` | PricingModel | ✅ | How pricing is calculated |
+| `eligibleSubscriberTypes` | Set\<SubscriberType\> | ✅ | Allowed subscriber types |
 | `insuranceModel` | InsuranceModel | ⚠️ | Required for KVG, null for VVG |
 | `status` | ProductStatus | ✅ | ACTIVE or INACTIVE |
 | `name` | LocalizedText | ✅ | Product name in 4 languages |
@@ -139,6 +153,18 @@ public void deactivate() {
 
 ## Product Types
 
+### ServiceDomain Enum
+
+```java
+public enum ServiceDomain {
+    HEALTHCARE,
+    BROADCAST,
+    TELECOM,
+    UTILITIES,
+    CUSTOM
+}
+```
+
 ### ProductType Enum
 
 ```java
@@ -180,14 +206,39 @@ public enum ProductStatus {
 
 ```java
 public enum InsuranceModel {
-    STANDARD("STD", false, "Free choice of provider"),
-    HMO("HMO", true, "HMO center first contact"),
-    HAUSARZT("HAM", true, "Family doctor gatekeeper"),
-    TELMED("TLM", true, "Telemedicine first contact");
+    STANDARD("STD", false),
+    HMO("HMO", true),
+    HAUSARZT("HAM", true),
+    TELMED("TLM", true);
 
     private final String code;
     private final boolean hasProviderRestriction;
-    private final String description;
+}
+```
+
+> **i18n note**: Enum values are code-only. User-facing labels must be resolved via `MessageSource`.
+
+---
+
+## Pricing Models (Cross-Domain)
+
+```java
+public enum PricingModel {
+    FIXED,
+    TIERED,
+    REGION_AGE,
+    USAGE_BASED,
+    PROMOTIONAL,
+    COMPOSITE
+}
+```
+
+```java
+public enum SubscriberType {
+    INDIVIDUAL,
+    PRIVATE_HOUSEHOLD,
+    COLLECTIVE_HOUSEHOLD,
+    CORPORATE
 }
 ```
 
@@ -198,6 +249,16 @@ public enum InsuranceModel {
 ### Business Invariants
 
 ```java
+// Service domain is required
+if (serviceDomain == null) {
+    throw new IllegalArgumentException("Service domain is required");
+}
+
+// Healthcare products must declare KVG/VVG category
+if (serviceDomain == ServiceDomain.HEALTHCARE && category == null) {
+    throw new IllegalArgumentException("Healthcare products require category");
+}
+
 // KVG products must have an insurance model
 if (category == ProductType.KVG && insuranceModel == null) {
     throw new IllegalArgumentException("KVG products require insurance model");
@@ -206,6 +267,11 @@ if (category == ProductType.KVG && insuranceModel == null) {
 // VVG products must not have an insurance model
 if (category == ProductType.VVG && insuranceModel != null) {
     throw new IllegalArgumentException("VVG products cannot have insurance model");
+}
+
+// Eligible subscriber types must be provided
+if (eligibleSubscriberTypes == null || eligibleSubscriberTypes.isEmpty()) {
+    throw new IllegalArgumentException("Eligible subscriber types are required");
 }
 
 // Code must be unique within tenant
@@ -352,8 +418,11 @@ Content-Type: application/json
 | Rule | Description |
 |------|-------------|
 | ⚠️ Unique code | Product code unique per tenant |
+| ⚠️ Domain required | ServiceDomain must be set |
+| ⚠️ Pricing model | PricingModel must be set |
 | ⚠️ KVG needs model | KVG products require insurance model |
 | ⚠️ VVG no model | VVG products must not have model |
+| ⚠️ Eligible types | Eligible subscriber types must be defined |
 | ⚠️ One active tariff | Only one tariff active per product at a time |
 | ⚠️ Activation requires tariff | Cannot activate product without active tariff |
 
@@ -366,8 +435,9 @@ Content-Type: application/json
 - [KVG Mandatory Insurance](../../concepts/kvg-mandatory-insurance.md)
 - [VVG Supplementary Insurance](../../concepts/vvg-supplementary-insurance.md)
 - [Insurance Models](../../concepts/insurance-models.md)
+- [Generic Subscription Model](../../concepts/generic-subscription.md)
 - [Product Use Cases](/docs/use-cases/product-use-cases.md)
 
 ---
 
-*Last Updated: 2026-01-26*
+*Last Updated: 2026-01-28*

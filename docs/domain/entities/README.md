@@ -19,6 +19,7 @@ This section documents the domain model entities used in the Govinda ERP system.
 │  │               │   │               │   │               │                │
 │  │ • Person      │   │ • Product     │   │ • Policy      │                │
 │  │ • Household   │   │ • Tariff      │   │ • Coverage    │                │
+│  │ • Organization│   │ • PricingTier │   │ • Exemption   │                │
 │  │ • Address     │   │ • PremiumEntry│   │ • Mutation    │                │
 │  │               │   │ • PremiumRegion│  │               │                │
 │  └───────────────┘   └───────────────┘   └───────────────┘                │
@@ -80,6 +81,18 @@ This section documents the domain model entities used in the Govinda ERP system.
 │   │ premiumRegionId     │                                                  │
 │   │ validFrom, validTo  │  ◄── Temporal Validity                          │
 │   │ recordedAt          │  ◄── Bitemporal Tracking                        │
+│   └─────────────────────┘                                                  │
+│                                                                             │
+│   ┌─────────────────────┐                                                  │
+│   │   ORGANIZATION       │                                                  │
+│   │   (Aggregate Root)  │                                                  │
+│   ├─────────────────────┤                                                  │
+│   │ id: UUID            │                                                  │
+│   │ name: String        │                                                  │
+│   │ uid: String         │                                                  │
+│   │ type: OrganizationType                                                 │
+│   │ vatRegistered: Bool │                                                  │
+│   │ annualTurnover: Money                                                  │
 │   └─────────────────────┘                                                  │
 │                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
@@ -194,6 +207,17 @@ This section documents the domain model entities used in the Govinda ERP system.
 │   │ createdBy: UUID     │                                                  │
 │   └─────────────────────┘                                                  │
 │                                                                             │
+│   ┌─────────────────────┐                                                  │
+│   │    EXEMPTION         │                                                  │
+│   ├─────────────────────┤                                                  │
+│   │ id: UUID            │                                                  │
+│   │ subscriberId: UUID  │                                                  │
+│   │ subscriberType      │                                                  │
+│   │ domain              │                                                  │
+│   │ type, reason, status│                                                  │
+│   │ validFrom/validTo   │                                                  │
+│   └─────────────────────┘                                                  │
+│                                                                             │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -305,6 +329,7 @@ The system implements **bitemporal history tracking** for compliance:
 - [Person](./masterdata/person.md) - Insured persons
 - [Household](./masterdata/household.md) - Family groupings
 - [Address](./masterdata/address.md) - Temporal addresses
+- [Organization](./masterdata/organization.md) - Businesses and institutions
 
 ### Value Objects (✅ Implemented)
 
@@ -323,6 +348,12 @@ The system implements **bitemporal history tracking** for compliance:
 - [Policy](./contract/policy.md) - Insurance contracts
 - [Coverage](./contract/coverage.md) - Product subscriptions
 - [Mutation](./contract/mutation.md) - Coverage changes
+- [Exemption](./contract/exemption.md) - Fee exemptions and reductions
+
+### Subscription (Cross-Domain)
+
+- [Subscription](./subscription/subscription.md) - Generic subscription entity
+- [Generic Subscription Model](../concepts/generic-subscription.md) - Cross-domain abstraction
 
 ---
 
@@ -337,4 +368,4 @@ The system implements **bitemporal history tracking** for compliance:
 
 ---
 
-*Last Updated: 2026-01-26*
+*Last Updated: 2026-01-28*

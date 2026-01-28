@@ -28,12 +28,22 @@ This document defines the use cases for managing Swiss radio and television fees
 1. All Swiss households are liable for the fee (no opt-out since 2024)
 2. One fee per household, not per person
 3. All adult household members are jointly liable
-4. Collective households pay double the standard fee (CHF 670)
-5. Businesses with turnover >= CHF 500,000 pay tiered corporate fee
-6. Sole proprietors pay both household and corporate fees
-7. EL recipients are exempt for minimum 3 years
-8. Deaf-blind households are fully exempt (all members must be deaf-blind)
-9. Diplomatic staff are exempt while holding FDFA card
+4. Collective households are billed at CHF 670 per year
+5. Businesses with turnover >= CHF 500,000 pay tiered corporate fee (VAT-registered)
+6. EL recipients can apply for exemption
+7. Deaf-blind persons can apply for exemption if no other fee-liable person lives in the same household
+8. Diplomatic staff are exempt via FDFA data exchange
+
+#### Source-Backed Rules
+
+- Fee amounts and household liability: BAKOM/Serafe
+- Corporate fee threshold and tiers: ESTV
+- Opt-out ended 2024: Serafe
+- Exemptions (EL, deaf-blind, diplomatic): Serafe
+
+#### Assumptions (To Verify)
+
+- Sole proprietors pay both household and corporate fees when liable.
 
 ---
 
@@ -52,7 +62,7 @@ This document defines the use cases for managing Swiss radio and television fees
 2. System calculates annual fee based on type
 3. System checks for existing exemptions
 4. System creates subscription with ACTIVE status
-5. System schedules quarterly billing
+5. System schedules annual billing (default) or quarterly installments (optional)
 6. System returns created subscription
 
 **Alternative Flows**:
@@ -66,13 +76,13 @@ This document defines the use cases for managing Swiss radio and television fees
 
 **Postconditions**:
 - Subscription is created with calculated fee
-- Quarterly billing schedule created
+- Billing schedule created
 - All adult members linked to subscription
 
 **Business Rules**:
 - Private household: CHF 335.00/year
 - Collective household: CHF 670.00/year
-- Billing: 4 quarterly installments
+- Billing: annual by default; optional quarterly invoices (admin fee applies)
 
 ### Request/Response
 
@@ -102,10 +112,7 @@ This document defines the use cases for managing Swiss radio and television fees
     "currency": "CHF"
   },
   "billingSchedule": [
-    {"period": "Q1", "dueDate": "2026-03-31", "amount": 83.75},
-    {"period": "Q2", "dueDate": "2026-06-30", "amount": 83.75},
-    {"period": "Q3", "dueDate": "2026-09-30", "amount": 83.75},
-    {"period": "Q4", "dueDate": "2026-12-31", "amount": 83.75}
+    {"period": "ANNUAL", "dueDate": "2026-03-31", "amount": 335.00}
   ],
   "createdAt": "2026-01-27T10:30:00Z"
 }
@@ -216,7 +223,7 @@ This document defines the use cases for managing Swiss radio and television fees
 3. System creates exemption with PENDING status
 4. Admin reviews and approves
 5. System applies exemption to subscription
-6. System schedules re-verification in 3 years
+6. System schedules re-verification if required by authority
 
 **Alternative Flows**:
 
@@ -232,13 +239,12 @@ This document defines the use cases for managing Swiss radio and television fees
 **Postconditions**:
 - Exemption record created
 - If approved: subscription fee reduced to CHF 0.00
-- Re-verification scheduled for 3 years
+- Re-verification scheduled if required
 
 **Business Rules**:
 - EL = Ergänzungsleistungen (supplementary benefits)
-- One household member with EL exempts entire household
-- Minimum 3-year exemption period
-- Verification required every 3 years
+- Exemption requires application with proof
+- Re-verification cadence per authority guidance
 
 ### Request/Response
 
@@ -280,12 +286,12 @@ This document defines the use cases for managing Swiss radio and television fees
 
 **Preconditions**:
 - Household exists
-- Medical certificate available for each household member
-- All household members are deaf-blind
+- Medical certificate available for the deaf-blind person
+- No other fee-liable person lives in the same household
 
 **Main Flow**:
-1. User provides medical certificates for all members
-2. System validates all members are deaf-blind
+1. User provides medical certificates for the deaf-blind person
+2. System validates household composition per exemption rule
 3. System creates exemption with PENDING status
 4. Admin reviews medical documentation
 5. Admin approves exemption
@@ -293,9 +299,9 @@ This document defines the use cases for managing Swiss radio and television fees
 
 **Alternative Flows**:
 
-**4a. Not all members are deaf-blind**:
+**4a. Other fee-liable person in household**:
 - System returns 400 Bad Request
-- Message: "All household members must be deaf-blind"
+- Message: "Exemption not applicable while another fee-liable person lives in the household"
 
 **4b. Missing medical certificates**:
 - System returns 400 Bad Request
@@ -309,10 +315,9 @@ This document defines the use cases for managing Swiss radio and television fees
 - Periodic verification may be required
 
 **Business Rules**:
-- BOTH deaf AND blind required (not one condition)
-- ALL household members must qualify
+- Deaf-blind condition required
+- Household must have no other fee-liable person
 - Medical certificates from authorized providers
-- No expiration if condition is permanent
 
 ### Request/Response
 
@@ -392,7 +397,7 @@ This document defines the use cases for managing Swiss radio and television fees
   "status": "APPROVED",
   "verifiedAt": "2026-01-27",
   "verifiedBy": "admin-uuid",
-  "nextVerificationDue": "2029-01-27",
+  "nextVerificationDue": "2027-01-27",
   "subscriptionUpdated": {
     "subscriptionId": "sub-uuid",
     "previousFee": 335.00,
@@ -442,8 +447,8 @@ This document defines the use cases for managing Swiss radio and television fees
 ```json
 {
   "stillValid": true,
-  "updatedCertificateNumber": "EL-2029-789012",
-  "certificateDate": "2029-01-15"
+  "updatedCertificateNumber": "EL-2026-789012",
+  "certificateDate": "2026-12-15"
 }
 ```
 
@@ -452,8 +457,8 @@ This document defines the use cases for managing Swiss radio and television fees
 {
   "id": "uuid",
   "status": "APPROVED",
-  "verifiedAt": "2029-01-27",
-  "nextVerificationDue": "2032-01-27"
+  "verifiedAt": "2027-01-27",
+  "nextVerificationDue": "2028-01-27"
 }
 ```
 
@@ -504,13 +509,13 @@ This document defines the use cases for managing Swiss radio and television fees
     "currency": "CHF"
   },
   "currentBillingPeriod": {
-    "period": "Q1-2026",
-    "amount": 83.75,
+    "period": "ANNUAL-2026",
+    "amount": 335.00,
     "status": "DUE",
     "dueDate": "2026-03-31"
   },
   "paymentHistory": [
-    {"period": "Q4-2025", "amount": 83.75, "paidDate": "2025-12-15"}
+    {"period": "ANNUAL-2025", "amount": 335.00, "paidDate": "2025-12-15"}
   ]
 }
 ```
@@ -695,15 +700,9 @@ Quarterly Household Billing (Q1):
 
 ### HouseholdType (Extended)
 
-- `PRIVATE` - Standard family household
-- `SHARED` - WG/Flatshare
-- `ELDERLY_HOME` - Altersheim
-- `NURSING_HOME` - Pflegeheim
-- `HOSTEL` - Jugendherberge
-- `PRISON` - Strafanstalt
-- `BOARDING_SCHOOL` - Internat
-- `ASYLUM_CENTER` - Asylunterkunft
-- `RELIGIOUS_COMMUNITY` - Kloster
+- `PRIVATE` - Standard private household
+- `SHARED` - WG/Flatshare (single household for billing)
+- `COLLECTIVE` - Institution-run household (collective fee)
 
 ### BroadcastSubscriptionStatus
 
@@ -715,7 +714,17 @@ Quarterly Household Billing (Q1):
 
 ### FeeTier (Corporate)
 
-18 tiers based on turnover (see [Serafe Media Fee](../domain/concepts/serafe-media-fee.md))
+18 tiers based on turnover (see [Radio/TV Fee Concept](../domain/concepts/radio-tv-fee.md))
+
+---
+
+## Sources
+
+- BAKOM fee overview: https://www.bakom.admin.ch/bakom/en/homepage/electronic-media/radio-and-television-fee.html
+- Serafe fee overview: https://www.serafe.ch/en/the-fee/fee-overview/
+- Serafe exemptions (EL, deaf-blind, diplomatic): https://www.serafe.ch/en/exemption-from-the-fee/
+- ESTV corporate fee overview: https://www.estv.admin.ch/estv/en/home/federal-taxes/corporate-fee-for-radio-and-television.html
+- ESTV tariff categories: https://www.estv.admin.ch/estv/en/home/federal-taxes/corporate-fee-for-radio-and-television/tariff-categories.html
 
 ---
 
@@ -742,7 +751,7 @@ Quarterly Household Billing (Q1):
 | Turnover required | 400 | `TURNOVER_REQUIRED` |
 | Invalid exemption reason | 400 | `INVALID_EXEMPTION_REASON` |
 | Certificate required | 400 | `CERTIFICATE_REQUIRED` |
-| Not all members deaf-blind | 400 | `NOT_ALL_MEMBERS_QUALIFY` |
+| Other fee-liable person in household | 400 | `HOUSEHOLD_HAS_FEE_LIABLE_PERSON` |
 | Exemption not pending | 409 | `EXEMPTION_NOT_PENDING` |
 
 ---
@@ -767,4 +776,4 @@ Quarterly Household Billing (Q1):
 
 ---
 
-*Last updated: 2026-01-27*
+*Last updated: 2026-01-28*
