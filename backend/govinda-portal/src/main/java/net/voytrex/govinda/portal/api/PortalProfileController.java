@@ -9,10 +9,13 @@ package net.voytrex.govinda.portal.api;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.UUID;
 import net.voytrex.govinda.portal.application.PortalIdentityService;
 import net.voytrex.govinda.portal.application.PortalProfileService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,6 +47,27 @@ public class PortalProfileController {
     ) {
         var personId = portalIdentityService.resolvePersonId(tenantId, subject);
         var person = portalProfileService.getProfile(tenantId, personId);
+        return PortalProfileMapper.toResponse(person);
+    }
+
+    @PatchMapping
+    @Operation(
+        summary = "Update portal profile",
+        description = "Updates allowed profile fields for the authenticated portal user",
+        security = @SecurityRequirement(name = "bearerAuth")
+    )
+    public PortalProfileResponse updateProfile(
+        @RequestHeader("X-Tenant-Id") UUID tenantId,
+        @RequestHeader("X-Portal-Subject") String subject,
+        @Valid @RequestBody PortalProfileUpdateRequest request
+    ) {
+        var personId = portalIdentityService.resolvePersonId(tenantId, subject);
+        var person = portalProfileService.updateProfile(
+            tenantId,
+            personId,
+            request.nationality(),
+            request.preferredLanguage()
+        );
         return PortalProfileMapper.toResponse(person);
     }
 }

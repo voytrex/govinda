@@ -12,6 +12,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -125,6 +126,34 @@ class PortalProfileControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("Update Portal Profile")
+    class UpdatePortalProfile {
+
+        @Test
+        @DisplayName("should update profile when request is valid")
+        void should_updateProfile_when_validRequest() throws Exception {
+            var person = createUpdatedPerson();
+            when(portalIdentityService.resolvePersonId(eq(tenantId), eq(subject))).thenReturn(personId);
+            when(portalProfileService.updateProfile(eq(tenantId), eq(personId), eq("DEU"), eq(Language.FR)))
+                .thenReturn(person);
+
+            var request = new PortalProfileUpdateRequest("DEU", Language.FR);
+
+            mockMvc.perform(
+                    patch("/api/portal/v1/profile")
+                        .header("X-Tenant-Id", tenantId.toString())
+                        .header("X-Portal-Subject", subject)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(personId.toString()))
+                .andExpect(jsonPath("$.preferredLanguage").value("FR"))
+                .andExpect(jsonPath("$.nationality").value("DEU"));
+        }
+    }
+
     private Person createTestPerson() {
         var person = new Person(
             tenantId,
@@ -136,6 +165,22 @@ class PortalProfileControllerTest {
             MaritalStatus.SINGLE,
             "CHE",
             Language.DE
+        );
+        person.setId(personId);
+        return person;
+    }
+
+    private Person createUpdatedPerson() {
+        var person = new Person(
+            tenantId,
+            new AhvNumber("756.1234.5678.90"),
+            "Müller",
+            "Hans",
+            LocalDate.of(1985, 3, 15),
+            Gender.MALE,
+            MaritalStatus.SINGLE,
+            "DEU",
+            Language.FR
         );
         person.setId(personId);
         return person;

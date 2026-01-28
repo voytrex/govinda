@@ -5,7 +5,7 @@ Update this file at the end of each phase.
 
 ## Current Phase
 
-Phase 2: Cases + Identity Mapping (portal backend MVP)
+Phase 5: Invoices + payment intent (depends on billing module)
 
 ## Completed
 
@@ -17,15 +17,14 @@ Phase 2: Cases + Identity Mapping (portal backend MVP)
   - `PortalCase` persistence (Flyway + JPA).
   - Customer identity mapping via `customer_identity`.
   - `X-Portal-Subject` header resolves `personId`.
+- Phase 3: Profile update
+  - `PATCH /api/portal/v1/profile` implemented for limited fields.
+- Phase 4: Documents (metadata)
+  - `GET /api/portal/v1/documents` + `GET /api/portal/v1/documents/{id}` implemented.
+  - Document metadata persistence (Flyway + JPA).
 
 ## Next Steps
 
-- Phase 3: Profile update
-  - Add `PATCH /api/portal/v1/profile` for limited fields.
-  - Validate fields and reuse `PersonService` update logic.
-- Phase 4: Document list/download (stubs until document module exists)
-  - Define document metadata model and storage adapter.
-  - Implement `/api/portal/v1/documents`.
 - Phase 5: Invoices + payment intent (depends on billing module)
   - Implement `govinda-billing` invoices.
   - Add portal invoice endpoints and payment intent.
