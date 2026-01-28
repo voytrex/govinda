@@ -245,8 +245,6 @@
                         <effort>Max</effort>
                         <threshold>Low</threshold>
                         <xmlOutput>true</xmlOutput>
-                        <spotbugsXmlOutputDirectory>${project.basedir}/../spotbugs-reports/${project.artifactId}</spotbugsXmlOutputDirectory>
-                        <spotbugsXmlOutputFilename>spotbugsXml.xml</spotbugsXmlOutputFilename>
                         <excludeFilterFile>${project.basedir}/../spotbugs-exclude.xml</excludeFilterFile>
                     </configuration>
                     <executions>
