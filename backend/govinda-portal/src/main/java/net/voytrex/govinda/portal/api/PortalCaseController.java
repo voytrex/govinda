@@ -13,8 +13,8 @@ import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
 import java.util.UUID;
-import net.voytrex.govinda.portal.application.CreatePortalCaseCommand;
-import net.voytrex.govinda.portal.application.PortalCaseService;
+import net.voytrex.govinda.cases.application.CaseService;
+import net.voytrex.govinda.cases.application.CreateCaseCommand;
 import net.voytrex.govinda.portal.application.PortalIdentityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,14 +28,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/portal/v1/cases")
 @Tag(name = "Portal Cases", description = "Customer portal service requests")
 public class PortalCaseController {
-    private final PortalCaseService portalCaseService;
+    private final CaseService caseService;
     private final PortalIdentityService portalIdentityService;
 
     public PortalCaseController(
-        PortalCaseService portalCaseService,
+        CaseService caseService,
         PortalIdentityService portalIdentityService
     ) {
-        this.portalCaseService = portalCaseService;
+        this.caseService = caseService;
         this.portalIdentityService = portalIdentityService;
     }
 
@@ -51,17 +51,17 @@ public class PortalCaseController {
         @Valid @RequestBody PortalCaseCreateRequest request
     ) {
         var personId = portalIdentityService.resolvePersonId(tenantId, subject);
-        var command = new CreatePortalCaseCommand(
+        var command = new CreateCaseCommand(
             tenantId,
             personId,
             request.type(),
             request.subject(),
             request.description()
         );
-        var portalCase = portalCaseService.createCase(command);
-        var response = PortalCaseMapper.toResponse(portalCase);
+        var caseRecord = caseService.createCase(command);
+        var response = PortalCaseMapper.toResponse(caseRecord);
         return ResponseEntity
-            .created(URI.create("/api/portal/v1/cases/" + portalCase.getId()))
+            .created(URI.create("/api/portal/v1/cases/" + caseRecord.getId()))
             .body(response);
     }
 
@@ -76,7 +76,7 @@ public class PortalCaseController {
         @RequestHeader("X-Portal-Subject") String subject
     ) {
         var personId = portalIdentityService.resolvePersonId(tenantId, subject);
-        return portalCaseService.listCases(tenantId, personId).stream()
+        return caseService.listCases(tenantId, personId).stream()
             .map(PortalCaseMapper::toResponse)
             .toList();
     }

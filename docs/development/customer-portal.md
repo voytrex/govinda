@@ -39,7 +39,7 @@ on-the-go use (including scanning invoices and barcodes).
 - **Document Service**: secure access to stored PDFs and metadata.
 - **Payment Service**: open invoice listing + payment initiation.
 - **Notification Service**: email/push/SMS dispatch.
-- **Case Service**: request/case creation and status tracking.
+- **Case Service (shared govinda-case)**: request/case creation and status tracking.
 - **Upload Service**: secure file ingestion and virus scanning.
 
 ### Security Model
@@ -73,7 +73,8 @@ on-the-go use (including scanning invoices and barcodes).
 
 - Create case with category (moving, contact data, benefit question).
 - Attach documents or photos.
-- Track status with timestamps and messages.
+- Track status with timestamps and customer-visible messages.
+- Internal notes are stored separately and never exposed to portal users.
 
 ### Uploads & Scanning
 
@@ -111,7 +112,7 @@ All endpoints are scoped to the authenticated end user and tenant.
 - `GET /api/portal/cases`
 - `POST /api/portal/cases`
 - `GET /api/portal/cases/{caseId}`
-- `POST /api/portal/cases/{caseId}/messages`
+- `POST /api/portal/cases/{caseId}/messages` (customer-visible only)
 - `POST /api/portal/cases/{caseId}/attachments`
 
 ### Uploads & Scanning

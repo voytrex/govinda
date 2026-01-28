@@ -1,10 +1,10 @@
 /*
- * Govinda ERP - Portal Case Entity
+ * Govinda ERP - Case Entity
  * Copyright 2026 Voytrex
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.voytrex.govinda.portal.domain.model;
+package net.voytrex.govinda.cases.domain.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "portal_case")
-public class PortalCase {
+public class Case {
     @Id
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id = UUID.randomUUID();
@@ -31,7 +31,7 @@ public class PortalCase {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 40, nullable = false)
-    private PortalCaseType type;
+    private CaseType type;
 
     @Column(name = "subject", length = 200, nullable = false)
     private String subject;
@@ -41,7 +41,7 @@ public class PortalCase {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", length = 20, nullable = false)
-    private PortalCaseStatus status = PortalCaseStatus.OPEN;
+    private CaseStatus status = CaseStatus.OPEN;
 
     @Column(name = "created_at", updatable = false, nullable = false)
     private Instant createdAt = Instant.now();
@@ -53,13 +53,13 @@ public class PortalCase {
     @Column(name = "version", nullable = false)
     private long version = 0L;
 
-    protected PortalCase() {
+    protected Case() {
     }
 
-    public PortalCase(
+    public Case(
         UUID tenantId,
         UUID personId,
-        PortalCaseType type,
+        CaseType type,
         String subject,
         String description
     ) {
@@ -98,7 +98,7 @@ public class PortalCase {
         return personId;
     }
 
-    public PortalCaseType getType() {
+    public CaseType getType() {
         return type;
     }
 
@@ -110,7 +110,7 @@ public class PortalCase {
         return description;
     }
 
-    public PortalCaseStatus getStatus() {
+    public CaseStatus getStatus() {
         return status;
     }
 

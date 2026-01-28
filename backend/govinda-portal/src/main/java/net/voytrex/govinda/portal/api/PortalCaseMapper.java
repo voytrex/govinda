@@ -6,21 +6,21 @@
 
 package net.voytrex.govinda.portal.api;
 
-import net.voytrex.govinda.portal.domain.model.PortalCase;
+import net.voytrex.govinda.cases.domain.model.Case;
 
 public final class PortalCaseMapper {
     private PortalCaseMapper() {
     }
 
-    public static PortalCaseResponse toResponse(PortalCase portalCase) {
+    public static PortalCaseResponse toResponse(Case caseRecord) {
         return new PortalCaseResponse(
-            portalCase.getId(),
-            portalCase.getType(),
-            portalCase.getStatus(),
-            portalCase.getSubject(),
-            portalCase.getDescription(),
-            portalCase.getCreatedAt(),
-            portalCase.getUpdatedAt()
+            caseRecord.getId(),
+            caseRecord.getType(),
+            caseRecord.getStatus(),
+            caseRecord.getSubject(),
+            caseRecord.getDescription(),
+            caseRecord.getCreatedAt(),
+            caseRecord.getUpdatedAt()
         );
     }
 }

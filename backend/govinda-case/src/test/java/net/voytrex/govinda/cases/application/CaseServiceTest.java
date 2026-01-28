@@ -1,10 +1,10 @@
 /*
- * Govinda ERP - Portal Case Service Tests
+ * Govinda ERP - Case Service Tests
  * Copyright 2026 Voytrex
  * SPDX-License-Identifier: Apache-2.0
  */
 
-package net.voytrex.govinda.portal.application;
+package net.voytrex.govinda.cases.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,9 +13,9 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.UUID;
-import net.voytrex.govinda.portal.domain.model.PortalCase;
-import net.voytrex.govinda.portal.domain.model.PortalCaseType;
-import net.voytrex.govinda.portal.domain.repository.PortalCaseRepository;
+import net.voytrex.govinda.cases.domain.model.Case;
+import net.voytrex.govinda.cases.domain.model.CaseType;
+import net.voytrex.govinda.cases.domain.repository.CaseRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,38 +23,38 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class PortalCaseServiceTest {
+class CaseServiceTest {
 
     @Mock
-    private PortalCaseRepository portalCaseRepository;
+    private CaseRepository caseRepository;
 
     @Test
     @DisplayName("should create case when request is valid")
     void should_createCase_when_requestIsValid() {
         var tenantId = UUID.randomUUID();
         var personId = UUID.randomUUID();
-        var command = new CreatePortalCaseCommand(
+        var command = new CreateCaseCommand(
             tenantId,
             personId,
-            PortalCaseType.ADDRESS_CHANGE,
+            CaseType.ADDRESS_CHANGE,
             "Moving to new address",
             "New address from 2026-03-01"
         );
 
-        when(portalCaseRepository.save(any(PortalCase.class)))
+        when(caseRepository.save(any(Case.class)))
             .thenAnswer(invocation -> invocation.getArgument(0));
 
-        var service = new PortalCaseService(portalCaseRepository);
+        var service = new CaseService(caseRepository);
 
         var result = service.createCase(command);
 
         assertThat(result.getTenantId()).isEqualTo(tenantId);
         assertThat(result.getPersonId()).isEqualTo(personId);
-        assertThat(result.getType()).isEqualTo(PortalCaseType.ADDRESS_CHANGE);
+        assertThat(result.getType()).isEqualTo(CaseType.ADDRESS_CHANGE);
         assertThat(result.getSubject()).isEqualTo("Moving to new address");
         assertThat(result.getDescription()).isEqualTo("New address from 2026-03-01");
         assertThat(result.getStatus().name()).isEqualTo("OPEN");
-        verify(portalCaseRepository).save(any(PortalCase.class));
+        verify(caseRepository).save(any(Case.class));
     }
 
     @Test
@@ -63,23 +63,23 @@ class PortalCaseServiceTest {
         var tenantId = UUID.randomUUID();
         var personId = UUID.randomUUID();
         var cases = List.of(
-            new PortalCase(
+            new Case(
                 tenantId,
                 personId,
-                PortalCaseType.ADDRESS_CHANGE,
+                CaseType.ADDRESS_CHANGE,
                 "Address change",
                 "Moving to new city"
             )
         );
 
-        when(portalCaseRepository.findByTenantIdAndPersonId(tenantId, personId))
+        when(caseRepository.findByTenantIdAndPersonId(tenantId, personId))
             .thenReturn(cases);
 
-        var service = new PortalCaseService(portalCaseRepository);
+        var service = new CaseService(caseRepository);
 
         var result = service.listCases(tenantId, personId);
 
         assertThat(result).hasSize(1);
-        verify(portalCaseRepository).findByTenantIdAndPersonId(tenantId, personId);
+        verify(caseRepository).findByTenantIdAndPersonId(tenantId, personId);
     }
 }

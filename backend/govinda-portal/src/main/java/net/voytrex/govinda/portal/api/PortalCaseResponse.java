@@ -8,13 +8,13 @@ package net.voytrex.govinda.portal.api;
 
 import java.time.Instant;
 import java.util.UUID;
-import net.voytrex.govinda.portal.domain.model.PortalCaseStatus;
-import net.voytrex.govinda.portal.domain.model.PortalCaseType;
+import net.voytrex.govinda.cases.domain.model.CaseStatus;
+import net.voytrex.govinda.cases.domain.model.CaseType;
 
 public record PortalCaseResponse(
     UUID id,
-    PortalCaseType type,
-    PortalCaseStatus status,
+    CaseType type,
+    CaseStatus status,
     String subject,
     String description,
     Instant createdAt,

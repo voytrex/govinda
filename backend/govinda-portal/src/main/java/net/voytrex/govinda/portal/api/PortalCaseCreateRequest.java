@@ -8,11 +8,11 @@ package net.voytrex.govinda.portal.api;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import net.voytrex.govinda.portal.domain.model.PortalCaseType;
+import net.voytrex.govinda.cases.domain.model.CaseType;
 
 public record PortalCaseCreateRequest(
     @NotNull(message = "Case type is required")
-    PortalCaseType type,
+    CaseType type,
     @NotBlank(message = "Subject is required")
     String subject,
     String description

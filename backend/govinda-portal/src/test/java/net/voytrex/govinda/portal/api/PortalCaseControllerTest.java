@@ -23,10 +23,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import net.voytrex.govinda.common.api.GlobalExceptionHandler;
-import net.voytrex.govinda.portal.application.PortalCaseService;
+import net.voytrex.govinda.cases.application.CaseService;
 import net.voytrex.govinda.portal.application.PortalIdentityService;
-import net.voytrex.govinda.portal.domain.model.PortalCase;
-import net.voytrex.govinda.portal.domain.model.PortalCaseType;
+import net.voytrex.govinda.cases.domain.model.Case;
+import net.voytrex.govinda.cases.domain.model.CaseType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -46,7 +46,7 @@ class PortalCaseControllerTest {
     private MockMvc mockMvc;
 
     @Mock
-    private PortalCaseService portalCaseService;
+    private CaseService caseService;
 
     @Mock
     private PortalIdentityService portalIdentityService;
@@ -65,7 +65,7 @@ class PortalCaseControllerTest {
 
     @BeforeEach
     void setUp() {
-        var controller = new PortalCaseController(portalCaseService, portalIdentityService);
+        var controller = new PortalCaseController(caseService, portalIdentityService);
         var globalExceptionHandler = new GlobalExceptionHandler(messageSource, localeResolver);
 
         lenient().when(localeResolver.resolveLocale(any())).thenReturn(Locale.ENGLISH);
@@ -87,21 +87,21 @@ class PortalCaseControllerTest {
         @Test
         @DisplayName("should create case and return 201")
         void should_createCase_when_validRequest() throws Exception {
-            var portalCase = new PortalCase(
+            var caseRecord = new Case(
                 tenantId,
                 personId,
-                PortalCaseType.ADDRESS_CHANGE,
+                CaseType.ADDRESS_CHANGE,
                 "Moving to new address",
                 "New address from 2026-03-01"
             );
             var caseId = UUID.randomUUID();
-            portalCase.setId(caseId);
+            caseRecord.setId(caseId);
 
-            when(portalCaseService.createCase(any())).thenReturn(portalCase);
+            when(caseService.createCase(any())).thenReturn(caseRecord);
             when(portalIdentityService.resolvePersonId(eq(tenantId), eq(subject))).thenReturn(personId);
 
             var request = new PortalCaseCreateRequest(
-                PortalCaseType.ADDRESS_CHANGE,
+                CaseType.ADDRESS_CHANGE,
                 "Moving to new address",
                 "New address from 2026-03-01"
             );
@@ -128,18 +128,18 @@ class PortalCaseControllerTest {
         @Test
         @DisplayName("should return list of cases")
         void should_returnCases_when_exists() throws Exception {
-            var portalCase = new PortalCase(
+            var caseRecord = new Case(
                 tenantId,
                 personId,
-                PortalCaseType.ADDRESS_CHANGE,
+                CaseType.ADDRESS_CHANGE,
                 "Address change",
                 "Moving to new city"
             );
             var caseId = UUID.randomUUID();
-            portalCase.setId(caseId);
+            caseRecord.setId(caseId);
 
-            when(portalCaseService.listCases(eq(tenantId), eq(personId)))
-                .thenReturn(List.of(portalCase));
+            when(caseService.listCases(eq(tenantId), eq(personId)))
+                .thenReturn(List.of(caseRecord));
             when(portalIdentityService.resolvePersonId(eq(tenantId), eq(subject))).thenReturn(personId);
 
             mockMvc.perform(
