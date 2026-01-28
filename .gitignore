@@ -109,3 +109,4 @@ coverage/
 *.lcov
 .nyc_output/
 test-results/
+backend/spotbugs-reports/
