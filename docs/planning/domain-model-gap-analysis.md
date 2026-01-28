@@ -270,6 +270,37 @@ Missing:
 
 ---
 
+### GAP-16: Legal Documents, AVB & Tariff Versioning
+**Priority**: MEDIUM
+
+**Problem**: No management for legal documents and tariff transitions:
+- **AGB/AVB** - General terms and insurance conditions
+- Document versioning and approval workflow
+- Customer acceptance tracking
+- **Tariff versioning** - TARMED → TARDOC transition (2026)
+- Tariff position mapping for migrations
+- Taxpunkt agreements by canton
+
+**See**: [Gap Analysis - Legal Documents](./gaps/gap-16-legal-documents.md)
+
+---
+
+### GAP-17: Claims Processing & Invoice Management
+**Priority**: HIGH
+
+**Problem**: No claims processing workflow:
+- **Forum Datenaustausch** - XML 4.5 invoice exchange
+- **Sumex** validation and manual approval
+- **Tiers Payant** vs **Tiers Garant** payment models
+- Provider invoice (Leistungserbringer-Rechnung)
+- Claims (Leistungen) with cost sharing
+- Patient invoice for Kostenbeteiligung
+- Provider payment workflow
+
+**See**: [Gap Analysis - Claims Processing](./gaps/gap-17-claims-processing.md)
+
+---
+
 ## 3. Gap Resolution Approach
 
 ### Recommended Priority Order
@@ -310,6 +341,8 @@ Missing:
 | GAP-13 Dunning | ✓ | ✓ | ✓ | DunningCase, PaymentPlan, LossCertificate |
 | GAP-14 Insurer Transfer | ✓ | - | - | InsurerTransfer, InsuranceCard, SasisMessage |
 | GAP-15 Reference Data | ✓ | - | - | GlnEntry, RefdataArticle, TariffPosition, Icd10Code |
+| GAP-16 Legal Documents | ✓ | ✓ | ✓ | LegalDocument, DocumentAcceptance, TariffVersion |
+| GAP-17 Claims Processing | ✓ | - | - | ProviderInvoice, Claim, PatientInvoice, ProviderPayment |
 
 ---
 
