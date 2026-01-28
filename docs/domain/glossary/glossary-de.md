@@ -73,6 +73,26 @@ Fachbegriffe der Schweizer Krankenversicherung in alphabetischer Reihenfolge.
 
 ## D
 
+### Datenpool (m.)
+
+**Definition**: Gemeinsame Datenplattform der Schweizer Krankenversicherer für statistische Auswertungen und Benchmarks.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | Datenpool |
+| Französisch | Pool de données |
+| Italienisch | Pool di dati |
+| Englisch | Data Pool |
+
+**Zweck**:
+- Anonymisierte Leistungsdaten
+- Kostenanalysen
+- Qualitätsmessungen
+
+**Siehe auch**: Tarifpool, SASIS
+
+---
+
 ### Deckung (f.)
 
 **Definition**: Der Versicherungsschutz, den eine Person durch einen Versicherungsvertrag erhält.
@@ -115,7 +135,83 @@ Fachbegriffe der Schweizer Krankenversicherung in alphabetischer Reihenfolge.
 
 ---
 
+## F
+
+### Forum Datenaustausch (n.)
+
+**Definition**: Schweizer Organisation und Standardformat für den elektronischen Datenaustausch im Gesundheitswesen.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | Forum Datenaustausch |
+| Französisch | Forum d'échange de données |
+| Italienisch | Forum scambio dati |
+| Englisch | Data Exchange Forum |
+
+**Funktionen**:
+- XML-Standard für Rechnungen (generalInvoiceRequest)
+- EDI-Nachrichtenformate
+- Branchenweite Interoperabilität
+
+**Code-Referenz**: `SubmissionMethod.FORUM_XML`
+
+**Offizielle Quelle**: [forum-datenaustausch.ch](https://www.forum-datenaustausch.ch)
+
+**Siehe auch**: Leistungserbringer, Leistung
+
+---
+
 ## G
+
+### GLN (f.)
+
+**Definition**: Global Location Number - die 13-stellige Identifikationsnummer für Teilnehmer im Schweizer Gesundheitswesen.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | GLN / Global Location Number |
+| Französisch | GLN |
+| Italienisch | GLN |
+| Englisch | GLN / Global Location Number |
+
+**Format**: 76XXXXXXXXXXY (13 Ziffern mit Prüfziffer)
+
+**Verwendung**:
+- Ärzte und medizinische Fachpersonen
+- Spitäler und Kliniken
+- Apotheken
+- Krankenversicherer
+
+**Code-Referenz**: `providerGln`, `Provider.gln`
+
+**Siehe auch**: Refdata, MedReg
+
+---
+
+### Grenzgänger (m.)
+
+**Definition**: Person, die in einem Nachbarland wohnt und in der Schweiz arbeitet.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | Grenzgänger |
+| Französisch | Frontalier |
+| Italienisch | Frontaliere |
+| Englisch | Cross-border Worker |
+
+**Länder mit Optionsrecht**:
+- Deutschland
+- Frankreich
+- Italien
+- Österreich
+
+**Optionsrecht**: Innerhalb von 3 Monaten Wahl zwischen Schweizer KVG oder Heimatland-Versicherung.
+
+**Code-Referenz**: `CrossBorderType.GRENZGAENGER`
+
+**Siehe auch**: Optionsrecht, KVG
+
+---
 
 ### Grundversicherung (f.)
 
@@ -261,7 +357,55 @@ Fachbegriffe der Schweizer Krankenversicherung in alphabetischer Reihenfolge.
 
 ---
 
+## I
+
+### IPV (f.)
+
+**Definition**: Individuelle Prämienverbilligung - kantonale Subvention zur Reduktion der Krankenkassenprämien für einkommensschwache Personen.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | IPV / Individuelle Prämienverbilligung |
+| Französisch | Subsides individuels |
+| Italienisch | Riduzione individuale dei premi |
+| Englisch | Individual Premium Subsidy |
+
+**Merkmale**:
+- Kantonale Zuständigkeit
+- Einkommens- und vermögensabhängig
+- Antrag beim zuständigen Kanton
+- Kann direkt an Versicherer gezahlt werden
+
+**Code-Referenz**: `BusinessPartner` mit `PartnerCategory.GOVERNMENT`
+
+**Siehe auch**: Prämienverbilligung, Kanton
+
+---
+
 ## L
+
+### Leistung (f.)
+
+**Definition**: Eine genehmigte medizinische Dienstleistung mit angewandter Kostenbeteiligung.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | Leistung / Leistungsabrechnung |
+| Französisch | Prestation |
+| Italienisch | Prestazione |
+| Englisch | Claim / Benefit |
+
+**Prozess**:
+1. Rechnungseingang vom Leistungserbringer
+2. Validierung und Genehmigung
+3. Kostenbeteiligung anwenden
+4. Zahlung an Patient oder Leistungserbringer
+
+**Code-Referenz**: `Claim` Entity, `ClaimStatus`
+
+**Siehe auch**: Kostenbeteiligung, Tiers Payant, Tiers Garant
+
+---
 
 ### Leistungserbringer (m.)
 
@@ -386,7 +530,57 @@ Fachbegriffe der Schweizer Krankenversicherung in alphabetischer Reihenfolge.
 
 ---
 
+## R
+
+### Refdata (n.)
+
+**Definition**: Referenzdatenbank für das Schweizer Gesundheitswesen mit Stammdaten zu Leistungserbringern, Produkten und Organisationen.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | Refdata |
+| Französisch | Refdata |
+| Italienisch | Refdata |
+| Englisch | Refdata |
+
+**Inhalte**:
+- GLN-Verzeichnis (Leistungserbringer)
+- Artikelstamm (Medikamente, Medizinprodukte)
+- Organisationsdaten
+
+**Code-Referenz**: `RefdataService`
+
+**Offizielle Quelle**: [refdata.ch](https://www.refdata.ch)
+
+**Siehe auch**: GLN, SASIS
+
+---
+
 ## S
+
+### SASIS (f.)
+
+**Definition**: SASIS AG - die Branchenorganisation der Schweizer Krankenversicherer für gemeinsame Dienste und Datenaustausch.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | SASIS AG |
+| Französisch | SASIS SA |
+| Italienisch | SASIS SA |
+| Englisch | SASIS AG |
+
+**Dienstleistungen**:
+- VeKa (Versichertenkarte)
+- Versicherungsnachweis-Dienst
+- Branchenstatistiken
+
+**Code-Referenz**: `SasisService`
+
+**Offizielle Quelle**: [sasis.ch](https://www.sasis.ch)
+
+**Siehe auch**: VeKa, Datenpool
+
+---
 
 ### Selbstbehalt (m.)
 
@@ -422,6 +616,33 @@ Fachbegriffe der Schweizer Krankenversicherung in alphabetischer Reihenfolge.
 
 ---
 
+### Sistierung (f.)
+
+**Definition**: Temporäre Unterbrechung oder Aussetzung des Versicherungsschutzes.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | Sistierung / Ruhen |
+| Französisch | Suspension |
+| Italienisch | Sospensione |
+| Englisch | Suspension |
+
+**Gründe**:
+- Militärdienst (Militärsistierung)
+- Auslandaufenthalt (Studium, Arbeit)
+- Umzug
+
+**Merkmale**:
+- Prämienreduktion oder -befreiung möglich
+- Zeitlich begrenzt
+- Meldepflicht
+
+**Code-Referenz**: `Suspension` Entity, `SuspensionReason`
+
+**Siehe auch**: Deckung, Militärdienst
+
+---
+
 ## T
 
 ### Taggeld (n.)
@@ -438,6 +659,74 @@ Fachbegriffe der Schweizer Krankenversicherung in alphabetischer Reihenfolge.
 **Code-Referenz**: `ProductCategory.DAILY_ALLOWANCE`
 
 **Siehe auch**: VVG, Zusatzversicherung
+
+---
+
+### Tarifpool (m.)
+
+**Definition**: Gemeinsame Datenbank der Tarifinformationen für das Schweizer Gesundheitswesen.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | Tarifpool |
+| Französisch | Pool tarifaire |
+| Italienisch | Pool tariffario |
+| Englisch | Tariff Pool |
+
+**Inhalte**:
+- TARMED-Positionen und Preise
+- Taxpunktwerte pro Kanton
+- Gültigkeitszeiträume
+
+**Code-Referenz**: `TarifpoolService`
+
+**Siehe auch**: TARMED, TARDOC, Datenpool
+
+---
+
+### TARMED (m.)
+
+**Definition**: Der ambulante Arzttarif der Schweiz für medizinische Leistungen.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | TARMED |
+| Französisch | TARMED |
+| Italienisch | TARMED |
+| Englisch | TARMED |
+
+**Struktur**:
+- Arztleistung (AL) - medizinischer Anteil
+- Technische Leistung (TL) - Infrastrukturanteil
+- Taxpunktwert (kantonal)
+
+**Status**: Wird ab 2026 durch TARDOC ersetzt
+
+**Code-Referenz**: `TariffType.TARMED`
+
+**Siehe auch**: TARDOC, Taxpunktwert
+
+---
+
+### TARDOC (m.)
+
+**Definition**: Der neue ambulante Einzelleistungstarif, der TARMED ab 2026 ersetzt.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | TARDOC |
+| Französisch | TARDOC |
+| Italienisch | TARDOC |
+| Englisch | TARDOC |
+
+**Neuerungen**:
+- Aktualisierte Positionsstruktur
+- Angepasste Tarifierung
+- Bessere Abbildung moderner Medizin
+
+**Code-Referenz**: `TariffType.TARDOC`
+
+**Siehe auch**: TARMED, Tarifpool
 
 ---
 
@@ -463,6 +752,56 @@ Fachbegriffe der Schweizer Krankenversicherung in alphabetischer Reihenfolge.
 
 ---
 
+### Tiers Garant (m.)
+
+**Definition**: Zahlungsmodell, bei dem der Patient den Leistungserbringer bezahlt und die Versicherung um Rückerstattung bittet.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | Tiers Garant / System des Tiers Garant |
+| Französisch | Tiers garant |
+| Italienisch | Terzo garante |
+| Englisch | Third-Party Guarantor |
+
+**Ablauf**:
+1. Patient erhält Behandlung
+2. Patient bezahlt Rechnung an Leistungserbringer
+3. Patient reicht Rechnung bei Versicherer ein
+4. Versicherer erstattet (abzüglich Kostenbeteiligung)
+
+**Code-Referenz**: `PaymentModel.TIERS_GARANT`
+
+**Siehe auch**: Tiers Payant, Leistung
+
+---
+
+### Tiers Payant (m.)
+
+**Definition**: Zahlungsmodell, bei dem die Versicherung den Leistungserbringer direkt bezahlt.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | Tiers Payant / System des Tiers Payant |
+| Französisch | Tiers payant |
+| Italienisch | Terzo pagante |
+| Englisch | Third-Party Payer |
+
+**Ablauf**:
+1. Patient erhält Behandlung
+2. Leistungserbringer rechnet direkt mit Versicherer ab
+3. Versicherer bezahlt Leistungserbringer
+4. Patient erhält Rechnung für Kostenbeteiligung
+
+**Vorteile**:
+- Patient muss nicht vorfinanzieren
+- Vor allem bei teuren Behandlungen/Spitalaufenthalten
+
+**Code-Referenz**: `PaymentModel.TIERS_PAYANT`
+
+**Siehe auch**: Tiers Garant, Leistung
+
+---
+
 ## U
 
 ### UVG (n.)
@@ -485,6 +824,32 @@ Fachbegriffe der Schweizer Krankenversicherung in alphabetischer Reihenfolge.
 ---
 
 ## V
+
+### VeKa (f.)
+
+**Definition**: Versichertenkarte - die Schweizer Krankenversicherungskarte mit Chipfunktion.
+
+| Sprache | Begriff |
+|---------|---------|
+| Deutsch | VeKa / Versichertenkarte |
+| Französisch | Carte d'assuré |
+| Italienisch | Tessera d'assicurato |
+| Englisch | Insurance Card |
+
+**Funktionen**:
+- Identifikation beim Leistungserbringer
+- Nachweis des Versicherungsschutzes
+- Enthält AHV-Nummer
+
+**Format**: 80756 + 13-stellige Nummer
+
+**Code-Referenz**: `InsuranceCard` Entity, `SasisService`
+
+**Offizielle Quelle**: [sasis.ch](https://www.sasis.ch)
+
+**Siehe auch**: SASIS, AHV-Nummer
+
+---
 
 ### Versicherungsnehmer (m.)
 
@@ -600,4 +965,4 @@ Fachbegriffe der Schweizer Krankenversicherung in alphabetischer Reihenfolge.
 
 ---
 
-*Letzte Aktualisierung: 2026-01-26*
+*Letzte Aktualisierung: 2026-01-28*
