@@ -21,6 +21,7 @@
     <modules>
         <module>govinda-common</module>
         <module>govinda-masterdata</module>
+        <module>govinda-portal</module>
         <module>govinda-app</module>
         <!-- Empty modules removed - add back when implementing:
         <module>govinda-product</module>
