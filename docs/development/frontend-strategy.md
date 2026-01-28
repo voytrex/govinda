@@ -41,6 +41,14 @@ Best for lightweight read-heavy workflows and notifications.
 - Technology: React Native or Flutter.
 - Access: Backend REST APIs only.
 
+### 4) Customer Portal (Web + Mobile)
+
+Separate end-user portal for policyholders and subscribers.
+
+- Channels: Web portal + mobile app (iOS/Android).
+- Access: Backend REST APIs only, with dedicated auth flows.
+- Scope: self-service documents, invoices, notifications, and service requests.
+
 ## Backend Alignment
 
 - **Single API surface** shared across all clients.
@@ -54,9 +62,11 @@ Best for lightweight read-heavy workflows and notifications.
 - Desktop client is the primary UX for complex ERP tasks.
 - Web client is scoped to masterdata and simple management.
 - API is the shared contract; avoid desktop-only backdoors.
+- Customer portal is a separate end-user channel with its own UX and security model.
 
 ## Related Documents
 
 - `docs/development/frontend-web-client.md`
 - `docs/development/frontend-desktop-client.md`
 - `docs/development/frontend-deployment.md`
+- `docs/development/customer-portal.md`

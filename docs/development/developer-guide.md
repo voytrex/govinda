@@ -94,4 +94,5 @@ mvn -pl backend/govinda-common -am -Dtest=AuthControllerIntegrationTest test
 - `docs/development/frontend-web-client.md`
 - `docs/development/frontend-desktop-client.md`
 - `docs/development/frontend-deployment.md`
+- `docs/development/customer-portal.md`
 
